@@ -29,7 +29,7 @@ if(NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
 endif()
 
-file(GLOB src_files src/cpp/*.cpp)
+file(GLOB src_files src/cpp/subprocess/*.cpp)
 
 
 
@@ -51,3 +51,5 @@ endif()
 
 
 # TODO testing
+enable_testing()
+add_subdirectory(test)

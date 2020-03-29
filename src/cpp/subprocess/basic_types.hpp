@@ -43,18 +43,21 @@ namespace subprocess {
         close
     };
 
-    struct ShellError : std::runtime_error {
+    struct SubprocessError : std::runtime_error {
         using std::runtime_error::runtime_error;
     };
-    struct CommandNotFoundError : ShellError {
-        using ShellError::ShellError;
-    };
-    struct SpawnError : ShellError {
-        using ShellError::ShellError;
+    struct CommandNotFoundError : SubprocessError {
+        using SubprocessError::SubprocessError;
     };
 
-    struct TimeoutExpired : ShellError {
-        using ShellError::ShellError;
+    // when the API for spawning a process fails. I don't know if this ever
+    // happens in practice.
+    struct SpawnError : SubprocessError {
+        using SubprocessError::SubprocessError;
+    };
+
+    struct TimeoutExpired : SubprocessError {
+        using SubprocessError::SubprocessError;
 
         CommandLine command;
         double      timeout;
@@ -63,6 +66,22 @@ namespace subprocess {
         std::string cerr;
     };
 
+    struct CalledProcessError : SubprocessError {
+        using SubprocessError::SubprocessError;
+        // credit for documentation is from python docs. They say it simply
+        // and well.
+
+        /** Exit status of the child process. If the process exited due to a
+            signal, this will be the negative signal number.
+        */
+        int         returncode;
+        /** Command used to spawn the child process */
+        CommandLine cmd;
+        /** stdout output if it was captured. */
+        std::string cout;
+        /** stderr output if it was captured. */
+        std::string cerr;
+    };
 
     struct CompletedProcess {
         CommandLine     args;

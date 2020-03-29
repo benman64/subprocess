@@ -118,6 +118,7 @@ namespace subprocess {
 
         std::string windows_command();
         std::string windows_args();
+        std::string windows_args(const CommandLine& command);
 
         Popen run() {
             return run_command(this->command);

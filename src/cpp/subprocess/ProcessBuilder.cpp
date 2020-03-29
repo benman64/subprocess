@@ -62,9 +62,17 @@ namespace subprocess {
 #endif
     }
 #ifdef _WIN32
-
+    int Popen::wait(double timeout) {
+        WaitForSingleObject(process_info.hProcess, INFINITE );
+        DWORD exit_code;
+        GetExitCodeProcess(process_info.hProcess, &exit_code);
+        returncode = exit_code;
+        return returncode;
+    }
+    // TODO: poll, send_signal, kill, terminate
 #else
     int Popen::wait(double timeout) {
+        // TODO: timeout
         int exit_code;
         if (cout != kBadPipeValue)
             pipe_close(cout);
@@ -90,14 +98,18 @@ namespace subprocess {
     std::string ProcessBuilder::windows_command() {
         return this->command[0];
     }
+
     std::string ProcessBuilder::windows_args() {
-        std::string command;
-        for(unsigned int i = 1; i < this->command.size(); ++i) {
+        return this->windows_args(this->command);
+    }
+    std::string ProcessBuilder::windows_args(const CommandLine& command) {
+        std::string args;
+        for(unsigned int i = 1; i < command.size(); ++i) {
             if (i > 1)
-                command += ' ';
-            command += escape_shell_arg(this->command[i]);
+                args += ' ';
+            args += escape_shell_arg(command[i]);
         }
-        return command;
+        return args;
     }
 
 #ifdef _WIN32
@@ -140,7 +152,7 @@ namespace subprocess {
             posix_spawn_file_actions_addclose(&action, cout_pair.output);
             process.cout = cout_pair.input;
         } else if (cout_option == PipeOption::cerr) {
-            posix_spawn_file_actions_adddup2(&action, kStdErrValue, kStdOutValue);
+            // we have to wait until stderr is setup first
         } else if (cout_option == PipeOption::specific) {
             posix_spawn_file_actions_adddup2(&action, this->cout_pipe, kStdOutValue);
             posix_spawn_file_actions_addclose(&action, this->cout_pipe);
@@ -161,7 +173,9 @@ namespace subprocess {
             posix_spawn_file_actions_addclose(&action, this->cerr_pipe);
         }
 
-
+        if (cout_option == PipeOption::cerr) {
+            posix_spawn_file_actions_adddup2(&action, kStdErrValue, kStdOutValue);
+        }
         pid_t pid;
         std::vector<char*> args;
         args.reserve(command.size());

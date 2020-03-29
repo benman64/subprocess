@@ -5,9 +5,22 @@ cross platform subprocess library for c++ similar to design of python subprocess
 
 - c++17
 
+# Integration
+
+##  Adhoc
+
+1. copy files in src/cpp to your project.
+2. add the top folder as include.
+3. make sure cpp files are compiled.
+4. add `#include <subprocess.hpp>` to start using in source files.
+
+## Todo add to cocoapods and perhaps others.
+
 # Examples
 
 ```
+#include <subprocess.hpp>
+
 // quick echo it
 subprocess::run({"echo", "hello", "world"});
 
