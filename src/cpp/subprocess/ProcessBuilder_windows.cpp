@@ -38,32 +38,24 @@ namespace subprocess {
         PipePair cerr_pair;
         PipePair closed_pair;
 
-        SECURITY_ATTRIBUTES saAttr;
+        SECURITY_ATTRIBUTES saAttr = {0};
 
         // Set the bInheritHandle flag so pipe handles are inherited.
 
-        saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-        saAttr.bInheritHandle = TRUE;
+        saAttr.nLength              = sizeof(SECURITY_ATTRIBUTES);
+        saAttr.bInheritHandle       = TRUE;
         saAttr.lpSecurityDescriptor = NULL;
 
 
-        PROCESS_INFORMATION piProcInfo;
-        STARTUPINFO siStartInfo;
+        PROCESS_INFORMATION piProcInfo  = {0};
+        STARTUPINFO siStartInfo         = {0};
         BOOL bSuccess = FALSE;
 
-        // Set up members of the PROCESS_INFORMATION structure.
-
-        ZeroMemory( &piProcInfo, sizeof(PROCESS_INFORMATION) );
-
-        // Set up members of the STARTUPINFO structure.
-        // This structure specifies the STDIN and STDOUT handles for redirection.
-
-        ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
-        siStartInfo.cb = sizeof(STARTUPINFO);
+        siStartInfo.cb          = sizeof(STARTUPINFO);
         siStartInfo.hStdError   = g_startupInfo.hStdError;
         siStartInfo.hStdOutput  = g_startupInfo.hStdOutput;
         siStartInfo.hStdInput   = g_startupInfo.hStdInput;
-        siStartInfo.dwFlags     |= STARTF_USESTDHANDLES;
+        siStartInfo.dwFlags    |= STARTF_USESTDHANDLES;
 
         if (cin_option == PipeOption::close) {
             cin_pair = pipe_create();
@@ -141,8 +133,9 @@ namespace subprocess {
         if (cerr_option == PipeOption::close)
             pipe_option(cerr_pair.input);
 
-        if ( !bSuccess )
-            return {}; // TODO throw SpawnError
+        // TODO: get error and add it to throw
+        if (!bSuccess )
+            throw SpawnError("CreateProcess failed");
 
         return process;
     }
