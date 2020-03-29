@@ -6,7 +6,6 @@
 #include <spawn.h>
 #ifdef __APPLE__
 #include <sys/wait.h>
-extern "C" char **environ;
 #else
 #include <wait.h>
 #endif
