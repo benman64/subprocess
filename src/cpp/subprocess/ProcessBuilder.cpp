@@ -15,17 +15,71 @@
 
 #include <string.h>
 #include <thread>
+#include <mutex>
 
 #include "shell_utils.hpp"
+#include "environ.hpp"
+
+namespace {
+    struct cstring_vector {
+        typedef char* value_type;
+        ~cstring_vector() {
+            clear();
+        }
+        void clear() {
+            for (char* ptr : m_list) {
+                if (ptr)
+                    free(ptr);
+            }
+            m_list.clear();
+        }
+
+        void reserve(std::size_t size) {
+            m_list.reserve(size);
+        }
+        void push_back(const std::string& str) {
+            push_back(str.c_str());
+        }
+        void push_back(nullptr_t) {
+            m_list.push_back(nullptr);
+        }
+        void push_back(const char* str) {
+            char* copy = str? strdup(str) : nullptr;
+            m_list.push_back(copy);
+        }
+        void push_back_owned(char* str) {
+            m_list.push_back(str);
+        }
+        value_type& operator[](std::size_t index) {
+            return m_list[index];
+        }
+        char** data() {
+            return &m_list[0];
+        }
+        std::vector<char*> m_list;
+    };
+}
 namespace subprocess {
 
 
+    Popen::Popen(CommandLine command, const PopenOptions& options) {
+        ProcessBuilder builder;
 
+        builder.cin_option  = options.cin;
+        builder.cout_option = options.cout;
+        builder.cerr_option = options.cerr;
+
+        builder.env = options.env;
+        builder.cwd = options.cwd;
+
+        *this = builder.run_command(command);
+    }
     Popen::Popen(Popen&& other) {
         *this = std::move(other);
     }
 
     Popen& Popen::operator=(Popen&& other) {
+        close();
         cin = other.cin;
         cout = other.cout;
         cerr = other.cout;
@@ -48,6 +102,9 @@ namespace subprocess {
     }
 
     Popen::~Popen() {
+        close();
+    }
+    Popen::close() {
         if (cin != kBadPipeValue)
             pipe_close(cin);
         if (cout != kBadPipeValue)
@@ -55,6 +112,9 @@ namespace subprocess {
         if (cerr != kBadPipeValue)
             pipe_close(cerr);
         cin = cout = cerr = kBadPipeValue;
+        pid = 0;
+        returncode = -1000;
+        args.clear();
 #ifdef _WIN32
         CloseHandle(process_info.hProcess);
         CloseHandle(process_info.hThread);
@@ -195,19 +255,39 @@ namespace subprocess {
             posix_spawn_file_actions_adddup2(&action, kStdErrValue, kStdOutValue);
         }
         pid_t pid;
-        std::vector<char*> args;
-        args.reserve(command.size());
+        cstring_vector args;
+        args.reserve(command.size()+1);
         for(const std::string& str : command) {
-            args.push_back(strdup(str.c_str()));
+            args.push_back(str);
         }
-        args.push_back(0);
-        if(posix_spawn(&pid, args[0], &action, NULL, &args[0], environ) != 0)
-            throw SpawnError("posix_spawn failed with error: " + std::string(strerror(errno)));
-        for(char* ptr : args) {
-            if(ptr != nullptr)
-                free(ptr);
+        args.push_back(nullptr);
+        char** env = environ;
+        cstring_vector env_store;
+        if (!this->env.empty()) {
+            for (auto& pair : this->env) {
+                std::string line = pair.first + "=" + pair.second;
+                env_store.push_back(line);
+            }
+            env_store.push_back(nullptr);
+            env = &env_store[0];
+        }
+        {
+            /*  I should have gone with vfork() :(
+                TODO: reimplement with vfork for thread safety.
+
+                this locking solution should work in practice just fine.
+            */
+            static std::mutex mutex;
+            std::unique_lock<std::mutex> lock(mutex);
+            CwdGuard cwdGuard;
+            if (this->cwd.empty())
+                subprocess::setcwd(this->cwd);
+            if(posix_spawn(&pid, args[0], &action, NULL, &args[0], env) != 0)
+                throw SpawnError("posix_spawn failed with error: " + std::string(strerror(errno)));
         }
         args.clear();
+        env_store.clear();
+
         if (cout_pair)
             pipe_close(cout_pair.output);
         if (cerr_pair)
@@ -238,16 +318,7 @@ namespace subprocess {
 
     }
     CompletedProcess run(CommandLine command, PopenOptions options) {
-        ProcessBuilder builder;
-
-        builder.cin_option  = options.cin;
-        builder.cout_option = options.cout;
-        builder.cerr_option = options.cerr;
-
-        builder.env = options.env;
-        builder.cwd = options.cwd;
-
-        Popen popen = builder.run_command(command);
+        Popen popen(command, options);
 
         CompletedProcess completed;
         std::thread cout_thread;

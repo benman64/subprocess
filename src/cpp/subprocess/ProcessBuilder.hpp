@@ -50,7 +50,7 @@ namespace subprocess {
     struct Popen {
     public:
         Popen(){}
-        Popen(const PopenOptions& options);
+        Popen(CommandLine command, const PopenOptions& options);
         Popen(const Popen&)=delete;
         Popen& operator=(const Popen&)=delete;
 
@@ -91,6 +91,8 @@ namespace subprocess {
         */
         bool kill();
 
+        /** Destructs the object and initializes to basic state */
+        void close();
         friend ProcessBuilder;
     private:
 #ifdef _WIN32

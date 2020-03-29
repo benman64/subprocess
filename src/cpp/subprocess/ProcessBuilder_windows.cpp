@@ -105,7 +105,7 @@ namespace subprocess {
         if (cout_option == PipeOption::cerr) {
             siStartInfo.hStdOutput = siStartInfo.hStdError;
         }
-
+        const char* cwd = this->cwd.empty()? nullptr : this->cwd.c_str();
         std::string args = windows_args(command);
         // Create the child process.
         bSuccess = CreateProcess(program.c_str(),
@@ -115,7 +115,7 @@ namespace subprocess {
             TRUE,          // handles are inherited
             0,             // creation flags
             NULL,          // use parent's environment
-            NULL,          // use parent's current directory
+            cwd,          // use parent's current directory
             &siStartInfo,  // STARTUPINFO pointer
             &piProcInfo);  // receives PROCESS_INFORMATION
 

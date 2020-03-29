@@ -24,6 +24,14 @@
 #include "ProcessBuilder.hpp"
 using std::isspace;
 
+namespace subprocess {
+    std::string getcwd() {
+        return std::filesystem::current_path().string();
+    }
+    void setcwd(const std::string& path) {
+        std::filesystem::current_path(path);
+    }
+}
 namespace {
     // this repititon exists here as I want shell to be fully standalone to
     // use in other projects
@@ -67,9 +75,7 @@ namespace {
 #endif
     }
 
-    std::string getcwd() {
-        return std::filesystem::current_path().string();
-    }
+
     std::string clean_path(std::string path) {
         for(std::size_t i = 0; i < path.size(); ++i) {
             if(path[i] == '\\')
@@ -129,9 +135,9 @@ namespace {
         if(is_absolute_path(dir))
             return dir;
         if(relativeTo.empty())
-            relativeTo = getcwd();
+            relativeTo = subprocess::getcwd();
         if(!is_absolute_path(relativeTo)) {
-            relativeTo = join_path(getcwd(), relativeTo);
+            relativeTo = join_path(subprocess::getcwd(), relativeTo);
         }
         return join_path(relativeTo, dir);
     }
