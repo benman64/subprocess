@@ -19,9 +19,11 @@ static void init_startup_info() {
     GetStartupInfo(&g_startupInfo);
 }
 
+bool disable_inherit(PipeHandle handle) {
+    return !!SetHandleInformation(handle, HANDLE_FLAG_INHERIT, 0);
+}
 
-
-namespace tea {
+namespace subprocess {
 
     Popen ProcessBuilder::run_command(const CommandLine& command) {
         std::string program = find_program(command[0]);
@@ -66,22 +68,26 @@ namespace tea {
         if (cin_option == PipeOption::close) {
             cin_pair = pipe_create();
             siStartInfo.hStdInput = cin_pair.input;
+            disable_inherit(cin_pair.output);
         } else if (cin_option == PipeOption::specific) {
             siStartInfo.hStdInput = cin_pipe;
         } else if (cin_option == PipeOption::pipe) {
             cin_pair = pipe_create();
             siStartInfo.hStdInput = cin_pair.input;
-            process.cin = cout_pair.output;
+            process.cin = cin_pair.output;
+            disable_inherit(cin_pair.output);
         }
 
 
         if (cout_option == PipeOption::close) {
             cout_pair = pipe_create();
             siStartInfo.hStdOutput = cout_pair.output;
+            disable_inherit(cout_pair.input);
         } else if (cout_option == PipeOption::pipe) {
             cout_pair = pipe_create();
             siStartInfo.hStdOutput = cout_pair.output;
             process.cout = cout_pair.input;
+            disable_inherit(cout_pair.input);
         } else if (cout_option == PipeOption::cerr) {
             // Do this when stderr is setup bellow
         } else if (cout_option == PipeOption::specific) {
@@ -90,11 +96,13 @@ namespace tea {
 
         if (cerr_option == PipeOption::close) {
             cerr_pair = pipe_create();
-            siStartInfo.hStdError = cout_pair.output;
+            siStartInfo.hStdError = cerr_pair.output;
+            disable_inherit(cerr_pair.input);
         } else if (cerr_option == PipeOption::pipe) {
             cerr_pair = pipe_create();
             siStartInfo.hStdError = cerr_pair.output;
             process.cerr = cerr_pair.input;
+            disable_inherit(cerr_pair.input);
         } else if (cerr_option == PipeOption::cout) {
             siStartInfo.hStdError = siStartInfo.hStdOutput;
         } else if (cerr_option == PipeOption::specific) {
@@ -140,38 +148,6 @@ namespace tea {
     }
 
 
-}
-
-void ErrorExit(PTSTR lpszFunction)
-
-// Format a readable error message, display a message box,
-// and exit from the application.
-{
-    LPVOID lpMsgBuf;
-    LPVOID lpDisplayBuf;
-    DWORD dw = GetLastError();
-
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM |
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        dw,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPTSTR) &lpMsgBuf,
-        0, NULL );
-
-    lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-        (lstrlen((LPCTSTR)lpMsgBuf)+lstrlen((LPCTSTR)lpszFunction)+40)*sizeof(TCHAR));
-    StringCchPrintf((LPTSTR)lpDisplayBuf,
-        LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-        TEXT("%s failed with error %d: %s"),
-        lpszFunction, dw, lpMsgBuf);
-    MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
-
-    LocalFree(lpMsgBuf);
-    LocalFree(lpDisplayBuf);
-    ExitProcess(1);
 }
 
 #endif

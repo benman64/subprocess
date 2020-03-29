@@ -139,7 +139,7 @@ namespace subprocess {
             posix_spawn_file_actions_addclose(&action, cin_pair.output);
             posix_spawn_file_actions_adddup2(&action, cin_pair.input, kStdInValue);
             posix_spawn_file_actions_addclose(&action, cin_pair.input);
-            process.cin = cout_pair.output;
+            process.cin = cin_pair.output;
         }
 
 
