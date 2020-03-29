@@ -84,12 +84,12 @@ namespace subprocess {
 
             On windows SIGTERM is an alias for terminate()
         */
-        void send_signal(int signal);
-        /** on windows calls TerminateProcess() */
-        void terminate();
+        bool send_signal(int signal);
+        /** Sends SIGTERM, on windows calls TerminateProcess() */
+        bool terminate();
         /** sends SIGKILL on linux, alias for terminate() on windows.
         */
-        void kill();
+        bool kill();
 
         friend ProcessBuilder;
     private:

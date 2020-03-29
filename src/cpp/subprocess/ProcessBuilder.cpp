@@ -69,7 +69,18 @@ namespace subprocess {
         returncode = exit_code;
         return returncode;
     }
-    // TODO: poll, send_signal, kill, terminate
+    // TODO: poll
+    bool Popen::send_signal(int signum) {
+        if (signum == SIGKILL) {
+            return TerminateProcess(pid, 1);
+        } else if (signum == SIGINT) {
+            // can I use pid for processgroupid?
+            return GenerateConsoleCtrlEvent(CTRL_C_EVENT, pid);
+        } else if (signum == SIGTERM) {
+            return GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
+        }
+        return GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
+    }
 #else
     int Popen::wait(double timeout) {
         // TODO: timeout
@@ -82,9 +93,17 @@ namespace subprocess {
         returncode = exit_code;
         return returncode;
     }
+
+    bool Popen::send_signal(int signum) {
+        return ::kill(pid, signum) == 0;
+    }
 #endif
-
-
+    bool Popen::terminate() {
+        return send_signal(SIGTERM);
+    }
+    bool Popen::kill() {
+        return send_signal(SIGKILL);
+    }
 
 
 
