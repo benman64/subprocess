@@ -18,7 +18,7 @@ cross platform subprocess library for c++ similar to design of python subprocess
 
 # Examples
 
-```
+```cpp
 #include <subprocess.hpp>
 
 // quick echo it

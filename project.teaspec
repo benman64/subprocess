@@ -1,0 +1,26 @@
+{
+    "name": "subprocess",
+    "version": "0.1.0",
+    "summary": "cross platform modern c++ subprocess library",
+    "description": "",
+    "homepage": "https://github.com/benman64/subprocess.git",
+    "license": {
+        "type": "MIT",
+        "text": ""
+    },
+    "artifact": {
+        "git": "https://github.com/benman64/subprocess.git",
+        "tag": "0.1.0"
+    },
+    "constraints": [
+    ],
+    "dependencies": {
+    },
+    "dir_map": {
+    },
+    "file_map": {
+        "/src/cpp/*/.*": "/"
+    },
+    "exclude_files": [
+    ]
+}

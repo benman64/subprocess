@@ -27,28 +27,14 @@ enable_cxx_compiler_flag_if_supported(-pedantic)
 
 if(NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
+else()
+    add_compile_options(subprocess PUBLIC -Zc:__cplusplus)
 endif()
 
-file(GLOB src_files src/cpp/subprocess/*.cpp)
 
 
 
-add_library(subprocess ${src_files})
-
-target_include_directories(subprocess PUBLIC
-    src/cpp
-)
-if(MSVC)
-    target_compile_options(subprocess PUBLIC -Zc:__cplusplus)
-endif()
-
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    target_link_libraries(subprocess PUBLIC stdc++fs)
-    if(NOT WIN32)
-        target_link_libraries(subprocess PUBLIC pthread dl)
-    endif()
-endif()
-
+add_subdirectory(src/cpp subprocess)
 
 # TODO testing
 enable_testing()
