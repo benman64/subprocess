@@ -1,0 +1,22 @@
+{
+    "repos": [
+
+    ],
+    "dependencies":{
+        "cxxtest": {
+            "artifact": {
+                "git": "https://github.com/CxxTest/cxxtest.git"
+            },
+            "dir_map": {
+                "bin": "bin",
+                "cxxtest": "cxxtest",
+                "python": "python",
+                "build_tools/cmake": "build_tools/cmake"
+            }
+        }
+    },
+    "build_config": {
+
+    },
+    "output_dir": "dependencies"
+}

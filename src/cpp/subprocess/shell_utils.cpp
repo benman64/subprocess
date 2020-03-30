@@ -20,6 +20,7 @@
 #include <map>
 #include <mutex>
 #include <filesystem>
+#include <iostream>
 
 #include "ProcessBuilder.hpp"
 using std::isspace;
@@ -204,7 +205,7 @@ namespace subprocess {
         for(std::string test : split(path_env, kPathDelimiter)) {
             if(test.empty())
                 continue;
-            test += kPathDelimiter;
+            test += '/';
             test += name;
             test = try_exe(test);
             if(!test.empty() && is_file(test)) {
@@ -249,7 +250,7 @@ namespace subprocess {
         for(std::string test : split(path_env, kPathDelimiter)) {
             if(test.empty())
                 continue;
-            test += kPathDelimiter;
+            test += '/';
             test += "python";
             test = try_exe(test);
             if(!test.empty() && is_file(test)) {
