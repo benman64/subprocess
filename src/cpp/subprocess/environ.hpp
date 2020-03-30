@@ -13,6 +13,7 @@ namespace subprocess {
         operator std::string() { return to_string(); }
         std::string to_string();
         EnvironSetter &operator=(const std::string &str);
+        EnvironSetter &operator=(const char* str);
         EnvironSetter &operator=(int value);
         EnvironSetter &operator=(bool value);
         EnvironSetter &operator=(float value);

@@ -28,6 +28,14 @@ namespace subprocess {
 #endif
         return *this;
     }
+    EnvironSetter &EnvironSetter::operator=(const char* str) {
+#ifdef _WIN32
+        _putenv_s(mName.c_str(), str);
+#else
+        setenv(mName.c_str(), str, true);
+#endif
+        return *this;
+    }
     EnvironSetter &EnvironSetter::operator=(int value) {
         return *this = std::to_string(value);
     }
