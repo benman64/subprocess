@@ -20,6 +20,7 @@
 #include "shell_utils.hpp"
 #include "environ.hpp"
 
+using std::nullptr_t;
 namespace {
     struct cstring_vector {
         typedef char* value_type;
@@ -316,8 +317,8 @@ namespace subprocess {
             }
         }
         return result;
-
     }
+
     CompletedProcess run(CommandLine command, PopenOptions options) {
         Popen popen(command, options);
 

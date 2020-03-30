@@ -1,5 +1,7 @@
 # subprocess
-cross platform subprocess library for c++ similar to design of python subprocess
+cross platform subprocess library for c++ similar to design of python
+subprocess.
+
 
 # requirements
 
@@ -52,3 +54,6 @@ must to be implemented
 - documentation
 - bugs, there is lots of them to be discovered.
 - main structure is set in place and help is welcome.
+- PopenBuilder needs a better name.
+- ProcessBuilder perhaps should be renamed to RunBuilder and have a similar
+  pattern to PopenBuilder.

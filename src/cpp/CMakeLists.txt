@@ -1,5 +1,7 @@
 file(GLOB src ./subprocess/*.cpp)
 
+find_package(Threads REQUIRED)
+
 add_library(subprocess ${src})
 target_include_directories(subprocess PUBLIC
     ./
@@ -12,6 +14,8 @@ endif()
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(subprocess PUBLIC stdc++fs)
     if(NOT WIN32)
-        target_link_libraries(subprocess PUBLIC pthread dl)
+        target_link_libraries(subprocess PUBLIC dl)
     endif()
 endif()
+
+target_link_libraries(subprocess PUBLIC Threads::Threads)

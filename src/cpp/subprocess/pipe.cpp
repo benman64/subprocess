@@ -54,4 +54,21 @@ namespace subprocess {
         return ::write(handle, buffer, size);
     }
 #endif
+
+    std::string pipe_read_all(PipeHandle handle) {
+        if (handle == kBadPipeValue)
+            return {};
+        constexpr int buf_size = 2048;
+        uint8_t buf[buf_size];
+        std::string result;
+        while(true) {
+            size_t transfered = pipe_read(handle, buf, buf_size);
+            if(transfered > 0) {
+                result.insert(result.end(), &buf[0], &buf[transfered]);
+            } else {
+                break;
+            }
+        }
+        return result;
+    }
 }
