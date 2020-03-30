@@ -82,7 +82,7 @@ namespace subprocess {
         close();
         cin = other.cin;
         cout = other.cout;
-        cerr = other.cout;
+        cerr = other.cerr;
 
         pid = other.pid;
         returncode = other.returncode;
@@ -257,8 +257,9 @@ namespace subprocess {
         pid_t pid;
         cstring_vector args;
         args.reserve(command.size()+1);
-        for(const std::string& str : command) {
-            args.push_back(str);
+        args.push_back(program);
+        for(size_t i = 1; i < command.size(); ++i) {
+            args.push_back(command[i]);
         }
         args.push_back(nullptr);
         char** env = environ;
@@ -280,7 +281,7 @@ namespace subprocess {
             static std::mutex mutex;
             std::unique_lock<std::mutex> lock(mutex);
             CwdGuard cwdGuard;
-            if (this->cwd.empty())
+            if (!this->cwd.empty())
                 subprocess::setcwd(this->cwd);
             if(posix_spawn(&pid, args[0], &action, NULL, &args[0], env) != 0)
                 throw SpawnError("posix_spawn failed with error: " + std::string(strerror(errno)));
@@ -344,10 +345,12 @@ namespace subprocess {
             });
         }
 
-        if (cout_thread.joinable())
+        if (cout_thread.joinable()) {
             cout_thread.join();
-        if (cerr_thread.joinable())
-            cerr_thread.joinable();
+        }
+        if (cerr_thread.joinable()) {
+            cerr_thread.join();
+        }
         popen.wait();
         completed.returncode = popen.returncode;
         completed.args = CommandLine(command.begin()+1, command.end());
