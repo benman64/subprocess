@@ -10,7 +10,7 @@
 #include <wait.h>
 #endif
 #include <errno.h>
-
+#include <signal.h>
 #endif
 
 #include <string.h>
@@ -19,6 +19,8 @@
 
 #include "shell_utils.hpp"
 #include "environ.hpp"
+
+extern "C" char **environ;
 
 using std::nullptr_t;
 namespace {

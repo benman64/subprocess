@@ -5,9 +5,11 @@
 #include <unistd.h>
 #endif
 
-#include <stdexcept>
-#include <vector>
 #include <map>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
 
 // Fucking stdout, stderr, stdin are macros. So instead of stdout,...
 // we will use cin, cout, cerr as variable names

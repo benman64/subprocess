@@ -21,6 +21,7 @@
 #include <mutex>
 #include <filesystem>
 #include <iostream>
+#include <sstream>
 
 #include "ProcessBuilder.hpp"
 using std::isspace;
