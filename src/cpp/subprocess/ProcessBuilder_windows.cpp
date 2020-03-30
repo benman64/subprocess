@@ -107,17 +107,32 @@ namespace subprocess {
         }
         const char* cwd = this->cwd.empty()? nullptr : this->cwd.c_str();
         std::string args = windows_args(command);
+
+        void* env = nullptr;
+        std::u16string envblock;
+        if (!this->env.empty()) {
+            /*  if you use ansi there is a 37K size limit. So we use unicode
+                which is almost utf16.
+
+                TODO: fix by using unicode 16bit chars.
+
+                This won't work as expected if somewhere there is a multibyte
+                utf-16 char (4-bytes total).
+            */
+            envblock = create_env_block(this->env);
+            env = (void*)envblock.data();
+        }
         // Create the child process.
         bSuccess = CreateProcess(program.c_str(),
-            (char*)args.c_str(),     // command line
-            NULL,          // process security attributes
-            NULL,          // primary thread security attributes
-            TRUE,          // handles are inherited
-            0,             // creation flags
-            NULL,          // use parent's environment
-            cwd,          // use parent's current directory
-            &siStartInfo,  // STARTUPINFO pointer
-            &piProcInfo);  // receives PROCESS_INFORMATION
+            (char*)args.c_str(),            // command line
+            NULL,                           // process security attributes
+            NULL,                           // primary thread security attributes
+            TRUE,                           // handles are inherited
+            CREATE_UNICODE_ENVIRONMENT,     // creation flags
+            env,                            // environment
+            cwd,                            // use parent's current directory
+            &siStartInfo,                   // STARTUPINFO pointer
+            &piProcInfo);                   // receives PROCESS_INFORMATION
 
         if (cin_pair)
             pipe_close(cin_pair.input);

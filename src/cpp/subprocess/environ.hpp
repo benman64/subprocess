@@ -28,7 +28,8 @@ namespace subprocess {
 
     /** Creates a copy of current environment variables and returns the map */
     EnvMap current_env_copy();
-
+    /** suitable for windows */
+    std::u16string create_env_block(const EnvMap& map);
 
     class CwdGuard {
     public:

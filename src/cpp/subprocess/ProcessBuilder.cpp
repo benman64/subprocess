@@ -104,7 +104,7 @@ namespace subprocess {
     Popen::~Popen() {
         close();
     }
-    Popen::close() {
+    void Popen::close() {
         if (cin != kBadPipeValue)
             pipe_close(cin);
         if (cout != kBadPipeValue)
