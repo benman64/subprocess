@@ -25,7 +25,7 @@ public:
     }
     void testHelloWorld() {
         CompletedProcess completed = subprocess::run({"echo", "hello", "world"},
-            PopenBuilder().cout(PipeOption::pipe).build());
+            PopenBuilder().cout(PipeOption::pipe));
         TS_ASSERT_EQUALS(completed.cout, "hello world\n");
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
@@ -34,7 +34,7 @@ public:
 
         completed = subprocess::run({"echo", "hello", "world"}, PopenBuilder()
             .cout(PipeOption::cerr)
-            .cerr(PipeOption::pipe).build());
+            .cerr(PipeOption::pipe));
 
         TS_ASSERT_EQUALS(completed.cerr, "hello world\n");
         TS_ASSERT(completed.cout.empty());
@@ -43,6 +43,36 @@ public:
 
     }
 
+    void testHelloWorldBuilder() {
+        CompletedProcess completed = subprocess::RunBuilder({"echo", "hello", "world"})
+            .cout(PipeOption::pipe)
+            .run();
+        TS_ASSERT_EQUALS(completed.cout, "hello world\n");
+        TS_ASSERT(completed.cerr.empty());
+        TS_ASSERT_EQUALS(completed.returncode, 0);
+        CommandLine args = {"hello", "world"};
+        TS_ASSERT_EQUALS(completed.args, args);
+
+        completed = subprocess::RunBuilder({"echo", "hello", "world"})
+            .cout(PipeOption::cerr)
+            .cerr(PipeOption::pipe).run();
+
+        TS_ASSERT_EQUALS(completed.cerr, "hello world\n");
+        TS_ASSERT(completed.cout.empty());
+        TS_ASSERT_EQUALS(completed.returncode, 0);
+        TS_ASSERT_EQUALS(completed.args, args);
+
+    }
+
+/*
+    void tesxtCat() {
+        CompletedProcess completed = subprocess::run({"cat"},
+            PopenBuilder().cout(PipeOption::pipe)
+            .build());
+        
+
+    }
+*/
 };
 
 

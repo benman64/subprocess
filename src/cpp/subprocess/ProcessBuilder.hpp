@@ -40,7 +40,7 @@ namespace subprocess {
         PopenBuilder& env(EnvMap& env) {options.env = env; return *this;}
         PopenBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
 
-        PopenOptions& build() {return options;}
+        operator PopenOptions() const {return options;}
     };
     class ProcessBuilder;
     /** Active running process.
@@ -128,6 +128,22 @@ namespace subprocess {
         Popen run_command(const CommandLine& command);
     };
 
-
     CompletedProcess run(CommandLine command, PopenOptions options);
+
+    struct RunBuilder {
+        PopenOptions options;
+        CommandLine command;
+
+        RunBuilder(CommandLine cmd) : command(cmd){}
+        RunBuilder& check(bool ch) {options.check = ch; return *this;}
+        RunBuilder& cin(PipeOption cin) {options.cin = cin; return *this;}
+        RunBuilder& cout(PipeOption cout) {options.cout = cout; return *this;}
+        RunBuilder& cerr(PipeOption cerr) {options.cerr = cerr; return *this;}
+        RunBuilder& cwd(std::string cwd) {options.cwd = cwd; return *this;}
+        RunBuilder& env(EnvMap& env) {options.env = env; return *this;}
+        RunBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
+
+        CompletedProcess run() {return subprocess::run(command, options);}
+
+    };
 }

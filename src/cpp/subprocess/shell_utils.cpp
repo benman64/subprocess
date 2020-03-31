@@ -221,7 +221,6 @@ namespace subprocess {
         CompletedProcess process = subprocess::run({path, "--version"}, PopenBuilder()
             .cout(PipeOption::pipe)
             .cerr(PipeOption::cout)
-            .build()
         );
         /* since c++20 we can do this
         CompletedProcess process = subprocess::run({path, "--version"}, {
