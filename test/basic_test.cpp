@@ -17,6 +17,10 @@ bool is_equal(const CommandLine& a, const CommandLine& b) {
     return true;
 }
 
+void nop() {
+    // cxxtest is a bit dumb. We need this to enable exceptions
+    throw 32;
+}
 class BasicSuite : public CxxTest::TestSuite {
 public:
     void testFindProgram() {
@@ -92,6 +96,11 @@ public:
         TS_SKIP("not c++20");
         #endif
     }
+
+
+    void testNotFound() {
+        TS_ASSERT_THROWS_ANYTHING(subprocess::run({"yay-322"}));
+    }
 /*
     void tesxtCat() {
         CompletedProcess completed = subprocess::run({"cat"},
@@ -101,6 +110,15 @@ public:
 
     }
 */
+
+    /*  Tests TODO: write tests
+
+        connect to apps together.
+        check=true
+        RunBuilder using popen()
+        program not found
+
+    */
 };
 
 

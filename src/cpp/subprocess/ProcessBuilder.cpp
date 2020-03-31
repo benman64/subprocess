@@ -327,7 +327,7 @@ namespace subprocess {
         return result;
     }
 
-    CompletedProcess run(CommandLine command, PopenOptions options) {
+    CompletedProcess run(CommandLine command, RunOptions options) {
         Popen popen(command, options);
         CompletedProcess completed;
         std::thread cout_thread;
@@ -372,4 +372,9 @@ namespace subprocess {
         }
         return completed;
     }
+
+    CompletedProcess run_popen(CommandLine command, PopenOptions options) {
+        return subprocess::run(command, options);
+    }
+
 }

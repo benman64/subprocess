@@ -18,7 +18,39 @@ namespace subprocess {
             RunConfig
             RunOptions
     */
+    /*  New idea: Have 2 identical structs with only difference is cout
+        default is with respect to running, or popen.
+    */
+
     struct PopenOptions {
+        bool        check   = false;
+        PipeOption  cin     = PipeOption::inherit;
+        PipeOption  cout    = PipeOption::pipe;
+        PipeOption  cerr    = PipeOption::inherit;
+
+        std::string cwd;
+        /** If empty inherits from current process */
+        EnvMap      env;
+
+        /** Timeout in seconds. Raise TimeoutExpired.
+
+            Only available if you use subprocess_run
+        */
+        double timeout  = -1;
+    };
+
+    struct RunOptions {
+        RunOptions(){};
+        RunOptions(const PopenOptions& options) {
+            check   = options.check;
+            cin     = options.cin;
+            cout    = options.cout;
+            cerr    = options.cerr;
+            cwd     = options.cwd;
+            env     = options.env;
+            timeout = options.timeout;
+        }
+        RunOptions(const RunOptions&)=default;
         bool        check   = false;
         PipeOption  cin     = PipeOption::inherit;
         PipeOption  cout    = PipeOption::inherit;
@@ -33,22 +65,19 @@ namespace subprocess {
             Only available if you use subprocess_run
         */
         double timeout  = -1;
+
+        operator PopenOptions() const {
+            PopenOptions options;
+            options.check   = check;
+            options.cin     = cin;
+            options.cout    = cout;
+            options.cerr    = cerr;
+            options.cwd     = cwd;
+            options.env     = env;
+            options.timeout = timeout;
+            return options;
+        }
     };
-
-    struct PopenBuilder {
-        PopenOptions options;
-
-        PopenBuilder& check(bool ch) {options.check = ch; return *this;}
-        PopenBuilder& cin(PipeOption cin) {options.cin = cin; return *this;}
-        PopenBuilder& cout(PipeOption cout) {options.cout = cout; return *this;}
-        PopenBuilder& cerr(PipeOption cerr) {options.cerr = cerr; return *this;}
-        PopenBuilder& cwd(std::string cwd) {options.cwd = cwd; return *this;}
-        PopenBuilder& env(EnvMap& env) {options.env = env; return *this;}
-        PopenBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
-
-        operator PopenOptions() const {return options;}
-    };
-
     class ProcessBuilder;
     /** Active running process.
 
@@ -146,10 +175,11 @@ namespace subprocess {
         Popen run_command(const CommandLine& command);
     };
 
-    CompletedProcess run(CommandLine command, PopenOptions options);
+    CompletedProcess run(CommandLine command, RunOptions options={});
+    CompletedProcess run_popen(CommandLine command, PopenOptions options={});
 
     struct RunBuilder {
-        PopenOptions options;
+        RunOptions options;
         CommandLine command;
 
         RunBuilder(CommandLine cmd) : command(cmd){}
@@ -161,7 +191,34 @@ namespace subprocess {
         RunBuilder& env(EnvMap& env) {options.env = env; return *this;}
         RunBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
 
+        operator RunOptions() const {return options;}
+        operator PopenOptions() const {return options;}
+
         CompletedProcess run() {return subprocess::run(command, options);}
-        Popen popen() {return Popen(command, options);}
+        Popen popen() { return Popen(command, options); }
     };
+
+    /** Like RunBuilder but defaults to capturing stdout */
+    struct PopenBuilder {
+        PopenOptions options;
+        CommandLine command;
+
+        PopenBuilder(){}
+        PopenBuilder(CommandLine cmd) : command(cmd){}
+
+        PopenBuilder& check(bool ch) {options.check = ch; return *this;}
+        PopenBuilder& cin(PipeOption cin) {options.cin = cin; return *this;}
+        PopenBuilder& cout(PipeOption cout) {options.cout = cout; return *this;}
+        PopenBuilder& cerr(PipeOption cerr) {options.cerr = cerr; return *this;}
+        PopenBuilder& cwd(std::string cwd) {options.cwd = cwd; return *this;}
+        PopenBuilder& env(EnvMap& env) {options.env = env; return *this;}
+        PopenBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
+
+        operator PopenOptions() const {return options;}
+        operator RunOptions() const {return options;}
+
+        CompletedProcess run() {return subprocess::run(command, options);}
+        Popen popen() { return Popen(command, options); }
+    };
+
 }
