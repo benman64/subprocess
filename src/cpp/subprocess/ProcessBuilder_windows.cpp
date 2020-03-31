@@ -6,8 +6,9 @@
 #include <tchar.h>
 #include <stdio.h>
 #include <strsafe.h>
-#include "shell.hpp"
-#include "exceptions.hpp"
+
+#include "shell_utils.hpp"
+#include "environ.hpp"
 
 static STARTUPINFO g_startupInfo;
 static bool g_startupInfoInit = false;
@@ -19,7 +20,7 @@ static void init_startup_info() {
     GetStartupInfo(&g_startupInfo);
 }
 
-bool disable_inherit(PipeHandle handle) {
+bool disable_inherit(subprocess::PipeHandle handle) {
     return !!SetHandleInformation(handle, HANDLE_FLAG_INHERIT, 0);
 }
 
@@ -135,18 +136,18 @@ namespace subprocess {
             &piProcInfo);                   // receives PROCESS_INFORMATION
 
         if (cin_pair)
-            pipe_close(cin_pair.input);
+            cin_pair.close_input();
         if (cout_pair)
-            pipe_close(cout_pair.output);
+            cout_pair.close_output();
         if (cerr_pair)
-            pipe_close(cerr_Pair.output);
+            cerr_pair.close_output();
 
         if (cin_option == PipeOption::close)
-            pipe_close(cin_pair.output);
+            cin_pair.close();
         if (cout_option == PipeOption::close)
-            pipe_close(cout_pair.input);
+            cout_pair.close();
         if (cerr_option == PipeOption::close)
-            pipe_option(cerr_pair.input);
+            cerr_pair.close();
 
         // TODO: get error and add it to throw
         if (!bSuccess )

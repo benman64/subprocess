@@ -74,7 +74,7 @@ public:
         TS_TRACE(message);
         // gcc 9 as installed by ubuntu doesn't have -std=c++20. So we use
         // this experimental value.
-        #if __cplusplus == 201707L
+        #if __cplusplus == 201707L && 0
         TS_TRACE("using C++20");
         CompletedProcess completed = subprocess::run({"echo", "hello", "world"}, {
             .cout = PipeOption::pipe

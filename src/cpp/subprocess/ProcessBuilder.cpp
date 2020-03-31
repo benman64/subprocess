@@ -137,12 +137,12 @@ namespace subprocess {
     }
     // TODO: poll
     bool Popen::send_signal(int signum) {
-        if (signum == SIGKILL) {
-            return TerminateProcess(pid, 1);
-        } else if (signum == SIGINT) {
+        if (signum == PSIGKILL) {
+            return TerminateProcess(process_info.hProcess, 1);
+        } else if (signum == PSIGINT) {
             // can I use pid for processgroupid?
             return GenerateConsoleCtrlEvent(CTRL_C_EVENT, pid);
-        } else if (signum == SIGTERM) {
+        } else if (signum == PSIGTERM) {
             return GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
         }
         return GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
@@ -161,10 +161,10 @@ namespace subprocess {
     }
 #endif
     bool Popen::terminate() {
-        return send_signal(SIGTERM);
+        return send_signal(PSIGTERM);
     }
     bool Popen::kill() {
-        return send_signal(SIGKILL);
+        return send_signal(PSIGKILL);
     }
 
 

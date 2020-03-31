@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <csignal>
 
 
 // Fucking stdout, stderr, stdin are macros. So instead of stdout,...
@@ -16,18 +17,60 @@
 
 
 namespace subprocess {
+    /*  windows doesnt'h have all of these. The numeric values I hope are
+        standardized. Posix specifies the number in the standard so most
+        systems should be fine.
+    */
+
+    /** Signals to send. they start with P because SIGX are macros, P
+        stands for Posix as these values are as defined by Posix.
+    */
+    enum SigNum {
+        PSIGHUP     = 1,
+        PSIGINT     = SIGINT,
+        PSIGQUIT    = 3,
+        PSIGILL     = SIGILL,
+        PSIGTRAP    = 5,
+        PSIGABRT    = SIGABRT,
+        PSIGIOT     = 6,
+        PSIGBUS     = 7,
+        PSIGFPE     = SIGFPE,
+        PSIGKILL    = 9,
+        PSIGUSR1    = 10,
+        PSIGSEGV    = SIGSEGV,
+        PSIGUSR2    = 12,
+        PSIGPIPE    = 13,
+        PSIGALRM    = 14,
+        PSIGTERM    = SIGTERM,
+        PSIGSTKFLT  = 16,
+        PSIGCHLD    = 17,
+        PSIGCONT    = 18,
+        PSIGSTOP    = 19,
+        PSIGTSTP    = 20,
+        PSIGTTIN    = 21,
+        PSIGTTOU    = 22,
+        PSIGURG     = 23,
+        PSIGXCPU    = 24,
+        PSIGXFSZ    = 25,
+        PSIGVTALRM  = 26,
+        PSIGPROF    = 27,
+        PSIGWINCH   = 28,
+        PSIGIO      = 29
+    };
 #ifndef _WIN32
     typedef int PipeHandle;
     typedef ::pid_t pid_t;
 
     constexpr char kPathDelimiter = ':';
+    // to please windows we can't have this be a constexpr and be standard c++
+    const PipeHandle kBadPipeValue = (PipeHandle)-1;
 #else
     typedef HANDLE PipeHandle;
-    typedef HANDLE pid_t;
+    typedef DWORD pid_t;
 
     constexpr char kPathDelimiter = ';';
+    const PipeHandle kBadPipeValue = INVALID_HANDLE_VALUE;
 #endif
-    constexpr PipeHandle kBadPipeValue = (PipeHandle)-1;
     constexpr int kStdInValue   = 0;
     constexpr int kStdOutValue  = 1;
     constexpr int kStdErrValue  = 2;

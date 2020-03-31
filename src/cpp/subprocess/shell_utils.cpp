@@ -160,7 +160,7 @@ namespace subprocess {
             path_ext = "exe";
         if(is_file(path))
             return path;
-        for(std::string ext : split(path_ext, PATH_DELIMITER)) {
+        for(std::string ext : split(path_ext, kPathDelimiter)) {
             if(ext.empty())
                 continue;
             std::string test_path = path + ext;

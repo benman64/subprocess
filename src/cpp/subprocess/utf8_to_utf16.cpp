@@ -16,7 +16,25 @@ namespace subprocess {
         return dest;
     }
 
+    std::wstring utf8_to_utf16_w(const std::string& str) {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>,wchar_t> convert;
+        std::wstring dest = convert.from_bytes(str);
+        return dest;
+    }
+
+    std::string utf16_to_utf8(const std::wstring& str) {
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>,wchar_t> convert;
+        std::string dest = convert.to_bytes(str);
+        return dest;
+    }
+
     size_t strlen16(char16_t* str) {
+        size_t size = 0;
+        for (; *str; ++str)
+            ++size;
+        return size;
+    }
+    size_t strlen16(wchar_t* str) {
         size_t size = 0;
         for (; *str; ++str)
             ++size;

@@ -54,21 +54,22 @@ namespace subprocess {
     EnvMap current_env_copy() {
         EnvMap env;
 #ifdef _WIN32
-        char16_t* list = GetEnvironmentStringsW();
+        static_assert(sizeof(wchar_t) == 2, "unexpected size of wchar_t");
+        wchar_t* list = GetEnvironmentStringsW();
         for (;*list; list += strlen16(list)+1) {
             std::string u8str = utf16_to_utf8(list);
-            char *name_start = u8str.c_str();
-            char *name_end = name_start;
+            const char *name_start = u8str.c_str();
+            const char *name_end = name_start;
             while (*name_end != '=' && *name_end);
             if (*name_end != '=' || name_end == name_start)
                 continue;
             std::string name(name_start, name_end);
-            char *value = name_end+1;
+            const char *value = name_end+1;
             if (!*value)
                 continue;
             env[name] = value;
         }
-        FreeEnvironmentStrings(list);
+        FreeEnvironmentStringsW(list);
 #else
         for (char** list = environ; *list; ++list) {
             char *name_start = *list;

@@ -37,12 +37,13 @@ namespace subprocess {
         SECURITY_ATTRIBUTES security = {0};
         security.nLength = sizeof(security);
         security.bInheritHandle = inheritable;
-        bool result = CreatePipe(&pair.input, &pair.output, &security);
+        bool result = CreatePipe(const_cast<PipeHandle*>(&pair.input),
+            const_cast<PipeHandle*>(&pair.output), &security, 0);
         return pair;
     }
     ssize_t pipe_read(PipeHandle handle, void* buffer, std::size_t size) {
         DWORD bread = 0;
-        bool result = ReadFile(handle, buffer, size, &bread);
+        bool result = ReadFile(handle, buffer, size, &bread, nullptr);
         if (result)
             return bread;
         return -1;
