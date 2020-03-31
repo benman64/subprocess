@@ -2,6 +2,32 @@
 
 
 namespace subprocess {
+    PipePair& PipePair::operator=(PipePair&& other) {
+        close();
+        const_cast<PipeHandle&>(input)   = other.input;
+        const_cast<PipeHandle&>(output)  = other.output;
+        other.disown();
+        return *this;
+    }
+    void PipePair::close() {
+        if (input != kBadPipeValue)
+            pipe_close(input);
+        if (output != kBadPipeValue)
+            pipe_close(output);
+        disown();
+    }
+    void PipePair::close_input() {
+        if (input != kBadPipeValue) {
+            pipe_close(input);
+            const_cast<PipeHandle&>(input) = kBadPipeValue;
+        }
+    }
+    void PipePair::close_output() {
+        if (output != kBadPipeValue) {
+            pipe_close(output);
+            const_cast<PipeHandle&>(output) = kBadPipeValue;
+        }
+    }
 #ifdef _WIN32
     bool pipe_close(PipeHandle handle) {
         return !!CloseHandle(handle);
@@ -71,4 +97,5 @@ namespace subprocess {
         }
         return result;
     }
+
 }

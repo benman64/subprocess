@@ -197,6 +197,9 @@ namespace subprocess {
 
 #else
     Popen ProcessBuilder::run_command(const CommandLine& command) {
+        if (command.empty()) {
+            throw std::invalid_argument("command should not be empty");
+        }
         std::string program = find_program(command[0]);
         if(program.empty()) {
             throw CommandNotFoundError("command not found " + command[0]);
@@ -291,12 +294,15 @@ namespace subprocess {
         }
         args.clear();
         env_store.clear();
-
+        if (cin_pair)
+            cin_pair.close_input();
         if (cout_pair)
-            pipe_close(cout_pair.output);
+            cout_pair.close_output();
         if (cerr_pair)
-            pipe_close(cerr_pair.output);
-
+            cerr_pair.close_output();
+        cin_pair.disown();
+        cout_pair.disown();
+        cerr_pair.disown();
         process.pid = pid;
         process.args = CommandLine(command.begin()+1, command.end());
         return process;
@@ -323,7 +329,6 @@ namespace subprocess {
 
     CompletedProcess run(CommandLine command, PopenOptions options) {
         Popen popen(command, options);
-
         CompletedProcess completed;
         std::thread cout_thread;
         std::thread cerr_thread;
@@ -357,6 +362,14 @@ namespace subprocess {
         popen.wait();
         completed.returncode = popen.returncode;
         completed.args = CommandLine(command.begin()+1, command.end());
+        if (options.check) {
+            CalledProcessError error("failed to execute " + command[0]);
+            error.cmd           = command;
+            error.returncode    = completed.returncode;
+            error.cout          = std::move(completed.cout);
+            error.cerr          = std::move(completed.cerr);
+            throw error;
+        }
         return completed;
     }
 }

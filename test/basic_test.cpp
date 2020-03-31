@@ -64,6 +64,34 @@ public:
 
     }
 
+    void testHelloWorld20() {
+        std::string message = "__cplusplus = " + std::to_string(__cplusplus);
+        TS_TRACE(message);
+        // gcc 9 as installed by ubuntu doesn't have -std=c++20. So we use
+        // this experimental value.
+        #if __cplusplus == 201707L
+        TS_TRACE("using C++20");
+        CompletedProcess completed = subprocess::run({"echo", "hello", "world"}, {
+            .cout = PipeOption::pipe
+        });
+        TS_ASSERT_EQUALS(completed.cout, "hello world\n");
+        TS_ASSERT(completed.cerr.empty());
+        TS_ASSERT_EQUALS(completed.returncode, 0);
+        CommandLine args = {"hello", "world"};
+        TS_ASSERT_EQUALS(completed.args, args);
+
+        completed = subprocess::run({"echo", "hello", "world"}, {
+            .cout = PipeOption::cerr,
+            .cerr = PipeOption::pipe
+        });
+        TS_ASSERT_EQUALS(completed.cerr, "hello world\n");
+        TS_ASSERT(completed.cout.empty());
+        TS_ASSERT_EQUALS(completed.returncode, 0);
+        TS_ASSERT_EQUALS(completed.args, args);
+        #else
+        TS_SKIP("not c++20");
+        #endif
+    }
 /*
     void tesxtCat() {
         CompletedProcess completed = subprocess::run({"cat"},

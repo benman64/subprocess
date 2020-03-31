@@ -15,6 +15,7 @@ namespace subprocess {
     /*  possible names:
             PopenOptions,
             RunDef,
+            RunConfig
             RunOptions
     */
     struct PopenOptions {
@@ -33,6 +34,7 @@ namespace subprocess {
         */
         double timeout  = -1;
     };
+
     struct PopenBuilder {
         PopenOptions options;
 
@@ -46,6 +48,7 @@ namespace subprocess {
 
         operator PopenOptions() const {return options;}
     };
+
     class ProcessBuilder;
     /** Active running process.
 
@@ -110,6 +113,11 @@ namespace subprocess {
 #endif
     };
 
+
+
+    /** This class does the bulk of the work for starting a process. It is the
+        most customizable and hence the most complex.
+    */
     class ProcessBuilder {
     public:
         std::vector<PipeHandle> child_close_pipes;
@@ -154,6 +162,6 @@ namespace subprocess {
         RunBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
 
         CompletedProcess run() {return subprocess::run(command, options);}
-
+        Popen popen() {return Popen(command, options);}
     };
 }

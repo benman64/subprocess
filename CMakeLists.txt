@@ -4,6 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Release/Debug")
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(CheckCXXCompilerFlag)
 
 function(enable_cxx_compiler_flag_if_supported flag)
@@ -19,15 +20,16 @@ endfunction()
 
 project(subprocess VERSION 0.1.0 LANGUAGES CXX C)
 
-set(CMAKE_CXX_STANDARD 17)
+if (NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 17)
+endif()
+message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_cxx_compiler_flag_if_supported(-pedantic)
 
-if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++17")
-else()
+if(MSVC)
     add_compile_options(subprocess PUBLIC -Zc:__cplusplus)
 endif()
 
