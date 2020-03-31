@@ -57,3 +57,7 @@ must to be implemented
 - PopenBuilder needs a better name.
 - ProcessBuilder perhaps should be renamed to RunBuilder and have a similar
   pattern to PopenBuilder.
+
+# not good
+
+- due to types c++ is more wordy

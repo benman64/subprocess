@@ -115,6 +115,10 @@ namespace subprocess {
         if (cerr != kBadPipeValue)
             pipe_close(cerr);
         cin = cout = cerr = kBadPipeValue;
+
+        // do this to not have zombie processes.
+        if (pid)
+            wait();
         pid = 0;
         returncode = -1000;
         args.clear();
@@ -147,10 +151,6 @@ namespace subprocess {
     int Popen::wait(double timeout) {
         // TODO: timeout
         int exit_code;
-        if (cout != kBadPipeValue)
-            pipe_close(cout);
-        if (cerr != kBadPipeValue)
-            pipe_close(cerr);
         waitpid(pid, &exit_code,0);
         returncode = exit_code;
         return returncode;

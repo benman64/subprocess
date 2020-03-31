@@ -12,7 +12,11 @@ namespace subprocess {
         1 - cout
         2 - cerr
     */
-
+    /*  possible names:
+            PopenOptions,
+            RunDef,
+            RunOptions
+    */
     struct PopenOptions {
         bool        check   = false;
         PipeOption  cin     = PipeOption::inherit;
@@ -74,7 +78,13 @@ namespace subprocess {
 
         /** @return true if terminated. */
         bool poll();
-        /**
+        /** Waits for process to finish.
+
+            If stdout or stderr is not read from, the child process may be
+            blocked when it tries to write to the respective streams. You
+            must ensure you continue to read from stdout/stderr if it's piped
+            or simply close those handles. Do this to prevent deadlock.
+
             @param timeout  timeout in seconds. Raises TimeoutExpired on
                             timeout. NOT IMPLEMENTED, WILL WAIT FOREVER.
             @return returncode
