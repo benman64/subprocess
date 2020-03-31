@@ -373,7 +373,7 @@ namespace subprocess {
         return completed;
     }
 
-    CompletedProcess run_popen(CommandLine command, PopenOptions options) {
+    CompletedProcess capture(CommandLine command, PopenOptions options) {
         return subprocess::run(command, options);
     }
 

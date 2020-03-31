@@ -6,6 +6,7 @@ using subprocess::CommandLine;
 using subprocess::CompletedProcess;
 using subprocess::PipeOption;
 using subprocess::PopenBuilder;
+using subprocess::RunBuilder;
 
 bool is_equal(const CommandLine& a, const CommandLine& b) {
     if (a.size() != b.size())
@@ -29,7 +30,7 @@ public:
     }
     void testHelloWorld() {
         CompletedProcess completed = subprocess::run({"echo", "hello", "world"},
-            PopenBuilder().cout(PipeOption::pipe));
+            RunBuilder().cout(PipeOption::pipe));
         TS_ASSERT_EQUALS(completed.cout, "hello world\n");
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
