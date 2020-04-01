@@ -53,9 +53,9 @@ namespace subprocess {
         BOOL bSuccess = FALSE;
 
         siStartInfo.cb          = sizeof(STARTUPINFO);
-        siStartInfo.hStdError   = g_startupInfo.hStdError;
-        siStartInfo.hStdOutput  = g_startupInfo.hStdOutput;
         siStartInfo.hStdInput   = g_startupInfo.hStdInput;
+        siStartInfo.hStdOutput  = g_startupInfo.hStdOutput;
+        siStartInfo.hStdError   = g_startupInfo.hStdError;
         siStartInfo.dwFlags    |= STARTF_USESTDHANDLES;
 
         if (cin_option == PipeOption::close) {
@@ -149,10 +149,13 @@ namespace subprocess {
         if (cerr_option == PipeOption::close)
             cerr_pair.close();
 
+        cin_pair.disown();
+        cout_pair.disown();
+        cerr_pair.disown();
+
         // TODO: get error and add it to throw
         if (!bSuccess )
             throw SpawnError("CreateProcess failed");
-
         return process;
     }
 

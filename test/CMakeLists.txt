@@ -29,7 +29,9 @@ function(cxx_test source)
     set(CPP_FULL_NAME "${CMAKE_CURRENT_BINARY_DIR}/${CPP_FILE_NAME}")
     add_custom_command(
         OUTPUT "${CPP_FULL_NAME}"
-        COMMAND ${CXXTESTGEN} --runner=ErrorPrinter --output "${CPP_FULL_NAME}" "${source}"
+        COMMAND ${CXXTESTGEN} --runner=ErrorPrinter
+            --output "${CPP_FULL_NAME}" "${source}"
+            --main=cxxtest_main
         DEPENDS "${source}"
     )
     add_executable(${target} ${CPP_FULL_NAME})
@@ -45,3 +47,7 @@ function(cxx_test source)
 endfunction(cxx_test)
 
 cxx_test(${CMAKE_CURRENT_LIST_DIR}/basic_test.cpp)
+
+
+add_executable(cat ./cat_child.cpp)
+add_executable(echo ./echo_main.cpp)

@@ -8,6 +8,11 @@ using subprocess::PipeOption;
 using subprocess::PopenBuilder;
 using subprocess::RunBuilder;
 
+#ifdef _WIN32
+#define EOL "\r\n"
+#else
+#define EOL "\n"
+#endif
 bool is_equal(const CommandLine& a, const CommandLine& b) {
     if (a.size() != b.size())
         return false;
@@ -22,8 +27,27 @@ void nop() {
     // cxxtest is a bit dumb. We need this to enable exceptions
     throw 32;
 }
+
+std::string dirname(std::string path) {
+    size_t slash_pos = path.size();;
+    for (int i = 0; i < path.size(); ++i) {
+        if (path[i] == '/' || path[i] == '\\')
+            slash_pos = i;
+    }
+    return path.substr(0, slash_pos);
+}
 class BasicSuite : public CxxTest::TestSuite {
 public:
+    static BasicSuite* createSuite() {
+        return new BasicSuite();
+    }
+    static void destroySuite(BasicSuite* suite) {
+        delete suite;
+    }
+    void testPath() {
+        std::string path = subprocess::cenv["PATH"];
+        TS_ASSERT(!path.empty());
+    }
     void testFindProgram() {
         std::string path = subprocess::find_program("echo");
         TS_ASSERT(!path.empty());
@@ -31,7 +55,7 @@ public:
     void testHelloWorld() {
         CompletedProcess completed = subprocess::run({"echo", "hello", "world"},
             RunBuilder().cout(PipeOption::pipe));
-        TS_ASSERT_EQUALS(completed.cout, "hello world\n");
+        TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
         CommandLine args = {"hello", "world"};
@@ -41,7 +65,7 @@ public:
             .cout(PipeOption::cerr)
             .cerr(PipeOption::pipe));
 
-        TS_ASSERT_EQUALS(completed.cerr, "hello world\n");
+        TS_ASSERT_EQUALS(completed.cerr, "hello world" EOL);
         TS_ASSERT(completed.cout.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
         TS_ASSERT_EQUALS(completed.args, args);
@@ -52,7 +76,7 @@ public:
         CompletedProcess completed = subprocess::RunBuilder({"echo", "hello", "world"})
             .cout(PipeOption::pipe)
             .run();
-        TS_ASSERT_EQUALS(completed.cout, "hello world\n");
+        TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
         CommandLine args = {"hello", "world"};
@@ -62,7 +86,7 @@ public:
             .cout(PipeOption::cerr)
             .cerr(PipeOption::pipe).run();
 
-        TS_ASSERT_EQUALS(completed.cerr, "hello world\n");
+        TS_ASSERT_EQUALS(completed.cerr, "hello world" EOL);
         TS_ASSERT(completed.cout.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
         TS_ASSERT_EQUALS(completed.args, args);
@@ -79,7 +103,7 @@ public:
         CompletedProcess completed = subprocess::run({"echo", "hello", "world"}, {
             .cout = PipeOption::pipe
         });
-        TS_ASSERT_EQUALS(completed.cout, "hello world\n");
+        TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
         CommandLine args = {"hello", "world"};
@@ -89,7 +113,7 @@ public:
             .cout = PipeOption::cerr,
             .cerr = PipeOption::pipe
         });
-        TS_ASSERT_EQUALS(completed.cerr, "hello world\n");
+        TS_ASSERT_EQUALS(completed.cerr, "hello world" EOL);
         TS_ASSERT(completed.cout.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
         TS_ASSERT_EQUALS(completed.args, args);
@@ -123,3 +147,13 @@ public:
 };
 
 
+int main(int argc, char** argv) {
+    using subprocess::abspath;
+    std::string path = subprocess::cenv["PATH"];
+    std::string more_path = dirname(abspath(argv[0]));
+    path += subprocess::kPathDelimiter;
+    path += more_path;
+    subprocess::cenv["PATH"] = path;
+
+    return cxxtest_main(argc, argv);
+}

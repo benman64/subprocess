@@ -185,8 +185,8 @@ namespace subprocess {
     }
     std::string ProcessBuilder::windows_args(const CommandLine& command) {
         std::string args;
-        for(unsigned int i = 1; i < command.size(); ++i) {
-            if (i > 1)
+        for(unsigned int i = 0; i < command.size(); ++i) {
+            if (i > 0)
                 args += ' ';
             args += escape_shell_arg(command[i]);
         }
@@ -310,23 +310,6 @@ namespace subprocess {
 #endif
 
 
-    std::string read_all(PipeHandle handle) {
-        if (handle == kBadPipeValue)
-            return {};
-        constexpr int buf_size = 2048;
-        uint8_t buf[buf_size];
-        std::string result;
-        while(true) {
-            size_t transfered = pipe_read(handle, buf, buf_size);
-            if(transfered > 0) {
-                result.insert(result.end(), &buf[0], &buf[transfered]);
-            } else {
-                break;
-            }
-        }
-        return result;
-    }
-
     CompletedProcess run(CommandLine command, RunOptions options) {
         Popen popen(command, options);
         CompletedProcess completed;
@@ -335,7 +318,7 @@ namespace subprocess {
         if (popen.cout != kBadPipeValue) {
             cout_thread = std::thread([&]() {
                 try {
-                    completed.cout = read_all(popen.cout);
+                    completed.cout = pipe_read_all(popen.cout);
                 } catch (...) {
                 }
                 pipe_close(popen.cout);
@@ -345,7 +328,7 @@ namespace subprocess {
         if (popen.cerr != kBadPipeValue) {
             cerr_thread = std::thread([&]() {
                 try {
-                    completed.cerr = read_all(popen.cerr);
+                    completed.cerr = pipe_read_all(popen.cerr);
                 } catch (...) {
                 }
                 pipe_close(popen.cerr);
@@ -359,6 +342,7 @@ namespace subprocess {
         if (cerr_thread.joinable()) {
             cerr_thread.join();
         }
+
         popen.wait();
         completed.returncode = popen.returncode;
         completed.args = CommandLine(command.begin()+1, command.end());

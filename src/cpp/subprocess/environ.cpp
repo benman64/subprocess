@@ -11,14 +11,12 @@ extern "C" char **environ;
 namespace subprocess {
     Environ cenv;
 
-
-
     EnvironSetter::EnvironSetter(const std::string& name) {
         mName = name;
     }
     std::string EnvironSetter::to_string() {
         const char *value = ::getenv(mName.c_str());
-        return value? "" : value;
+        return value? value : "" ;
     }
     EnvironSetter &EnvironSetter::operator=(const std::string &str) {
 #ifdef _WIN32

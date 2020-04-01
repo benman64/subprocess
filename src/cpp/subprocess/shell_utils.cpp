@@ -131,8 +131,9 @@ namespace {
         return parent;
     }
 
-    std::string absdir(std::string dir, std::string relativeTo="");
-    std::string absdir(std::string dir, std::string relativeTo) {
+}
+namespace subprocess {
+    std::string abspath(std::string dir, std::string relativeTo) {
         dir = clean_path(dir);
         if(is_absolute_path(dir))
             return dir;
@@ -144,9 +145,6 @@ namespace {
         return join_path(relativeTo, dir);
     }
 
-
-}
-namespace subprocess {
     std::string getenv(const std::string& var) {
         const char* ptr = ::getenv(var.c_str());
         if(ptr == nullptr)
@@ -184,14 +182,14 @@ namespace subprocess {
         if(name.size() >= 2) {
             if((name[0] == '.' && name[1] == '/') || name[0] == '/') {
                 if(is_file(name)) {
-                    return absdir(name);
+                    return abspath(name);
                 }
             }
 
             if(is_absolute_path(name) || (name[0] == '.' && name[1] == '/')) {
                 if(std::string test = try_exe(name); !test.empty()) {
                     if(is_file(test)) {
-                        return absdir(test);
+                        return abspath(test);
                     }
                 }
             }

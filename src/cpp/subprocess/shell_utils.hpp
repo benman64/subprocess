@@ -10,4 +10,6 @@ namespace subprocess {
 
     std::string getcwd();
     void setcwd(const std::string& path);
+
+    std::string abspath(std::string dir, std::string relativeTo="");
 }

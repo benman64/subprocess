@@ -1,6 +1,5 @@
 #include "pipe.hpp"
 
-
 namespace subprocess {
     PipePair& PipePair::operator=(PipePair&& other) {
         close();
@@ -33,13 +32,16 @@ namespace subprocess {
         return !!CloseHandle(handle);
     }
     PipePair pipe_create(bool inheritable) {
-        PipePair pair;
         SECURITY_ATTRIBUTES security = {0};
         security.nLength = sizeof(security);
         security.bInheritHandle = inheritable;
-        bool result = CreatePipe(const_cast<PipeHandle*>(&pair.input),
-            const_cast<PipeHandle*>(&pair.output), &security, 0);
-        return pair;
+        PipeHandle input, output;
+        bool result = CreatePipe(&input, &output, &security, 0);
+        if (!result) {
+            input = output = kBadPipeValue;
+            throw std::runtime_error("could not create pipe");
+        }
+        return {input, output};
     }
     ssize_t pipe_read(PipeHandle handle, void* buffer, std::size_t size) {
         DWORD bread = 0;
@@ -68,6 +70,7 @@ namespace subprocess {
         int fd[2];
         bool success =!::pipe(fd);
         if (!success) {
+            throw std::runtime_error("could not create pipe");
             return {};
         }
         return {fd[0], fd[1]};
@@ -89,7 +92,7 @@ namespace subprocess {
         uint8_t buf[buf_size];
         std::string result;
         while(true) {
-            size_t transfered = pipe_read(handle, buf, buf_size);
+            ssize_t transfered = pipe_read(handle, buf, buf_size);
             if(transfered > 0) {
                 result.insert(result.end(), &buf[0], &buf[transfered]);
             } else {
