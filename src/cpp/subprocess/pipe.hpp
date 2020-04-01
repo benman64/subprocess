@@ -55,7 +55,10 @@ namespace subprocess {
                     more data.
     */
     ssize_t pipe_write(PipeHandle, const void* buffer, size_t size);
-
+    /** Spawns a thread to read from the pipe. When no more data available
+        pipe will be closed.
+    */
+    void pipe_ignore_and_close(PipeHandle handle);
     /** Read contents of handle until no more data is available.
 
         If the pipe is non-blocking this will end prematurely.

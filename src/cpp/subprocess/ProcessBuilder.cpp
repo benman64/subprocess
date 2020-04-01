@@ -61,6 +61,8 @@ namespace {
         }
         std::vector<char*> m_list;
     };
+
+
 }
 namespace subprocess {
 
@@ -148,12 +150,25 @@ namespace subprocess {
         return GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
     }
 #else
-    int Popen::wait(double timeout) {
-        // TODO: timeout
+    bool Popen::poll() {
         int exit_code;
-        waitpid(pid, &exit_code,0);
+        auto child = waitpid(pid, &exit_code, WNOHANG);
+        if (child == 0)
+            return false;
         returncode = exit_code;
-        return returncode;
+        return false;
+    }
+    int Popen::wait(double timeout) {
+        if (timeout < 0) {
+            // TODO: timeout
+            int exit_code;
+            pid_t child = waitpid(pid, &exit_code,0);
+            if (child == 0) {
+                throw TimeoutExpired("wait timed out");
+            }
+            returncode = exit_code;
+            return returncode;
+        }
     }
 
     bool Popen::send_signal(int signum) {

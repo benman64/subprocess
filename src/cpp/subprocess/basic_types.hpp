@@ -78,14 +78,17 @@ namespace subprocess {
     typedef std::vector<std::string> CommandLine;
     typedef std::map<std::string, std::string> EnvMap;
 
-
+    /** Redirect destination */
     enum class PipeOption : int {
-        inherit,
-        cout,
-        cerr,
+        inherit, ///< Inherits current process handle
+        cout,       ///< Redirects to stdout
+        cerr,       ///< redirects to stderr
+        /** Redirects to provided pipe. You can open /dev/null. It is your
+            responsibility to close this handle.
+        */
         specific,
-        pipe,
-        close
+        pipe,       ///< Redirects to a new handle created for you.
+        close       ///< Troll the child by providing a closed pipe.
     };
 
     struct SubprocessError : std::runtime_error {
@@ -103,11 +106,14 @@ namespace subprocess {
 
     struct TimeoutExpired : SubprocessError {
         using SubprocessError::SubprocessError;
-
+        /** The command that was running */
         CommandLine command;
+        /** The specified timeout */
         double      timeout;
 
+        /** Captured stdout */
         std::string cout;
+        /** captured stderr */
         std::string cerr;
     };
 
@@ -132,7 +138,9 @@ namespace subprocess {
         CommandLine     args;
         /** negative number -N means it was terminated by signal N. */
         int             returncode = -1;
+        /** Captured stdout */
         std::string     cout;
+        /** Captured stderr */
         std::string     cerr;
         explicit operator bool() const {
             return returncode == 0;

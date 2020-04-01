@@ -105,23 +105,31 @@ namespace subprocess {
 
 
         pid_t       pid         = 0;
+        /** The exit value of the process. Valid once process is completed */
         int         returncode  = -1000;
         CommandLine args;
 
+        /** calls pipe_ignore_and_close on cout */
+        void ignore_cout() { pipe_ignore_and_close(cout); cout = kBadPipeValue; }
+        /** calls pipe_ignore_and_close on cerr */
+        void ignore_cerr() { pipe_ignore_and_close(cerr); cerr = kBadPipeValue; }
+        /** calls pipe_ignore_and_close on cout, cerr if open */
+        void ignore_output() { ignore_cout(); ignore_cerr(); }
         /** @return true if terminated. */
         bool poll();
         /** Waits for process to finish.
 
             If stdout or stderr is not read from, the child process may be
             blocked when it tries to write to the respective streams. You
-            must ensure you continue to read from stdout/stderr if it's piped
-            or simply close those handles. Do this to prevent deadlock.
+            must ensure you continue to read from stdout/stderr. Call
+            ignore_output() to spawn threads to ignore the output preventing a
+            deadlock. You can also troll the child by closing your end.
 
             @param timeout  timeout in seconds. Raises TimeoutExpired on
                             timeout. NOT IMPLEMENTED, WILL WAIT FOREVER.
             @return returncode
         */
-        int wait(double timeout=0);
+        int wait(double timeout=-1);
         /** Send the signal to the process.
 
             On windows SIGTERM is an alias for terminate()
@@ -129,8 +137,7 @@ namespace subprocess {
         bool send_signal(int signal);
         /** Sends SIGTERM, on windows calls TerminateProcess() */
         bool terminate();
-        /** sends SIGKILL on linux, alias for terminate() on windows.
-        */
+        /** sends SIGKILL on linux, alias for terminate() on windows. */
         bool kill();
 
         /** Destructs the object and initializes to basic state */

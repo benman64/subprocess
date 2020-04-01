@@ -2,7 +2,6 @@
 cross platform subprocess library for c++ similar to design of python
 subprocess.
 
-
 # requirements
 
 - c++17
@@ -23,14 +22,16 @@ subprocess.
 ```cpp
 #include <subprocess.hpp>
 
-// quick echo it
+// quick echo it, doesn't capture
 subprocess::run({"echo", "hello", "world"});
 
+// simplest capture output.
+CompletedProcess process = subprocess::capture({"echo", "hello", "world"});
 
-// capture output.
-CompletedProcess process = subprocess::run({"echo", "hello", "world"},
-    RunBuilder().cout(PipeOption::pipe)
-    .check(false)
+// capture stderr too.
+CompletedProcess process = subprocess::capture({"echo", "hello", "world"},
+    PopenBuilder().cerr(PipeOption::pipe)
+    .check(true) // will throw CalledProcessError if returncode != 0.
 );
 
 
@@ -44,6 +45,14 @@ CompletedProcess process = subprocess::run({"echo", "hello", "world"}, {
 std::cout << "captured: " << process.cout << '\n';
 ```
 
+# Design
+
+stdin, stdout, stderr are macros, so it's not possible to use those variable
+names. Instead c++ variable names is used cin, cout, cerr where the std* would
+have been respecrtivly.
+
+PopenBuilder & RunBuilder can be used interchangebly. However PopenBuilder
+defaults to automaticly setting cout to be captured.
 
 # current progress
 
@@ -57,7 +66,6 @@ must to be implemented
 - documentation
 - bugs, there is lots of them to be discovered.
 - main structure is set in place and help is welcome.
-- PopenBuilder needs a better name.
 
 # not good
 
