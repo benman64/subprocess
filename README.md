@@ -29,8 +29,8 @@ subprocess::run({"echo", "hello", "world"});
 
 // capture output.
 CompletedProcess process = subprocess::run({"echo", "hello", "world"},
-    PopenBuilder().cout(PipeOption::pipe)
-    .check(false).build()
+    RunBuilder().cout(PipeOption::pipe)
+    .check(false)
 );
 
 
@@ -47,6 +47,9 @@ std::cout << "captured: " << process.cout << '\n';
 
 # current progress
 
+Hello world test is passing on macos, linux, and cross compiling on linux for
+windows using mingw.
+
 must to be implemented
 
 - tests
@@ -55,9 +58,6 @@ must to be implemented
 - bugs, there is lots of them to be discovered.
 - main structure is set in place and help is welcome.
 - PopenBuilder needs a better name.
-- ProcessBuilder perhaps should be renamed to RunBuilder and have a similar
-  pattern to PopenBuilder.
-- Popen & the like should default to captureing stdout
 
 # not good
 
