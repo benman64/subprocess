@@ -106,7 +106,7 @@ namespace subprocess {
 
         pid_t       pid         = 0;
         /** The exit value of the process. Valid once process is completed */
-        int         returncode  = -1000;
+        int         returncode  = kBadReturnCode;
         CommandLine args;
 
         /** calls pipe_ignore_and_close on cout */
@@ -142,6 +142,7 @@ namespace subprocess {
 
         /** Destructs the object and initializes to basic state */
         void close();
+
         friend ProcessBuilder;
     private:
 #ifdef _WIN32

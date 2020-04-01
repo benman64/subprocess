@@ -75,6 +75,8 @@ namespace subprocess {
     constexpr int kStdOutValue  = 1;
     constexpr int kStdErrValue  = 2;
 
+    constexpr int kBadReturnCode = -1000;
+
     typedef std::vector<std::string> CommandLine;
     typedef std::map<std::string, std::string> EnvMap;
 

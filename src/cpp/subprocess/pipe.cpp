@@ -1,5 +1,7 @@
 #include "pipe.hpp"
 
+#include <thread>
+
 namespace subprocess {
     PipePair& PipePair::operator=(PipePair&& other) {
         close();
@@ -107,11 +109,11 @@ namespace subprocess {
             return;
         std::thread thread([handle]() {
             std::vector<uint8_t> buffer(1024);
-            while(pipe_read(handle, buffer, buffer.size()) >= 0){
+            while(pipe_read(handle, &buffer[0], buffer.size()) >= 0){
             }
             pipe_close(handle);
         });
-        thread.detatch();
+        thread.detach();
     }
 
 

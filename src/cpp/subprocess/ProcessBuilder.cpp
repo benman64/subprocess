@@ -16,6 +16,7 @@
 #include <string.h>
 #include <thread>
 #include <mutex>
+#include <chrono>
 
 #include "shell_utils.hpp"
 #include "environ.hpp"
@@ -61,7 +62,34 @@ namespace {
         }
         std::vector<char*> m_list;
     };
+    double monotonic_seconds() {
+        static bool needs_init = true;
+        static std::chrono::steady_clock::time_point begin;
+        if (needs_init) {
+            begin = std::chrono::steady_clock::now();
+            needs_init = true;
+        }
+        std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+        std::chrono::duration<double> duration = now - begin;
+        return duration.count();
+    }
 
+    class StopWatch {
+    public:
+        StopWatch() { start(); }
+
+        void start() { mStart = monotonic_seconds(); }
+        double seconds() const { return monotonic_seconds() - mStart; }
+    private:
+        double mStart;
+    };
+
+    double sleep_seconds(double seconds) {
+        StopWatch watch;
+        std::chrono::duration<double> duration(seconds);
+        std::this_thread::sleep_for(duration);
+        return watch.seconds();
+    }
 
 }
 namespace subprocess {
@@ -122,7 +150,7 @@ namespace subprocess {
         if (pid)
             wait();
         pid = 0;
-        returncode = -1000;
+        returncode = kBadReturnCode;
         args.clear();
 #ifdef _WIN32
         CloseHandle(process_info.hProcess);
@@ -130,15 +158,36 @@ namespace subprocess {
 #endif
     }
 #ifdef _WIN32
-    int Popen::wait(double timeout) {
-        WaitForSingleObject(process_info.hProcess, INFINITE );
+    bool Popen::poll() {
+        if (returncode != kBadReturnCode)
+            return returncode;
+        DWORD result = WaitForSingleObject(process_info.hProcess, 0);
+        if (result == WAIT_TIMEOUT) {
+            return false;
+        }
         DWORD exit_code;
         GetExitCodeProcess(process_info.hProcess, &exit_code);
         returncode = exit_code;
         return returncode;
     }
-    // TODO: poll
+
+    int Popen::wait(double timeout) {
+        if (returncode != kBadReturnCode)
+            return returncode;
+        DWORD ms = timeout < 0? INFINITE : timeout*1000.0;
+        DWORD result = WaitForSingleObject(process_info.hProcess, ms);
+        if (result == WAIT_TIMEOUT) {
+            throw TimeoutExpired("no time");
+        }
+        DWORD exit_code;
+        GetExitCodeProcess(process_info.hProcess, &exit_code);
+        returncode = exit_code;
+        return returncode;
+    }
+
     bool Popen::send_signal(int signum) {
+        if (returncode != kBadReturnCode)
+            return false;
         if (signum == PSIGKILL) {
             return TerminateProcess(process_info.hProcess, 1);
         } else if (signum == PSIGINT) {
@@ -151,27 +200,47 @@ namespace subprocess {
     }
 #else
     bool Popen::poll() {
+        if (returncode != kBadReturnCode)
+            return true;
         int exit_code;
         auto child = waitpid(pid, &exit_code, WNOHANG);
         if (child == 0)
             return false;
-        returncode = exit_code;
-        return false;
+        if (child > 0)
+            returncode = exit_code;
+        return child > 0;
     }
     int Popen::wait(double timeout) {
+        if (returncode != kBadReturnCode)
+            return returncode;
         if (timeout < 0) {
-            // TODO: timeout
             int exit_code;
-            pid_t child = waitpid(pid, &exit_code,0);
-            if (child == 0) {
-                throw TimeoutExpired("wait timed out");
+            while (true) {
+                pid_t child = waitpid(pid, &exit_code,0);
+                if (child == -1 && errno == EINTR) {
+                    continue;
+                }
+                if (child == -1) {
+                    // TODO: throw oserror(errno)
+                }
+                break;
             }
             returncode = exit_code;
             return returncode;
         }
+        StopWatch watch;
+
+        while (watch.seconds() < timeout) {
+            if (poll())
+                return returncode;
+            sleep_seconds(0.00001);
+        }
+        throw TimeoutExpired("no time");
     }
 
     bool Popen::send_signal(int signum) {
+        if (returncode != kBadReturnCode)
+            return false;
         return ::kill(pid, signum) == 0;
     }
 #endif

@@ -122,6 +122,17 @@ public:
         #endif
     }
 
+    void testPoll() {
+
+    }
+
+    void testWaitTimeout() {
+
+    }
+
+    void test2ProcessConnect() {
+
+    }
 
     void testNotFound() {
         TS_ASSERT_THROWS_ANYTHING(subprocess::run({"yay-322"}));
