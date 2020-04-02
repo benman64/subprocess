@@ -48,6 +48,28 @@ public:
         std::string path = subprocess::cenv["PATH"];
         TS_ASSERT(!path.empty());
     }
+
+    void testEnvGuard() {
+        using subprocess::cenv;
+        std::string path = cenv["PATH"];
+        std::string world = subprocess::cenv["HELLO"];
+        TS_ASSERT_EQUALS(world, "");
+
+        TS_TRACE("entering EnvGuard scope");
+        {
+            subprocess::EnvGuard guard;
+            TS_TRACE("setting HELLO=world");
+            subprocess::cenv["HELLO"] = "world";
+            world = cenv["HELLO"];
+            TS_ASSERT_EQUALS(world, "world");
+            TS_TRACE("exiting EnvGuard scope");
+        }
+        world = cenv["HELLO"];
+        TS_ASSERT_EQUALS(world, "");
+        std::string new_path = cenv["PATH"];
+        TS_ASSERT_EQUALS(path, new_path);
+    }
+
     void testFindProgram() {
         std::string path = subprocess::find_program("echo");
         TS_ASSERT(!path.empty());
@@ -122,6 +144,26 @@ public:
         #endif
     }
 
+    void testNotFound() {
+        TS_ASSERT_THROWS_ANYTHING(subprocess::run({"yay-322"}));
+    }
+
+    void testCin() {
+
+    }
+
+    void testNewEnvironment() {
+
+    }
+
+    void testCerrToCout() {
+
+    }
+
+    void testCoutToCerr() {
+        // cause we can
+    }
+
     void testPoll() {
 
     }
@@ -134,9 +176,19 @@ public:
 
     }
 
-    void testNotFound() {
-        TS_ASSERT_THROWS_ANYTHING(subprocess::run({"yay-322"}));
+    void testKill() {
+
     }
+
+    void testTerminate() {
+
+    }
+
+    void testSIGINT() {
+
+    }
+
+
 /*
     void tesxtCat() {
         CompletedProcess completed = subprocess::run({"cat"},

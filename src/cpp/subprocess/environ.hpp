@@ -14,6 +14,7 @@ namespace subprocess {
         std::string to_string();
         EnvironSetter &operator=(const std::string &str);
         EnvironSetter &operator=(const char* str);
+        EnvironSetter &operator=(std::nullptr_t) { return *this = (const char*)0;}
         EnvironSetter &operator=(int value);
         EnvironSetter &operator=(bool value);
         EnvironSetter &operator=(float value);
@@ -44,16 +45,12 @@ namespace subprocess {
     private:
         std::string mCwd;
     };
-    class EnvironGuard : public CwdGuard {
+    class EnvGuard : public CwdGuard {
     public:
-        EnvironGuard() {
+        EnvGuard() {
             mEnv = current_env_copy();
         }
-        ~EnvironGuard() {
-            for (auto& var : mEnv) {
-                cenv[var.first] = var.second;
-            }
-        }
+        ~EnvGuard();
 
     private:
         EnvMap mEnv;

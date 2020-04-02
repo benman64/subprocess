@@ -19,18 +19,19 @@ namespace subprocess {
         return value? value : "" ;
     }
     EnvironSetter &EnvironSetter::operator=(const std::string &str) {
-#ifdef _WIN32
-        _putenv_s(mName.c_str(), str.c_str());
-#else
-        setenv(mName.c_str(), str.c_str(), true);
-#endif
-        return *this;
+        return *this = str.c_str();
     }
+
     EnvironSetter &EnvironSetter::operator=(const char* str) {
 #ifdef _WIN32
-        _putenv_s(mName.c_str(), str);
+        // if it's empty windows deletes it.
+        _putenv_s(mName.c_str(), str? str : "");
 #else
-        setenv(mName.c_str(), str, true);
+        if (str == nullptr || !*str) {
+            unsetenv(mName.c_str());
+        } else {
+            setenv(mName.c_str(), str, true);
+        }
 #endif
         return *this;
     }
@@ -49,6 +50,21 @@ namespace subprocess {
         return {name};
     }
 
+
+    EnvGuard::~EnvGuard() {
+        auto new_env = current_env_copy();
+        for(auto& var : new_env) {
+            auto it = mEnv.find(var.first);
+            if (it == mEnv.end()) {
+                cenv[var.first] = nullptr;
+            } else if (var.second != it->second) {
+                cenv[it->first] = it->second;
+            }
+        }
+        for (auto& var : mEnv) {
+            cenv[var.first] = var.second;
+        }
+    }
     EnvMap current_env_copy() {
         EnvMap env;
 #ifdef _WIN32
@@ -58,7 +74,7 @@ namespace subprocess {
             std::string u8str = utf16_to_utf8(list);
             const char *name_start = u8str.c_str();
             const char *name_end = name_start;
-            while (*name_end != '=' && *name_end);
+            while (*name_end != '=' && *name_end)++name_end;
             if (*name_end != '=' || name_end == name_start)
                 continue;
             std::string name(name_start, name_end);
@@ -72,7 +88,7 @@ namespace subprocess {
         for (char** list = environ; *list; ++list) {
             char *name_start = *list;
             char *name_end = name_start;
-            while (*name_end != '=' && *name_end);
+            while (*name_end != '=' && *name_end)++name_end;
             if (*name_end != '=' || name_end == name_start)
                 continue;
             std::string name(name_start, name_end);

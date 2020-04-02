@@ -56,13 +56,12 @@ defaults to automaticly setting cout to be captured.
 
 # current progress
 
-Hello world test is passing on macos, linux, and cross compiling on linux for
-windows using mingw.
+Hello world tests are passing on macos, linux, and cross compiling on linux for
+windows using mingw. The library is almost feature complete.
 
 must to be implemented
 
 - tests
-- timeout support
 - documentation
 - bugs, there is lots of them to be discovered.
 - main structure is set in place and help is welcome.
