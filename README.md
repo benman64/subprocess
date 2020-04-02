@@ -88,7 +88,8 @@ char buf[1024] = {0}; // initializes everything to 0
 subprocess::pipe_read(popen.cout, buffer, 1024);
 std::cout << buf;
 popen.close();
-
+if (write_thread.joinable())
+    write_thread.join();
 ```
 
 # Design
