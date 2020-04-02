@@ -149,7 +149,9 @@ public:
     }
 
     void testCin() {
-
+        auto completed = subprocess::capture({"cat"},
+            PopenBuilder().cin("hello world"));
+        TS_ASSERT_EQUALS(completed.cout, "hello world");
     }
 
     void testNewEnvironment() {

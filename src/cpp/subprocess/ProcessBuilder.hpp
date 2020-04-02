@@ -4,6 +4,7 @@
 #include <string>
 
 #include "pipe.hpp"
+#include "PipeVar.hpp"
 
 namespace subprocess {
 
@@ -24,9 +25,9 @@ namespace subprocess {
 
     struct PopenOptions {
         bool        check   = false;
-        PipeOption  cin     = PipeOption::inherit;
-        PipeOption  cout    = PipeOption::pipe;
-        PipeOption  cerr    = PipeOption::inherit;
+        PipeVar  cin     = PipeOption::inherit;
+        PipeVar  cout    = PipeOption::pipe;
+        PipeVar  cerr    = PipeOption::inherit;
 
         std::string cwd;
         /** If empty inherits from current process */
@@ -52,9 +53,9 @@ namespace subprocess {
         }
         RunOptions(const RunOptions&)=default;
         bool        check   = false;
-        PipeOption  cin     = PipeOption::inherit;
-        PipeOption  cout    = PipeOption::inherit;
-        PipeOption  cerr    = PipeOption::inherit;
+        PipeVar  cin     = PipeOption::inherit;
+        PipeVar  cout    = PipeOption::inherit;
+        PipeVar  cerr    = PipeOption::inherit;
 
         std::string cwd;
         /** If empty inherits from current process */
@@ -96,11 +97,17 @@ namespace subprocess {
         /** Waits for process, Closes pipes and destroys any handles.*/
         ~Popen();
 
-        /** Write to this stream to send data to the process */
+        /** Write to this stream to send data to the process. This class holds
+            the ownership and will call pipe_close().
+        */
         PipeHandle  cin       = kBadPipeValue;
-        /** Read from this stream to get output of process */
+        /** Read from this stream to get output of process. This class holds
+            the ownership and will call pipe_close().
+        */
         PipeHandle  cout      = kBadPipeValue;
-        /** Read from this stream to get cerr output of process */
+        /** Read from this stream to get cerr output of process. This class holds
+            the ownership and will call pipe_close().
+        */
         PipeHandle  cerr      = kBadPipeValue;
 
 
@@ -142,7 +149,13 @@ namespace subprocess {
 
         /** Destructs the object and initializes to basic state */
         void close();
-
+        /** Closes the cin pipe */
+        void close_cin() {
+            if (cin != kBadPipeValue) {
+                pipe_close(cin);
+                cin = kBadPipeValue;
+            }
+        }
         friend ProcessBuilder;
     private:
 #ifdef _WIN32
@@ -188,15 +201,15 @@ namespace subprocess {
 
     template<typename Options>
     struct BuilderBase {
-        RunOptions options;
+        Options options;
         CommandLine command;
 
         BuilderBase(){}
         BuilderBase(CommandLine cmd) : command(cmd){}
         BuilderBase& check(bool ch) {options.check = ch; return *this;}
-        BuilderBase& cin(PipeOption cin) {options.cin = cin; return *this;}
-        BuilderBase& cout(PipeOption cout) {options.cout = cout; return *this;}
-        BuilderBase& cerr(PipeOption cerr) {options.cerr = cerr; return *this;}
+        BuilderBase& cin(const PipeVar& cin) {options.cin = cin; return *this;}
+        BuilderBase& cout(const PipeVar& cout) {options.cout = cout; return *this;}
+        BuilderBase& cerr(const PipeVar& cerr) {options.cerr = cerr; return *this;}
         BuilderBase& cwd(std::string cwd) {options.cwd = cwd; return *this;}
         BuilderBase& env(EnvMap& env) {options.env = env; return *this;}
         BuilderBase& timeout(double timeout) {options.timeout = timeout; return *this;}
