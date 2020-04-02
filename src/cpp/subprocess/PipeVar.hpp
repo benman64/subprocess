@@ -17,11 +17,6 @@ namespace subprocess {
         ostream,
         file
     };
-    /*
-    struct PipeVar : std::variant<PipeOption, std::string, PipeHandle,
-        std::istream, std::ostream, FILE*> {
-        using std::variant::variant;
-    };*/
 
     typedef std::variant<PipeOption, std::string, PipeHandle,
         std::istream*, std::ostream*, FILE*> PipeVar;

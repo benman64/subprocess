@@ -96,9 +96,9 @@ if (write_thread.joinable())
 
 stdin, stdout, stderr are macros, so it's not possible to use those variable
 names. Instead c++ variable names is used cin, cout, cerr where the std* would
-have been respecrtivly.
+have been respectively.
 
-PopenBuilder & RunBuilder can be used interchangebly. However PopenBuilder
+PopenBuilder & RunBuilder can be used interchangeably. However PopenBuilder
 defaults to automaticly setting cout to be captured.
 
 # current progress
