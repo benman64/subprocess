@@ -229,6 +229,24 @@ public:
     }
 
     void testPoll() {
+        subprocess::EnvGuard guard;
+        std::string path = subprocess::cenv["PATH"];
+        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        subprocess::cenv["PATH"] = path;
+
+        auto popen = RunBuilder({"sleep", "3"}).popen();
+        subprocess::StopWatch timer;
+
+        int count = 0;
+        while(!popen.poll())
+            ++count;
+        TS_TRACE("poll did " + std::to_string(count) + " iterations");
+        TS_ASSERT(count > 100);
+
+        popen.close();
+
+        double timeout = timer.seconds();
+        TS_ASSERT_DELTA(timeout, 3, 0.1);
 
     }
 

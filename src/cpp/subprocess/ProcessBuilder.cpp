@@ -305,7 +305,7 @@ namespace subprocess {
         DWORD exit_code;
         GetExitCodeProcess(process_info.hProcess, &exit_code);
         returncode = exit_code;
-        return returncode;
+        return true;
     }
 
     int Popen::wait(double timeout) {

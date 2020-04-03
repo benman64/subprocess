@@ -105,8 +105,8 @@ Have both is too confusing.
 
 # current progress
 
-Hello world tests are passing on macos, linux, and cross compiling on linux for
-windows using mingw. The library is almost feature complete.
+All tests are passing on macos, linux. Most tests pass on cross compiling on
+linux for windows using mingw. The library is almost feature complete.
 
 must to be implemented
 
