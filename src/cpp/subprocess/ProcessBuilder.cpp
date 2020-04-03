@@ -62,27 +62,20 @@ namespace {
         }
         std::vector<char*> m_list;
     };
+
+}
+namespace subprocess {
     double monotonic_seconds() {
         static bool needs_init = true;
         static std::chrono::steady_clock::time_point begin;
         if (needs_init) {
             begin = std::chrono::steady_clock::now();
-            needs_init = true;
+            needs_init = false;
         }
         std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
         std::chrono::duration<double> duration = now - begin;
         return duration.count();
     }
-
-    class StopWatch {
-    public:
-        StopWatch() { start(); }
-
-        void start() { mStart = monotonic_seconds(); }
-        double seconds() const { return monotonic_seconds() - mStart; }
-    private:
-        double mStart;
-    };
 
     double sleep_seconds(double seconds) {
         StopWatch watch;
@@ -91,8 +84,6 @@ namespace {
         return watch.seconds();
     }
 
-}
-namespace subprocess {
     struct AutoClosePipe {
         AutoClosePipe(PipeHandle handle, bool autoclose) {
             mHandle = autoclose? handle : kBadPipeValue;

@@ -177,4 +177,16 @@ namespace subprocess {
         Popen popen() { return Popen(command, options); }
     };
 
+    double monotonic_seconds();
+    double sleep_seconds(double seconds);
+
+    class StopWatch {
+    public:
+        StopWatch() { start(); }
+
+        void start() { mStart = monotonic_seconds(); }
+        double seconds() const { return monotonic_seconds() - mStart; }
+    private:
+        double mStart;
+    };
 }
