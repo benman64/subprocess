@@ -191,6 +191,16 @@ public:
     }
 
     void testWaitTimeout() {
+        auto popen = RunBuilder({"sleep", "10"}).popen();
+        subprocess::StopWatch timer;
+
+        TS_ASSERT_THROWS(popen.wait(3), subprocess::TimeoutExpired)
+
+        popen.terminate();
+        popen.close();
+
+        double timeout = timer.seconds();
+        TS_ASSERT_DELTA(timeout, 3, 0.1);
 
     }
 
@@ -199,11 +209,35 @@ public:
     }
 
     void testKill() {
+        auto popen = RunBuilder({"sleep", "10"}).popen();
+        subprocess::StopWatch timer;
+        std::thread thread([&] {
+            subprocess::sleep_seconds(3);
+            popen.kill();
+        });
 
+        thread.detach();
+
+        popen.close();
+
+        double timeout = timer.seconds();
+        TS_ASSERT_DELTA(timeout, 3, 0.1);
     }
 
     void testTerminate() {
+        auto popen = RunBuilder({"sleep", "10"}).popen();
+        subprocess::StopWatch timer;
+        std::thread thread([&] {
+            subprocess::sleep_seconds(3);
+            popen.terminate();
+        });
 
+        thread.detach();
+
+        popen.close();
+
+        double timeout = timer.seconds();
+        TS_ASSERT_DELTA(timeout, 3, 0.1);
     }
 
     void testSIGINT() {
