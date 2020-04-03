@@ -2,6 +2,7 @@
 #include <cstring>
 #include <chrono>
 #include <charconv>
+#include <thread>
 
 void sleep_seconds(double seconds) {
     std::chrono::duration<double> duration(seconds);
@@ -13,8 +14,7 @@ int main(int argc, char** argv) {
     bool print_space = false;
     if (argc != 2)
         return 1;
-    double seconds = 0;
-    std::from_chars(argv[1], argv[1] + strlen(argv[1]), seconds);
+    double seconds = std::stod(argv[1]);
     sleep_seconds(seconds);
     return 0;
 }

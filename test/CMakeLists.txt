@@ -51,3 +51,7 @@ cxx_test(${CMAKE_CURRENT_LIST_DIR}/basic_test.cpp)
 
 add_executable(cat ./cat_child.cpp)
 add_executable(echo ./echo_main.cpp)
+add_executable(sleep ./sleep_main.cpp)
+add_executable(printenv ./printenv_main.cpp)
+
+target_link_libraries(printenv PUBLIC subprocess)

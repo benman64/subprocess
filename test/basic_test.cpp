@@ -2,6 +2,8 @@
 
 #include <subprocess.hpp>
 
+#include "test_config.h"
+
 using subprocess::CommandLine;
 using subprocess::CompletedProcess;
 using subprocess::PipeOption;
@@ -154,7 +156,20 @@ public:
     }
 
     void testNewEnvironment() {
+        subprocess::EnvGuard guard;
+        std::string path = subprocess::cenv["PATH"];
+        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        subprocess::cenv["PATH"] = path;
 
+        subprocess::EnvMap env = subprocess::current_env_copy();
+        TS_ASSERT_EQUALS(subprocess::cenv["HELLO"].to_string(), "");
+        env["HELLO"] = "world";
+        TS_ASSERT_EQUALS(subprocess::cenv["HELLO"].to_string(), "");
+
+        auto completed = subprocess::RunBuilder({"printenv", "HELLO"})
+            .cout(PipeOption::pipe).env(env).run();
+
+        TS_ASSERT_EQUALS(completed.cout, "world" EOL);
     }
 
     void testCerrToCout() {
