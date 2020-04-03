@@ -216,11 +216,18 @@ namespace subprocess {
     }
 
     static bool is_python3(std::string path) {
-        CompletedProcess process = subprocess::run({path, "--version"}, PopenBuilder()
+        CompletedProcess process = subprocess::run({path, "--version"}, RunBuilder()
             .cout(PipeOption::pipe)
             .cerr(PipeOption::cout)
         );
-        /* since c++20 we can do this
+        /*
+        CompletedProcess process = subprocess::RunBuilder({path, "--version"})
+            .cout(PipeOption::pipe)
+            .cerr(PipeOption::cout)
+            .run();
+        
+        
+        since c++20 we can do this
         CompletedProcess process = subprocess::run({path, "--version"}, {
             .cout = PipeOption::pipe,
             .cerr = PipeOption::cout

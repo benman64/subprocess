@@ -147,8 +147,8 @@ namespace subprocess {
         });
         thread.detach();
     }
-    void pipe_thread(std::string input, PipeHandle output, bool bautoclose) {
-        std::thread thread([=]() {
+    void pipe_thread(std::string& input, PipeHandle output, bool bautoclose) {
+        std::thread thread([input(move(input)), output, bautoclose]() {
             AutoClosePipe autoclose(output, bautoclose);
 
             std::size_t pos = 0;
@@ -180,7 +180,7 @@ namespace subprocess {
         });
         thread.detach();
     }
-    void setup_redirect_stream(PipeHandle input, PipeVar output) {
+    void setup_redirect_stream(PipeHandle input, PipeVar& output) {
         PipeVarIndex index = static_cast<PipeVarIndex>(output.index());
 
         switch (index) {
@@ -197,7 +197,8 @@ namespace subprocess {
             break;
         }
     }
-    void setup_redirect_stream(PipeVar input, PipeHandle output) {
+
+    void setup_redirect_stream(PipeVar& input, PipeHandle output) {
         PipeVarIndex index = static_cast<PipeVarIndex>(input.index());
 
         switch (index) {
@@ -216,7 +217,26 @@ namespace subprocess {
             break;
         }
     }
-    Popen::Popen(CommandLine command, const PopenOptions& options) {
+    Popen::Popen(CommandLine command, const RunOptions& optionsIn) {
+        ProcessBuilder builder;
+        // we have to make a copy because of const
+        RunOptions options = optionsIn;
+        builder.cin_option  = get_pipe_option(options.cin);
+        builder.cout_option = get_pipe_option(options.cout);
+        builder.cerr_option = get_pipe_option(options.cerr);
+
+        builder.env = options.env;
+        builder.cwd = options.cwd;
+
+        *this = builder.run_command(command);
+
+        setup_redirect_stream(options.cin, cin);
+        setup_redirect_stream(cout, options.cout);
+        setup_redirect_stream(cerr, options.cerr);
+    }
+
+    Popen::Popen(CommandLine command, RunOptions&& optionsIn) {
+        RunOptions options = std::move(optionsIn);
         ProcessBuilder builder;
 
         builder.cin_option  = get_pipe_option(options.cin);
@@ -231,8 +251,8 @@ namespace subprocess {
         setup_redirect_stream(options.cin, cin);
         setup_redirect_stream(cout, options.cout);
         setup_redirect_stream(cerr, options.cerr);
-
     }
+
     Popen::Popen(Popen&& other) {
         *this = std::move(other);
     }
@@ -521,7 +541,7 @@ namespace subprocess {
 
 
     CompletedProcess run(CommandLine command, RunOptions options) {
-        Popen popen(command, options);
+        Popen popen(command, std::move(options));
         CompletedProcess completed;
         std::thread cout_thread;
         std::thread cerr_thread;
@@ -565,10 +585,6 @@ namespace subprocess {
             throw error;
         }
         return completed;
-    }
-
-    CompletedProcess capture(CommandLine command, PopenOptions options) {
-        return subprocess::run(command, options);
     }
 
 }

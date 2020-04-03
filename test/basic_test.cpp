@@ -5,7 +5,6 @@
 using subprocess::CommandLine;
 using subprocess::CompletedProcess;
 using subprocess::PipeOption;
-using subprocess::PopenBuilder;
 using subprocess::RunBuilder;
 
 #ifdef _WIN32
@@ -83,7 +82,7 @@ public:
         CommandLine args = {"hello", "world"};
         TS_ASSERT_EQUALS(completed.args, args);
 
-        completed = subprocess::run({"echo", "hello", "world"}, PopenBuilder()
+        completed = subprocess::run({"echo", "hello", "world"}, RunBuilder()
             .cout(PipeOption::cerr)
             .cerr(PipeOption::pipe));
 
@@ -149,8 +148,8 @@ public:
     }
 
     void testCin() {
-        auto completed = subprocess::capture({"cat"},
-            PopenBuilder().cin("hello world"));
+        auto completed = subprocess::run({"cat"},
+            RunBuilder().cin("hello world").cout(PipeOption::pipe));
         TS_ASSERT_EQUALS(completed.cout, "hello world");
     }
 

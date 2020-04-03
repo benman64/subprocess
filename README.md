@@ -28,23 +28,25 @@ subprocess.
 subprocess::run({"echo", "hello", "world"});
 
 // simplest capture output.
-CompletedProcess process = subprocess::capture({"echo", "hello", "world"});
+CompletedProcess process = subprocess::run({"echo", "hello", "world"},
+    RunBuilder.cout(PipeOption::pipe));
 
 // simplest sending data example
 CompletedProcess process = subprocess::run({"cat"},
     RunBuilder().cin("hello world"));
 
 // simplest send & capture
-CompletedProcess process = subprocess::capture({"cat"},
-    PopenBuilder().cin("hello world"));
+CompletedProcess process = subprocess::run({"cat"},
+    PopenBuilder().cin("hello world").cout(PipeOption::pipe));
 std::cout << "captured: " << process.cout << '\n';
 
 // capture stderr too.
-CompletedProcess process = subprocess::capture({"echo", "hello", "world"},
+CompletedProcess process = subprocess::run({"echo", "hello", "world"},
     PopenBuilder().cerr(PipeOption::pipe)
+    .cout(PipeOption::pipe)
     .check(true) // will throw CalledProcessError if returncode != 0.
 );
-
+std::cout << "cerr was: " << process.cerr;
 
 // capture output. You can do this syntax if you have C++20
 CompletedProcess process = subprocess::run({"echo", "hello", "world"}, {
@@ -64,7 +66,7 @@ These examples show using the library while the subprocess is still running.
 
 // simplest example
 // capture is enabled by default
-Popen popen = subprocess::Popen({"echo", "hello", "world"});
+Popen popen = subprocess::Popen({"echo", "hello", "world"}, RunBuilder().cout(PipeOption::pipe));
 char buf[1024] = {0}; // initializes everything to 0
 subprocess::pipe_read(popen.cout, buffer, 1024);
 std::cout << buf;
@@ -73,7 +75,7 @@ popen.close();
 
 
 // communicate with data
-Popen popen = subprocess::Popen({"cat"}, PopenBuilder().cin(PipeOption::pipe));
+Popen popen = subprocess::Popen({"cat"}, RunBuilder().cin(PipeOption::pipe).cout(PipeOption::pipe));
 /*  if we write more data than the buffer, we would dead lock if the subprocess
     is deadlocked trying to write. So we spin a new thread for writing. When
     you provide buffers for cin, internally the library spins it's own thread.
@@ -98,8 +100,8 @@ stdin, stdout, stderr are macros, so it's not possible to use those variable
 names. Instead c++ variable names is used cin, cout, cerr where the std* would
 have been respectively.
 
-PopenBuilder & RunBuilder can be used interchangeably. However PopenBuilder
-defaults to automaticly setting cout to be captured.
+PopenBuilder was a bad idea. Removed, now only RunBuilder remains which is enough.
+Have both is too confusing.
 
 # current progress
 
