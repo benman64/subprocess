@@ -38,6 +38,16 @@ std::string dirname(std::string path) {
     }
     return path.substr(0, slash_pos);
 }
+
+std::string g_exe_dir;
+
+void prepend_this_to_path() {
+    using subprocess::abspath;
+    std::string path = subprocess::cenv["PATH"];
+    path = g_exe_dir + subprocess::kPathDelimiter + path;
+    subprocess::cenv["PATH"] = path;
+}
+
 class BasicSuite : public CxxTest::TestSuite {
 public:
     static BasicSuite* createSuite() {
@@ -158,9 +168,7 @@ public:
 
     void testNewEnvironment() {
         subprocess::EnvGuard guard;
-        std::string path = subprocess::cenv["PATH"];
-        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
-        subprocess::cenv["PATH"] = path;
+        prepend_this_to_path();
 
         subprocess::EnvMap env = subprocess::current_env_copy();
         TS_ASSERT_EQUALS(subprocess::cenv["HELLO"].to_string(), "");
@@ -180,13 +188,9 @@ public:
     }
     void testCerrToCout() {
         subprocess::EnvGuard guard;
-        std::string path = subprocess::cenv["PATH"];
-        path = std::string() + TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
-        TS_TRACE("TEST_BINARY_DIR = " TEST_BINARY_DIR);
+        prepend_this_to_path();
 
-        TS_TRACE("setting PATH = " + path);
-        subprocess::cenv["PATH"] = path;
-        path = subprocess::cenv["PATH"];
+        std::string path = subprocess::cenv["PATH"];
         TS_TRACE("PATH = " + path);
         subprocess::cenv["USE_CERR"] = "1";
         subprocess::find_program_clear_cache();
@@ -213,12 +217,7 @@ public:
     void testCoutToCerr() {
         // cause we can
         subprocess::EnvGuard guard;
-        std::string path = subprocess::cenv["PATH"];
-        path = std::string() + TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
-        TS_TRACE("TEST_BINARY_DIR = " TEST_BINARY_DIR);
-
-        TS_TRACE("setting PATH = " + path);
-        subprocess::cenv["PATH"] = path;
+        prepend_this_to_path();
 
         auto completed = RunBuilder({"echo", "hello", "world"})
             .cerr(subprocess::PipeOption::pipe)
@@ -230,10 +229,7 @@ public:
 
     void testPoll() {
         subprocess::EnvGuard guard;
-        std::string path = subprocess::cenv["PATH"];
-        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
-        subprocess::cenv["PATH"] = path;
-
+        prepend_this_to_path();
         auto popen = RunBuilder({"sleep", "3"}).popen();
         subprocess::StopWatch timer;
 
@@ -252,10 +248,7 @@ public:
 
     void testWaitTimeout() {
         subprocess::EnvGuard guard;
-        std::string path = subprocess::cenv["PATH"];
-        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
-        subprocess::cenv["PATH"] = path;
-
+        prepend_this_to_path();
         auto popen = RunBuilder({"sleep", "10"}).popen();
         subprocess::StopWatch timer;
 
@@ -270,14 +263,11 @@ public:
     }
 
     void test2ProcessConnect() {
-
     }
 
     void testKill() {
         subprocess::EnvGuard guard;
-        std::string path = subprocess::cenv["PATH"];
-        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
-        subprocess::cenv["PATH"] = path;
+        prepend_this_to_path();
 
         auto popen = RunBuilder({"sleep", "10"}).popen();
         subprocess::StopWatch timer;
@@ -296,9 +286,7 @@ public:
 
     void testTerminate() {
         subprocess::EnvGuard guard;
-        std::string path = subprocess::cenv["PATH"];
-        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
-        subprocess::cenv["PATH"] = path;
+        prepend_this_to_path();
 
         auto popen = RunBuilder({"sleep", "10"}).popen();
         subprocess::StopWatch timer;
@@ -316,6 +304,9 @@ public:
     }
 
     void testSIGINT() {
+        subprocess::EnvGuard guard;
+        prepend_this_to_path();
+
         auto popen = RunBuilder({"sleep", "10"}).popen();
         subprocess::StopWatch timer;
         std::thread thread([&] {
@@ -358,6 +349,7 @@ int main(int argc, char** argv) {
     using subprocess::abspath;
     std::string path = subprocess::cenv["PATH"];
     std::string more_path = dirname(abspath(argv[0]));
+    g_exe_dir = more_path;
     path += subprocess::kPathDelimiter;
     path += more_path;
     subprocess::cenv["PATH"] = path;

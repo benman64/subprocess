@@ -134,7 +134,8 @@ namespace subprocess {
             cwd,                            // use parent's current directory
             &siStartInfo,                   // STARTUPINFO pointer
             &piProcInfo);                   // receives PROCESS_INFORMATION
-
+        process.process_info = piProcInfo;
+        process.pid = piProcInfo.dwProcessId;
         if (cin_pair)
             cin_pair.close_input();
         if (cout_pair)

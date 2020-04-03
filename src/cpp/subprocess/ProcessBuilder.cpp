@@ -20,6 +20,7 @@
 
 #include "shell_utils.hpp"
 #include "environ.hpp"
+#include "utf8_to_utf16.hpp"
 
 extern "C" char **environ;
 
@@ -284,23 +285,52 @@ namespace subprocess {
         cin = cout = cerr = kBadPipeValue;
 
         // do this to not have zombie processes.
-        if (pid)
+        if (pid) {
             wait();
+
+#ifdef _WIN32
+            CloseHandle(process_info.hProcess);
+            CloseHandle(process_info.hThread);
+#endif
+        }
         pid = 0;
         returncode = kBadReturnCode;
         args.clear();
-#ifdef _WIN32
-        CloseHandle(process_info.hProcess);
-        CloseHandle(process_info.hThread);
-#endif
     }
 #ifdef _WIN32
+    std::string lastErrorString() {
+        LPTSTR lpMsgBuf = nullptr;
+        DWORD dw        = GetLastError();
+
+        FormatMessage(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER |
+            FORMAT_MESSAGE_FROM_SYSTEM |
+            FORMAT_MESSAGE_IGNORE_INSERTS,
+            NULL,
+            dw,
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+            (LPTSTR) &lpMsgBuf,
+            0, NULL );
+        std::string message = lptstr_to_string((LPTSTR)lpMsgBuf);
+        LocalFree(lpMsgBuf);
+        return message;
+    }
     bool Popen::poll() {
         if (returncode != kBadReturnCode)
-            return returncode;
-        DWORD result = WaitForSingleObject(process_info.hProcess, 0);
+            return true;
+        DWORD ms = 0;
+        DWORD result = WaitForSingleObject(process_info.hProcess, ms);
         if (result == WAIT_TIMEOUT) {
             return false;
+        } else if (result == WAIT_ABANDONED) {
+            DWORD error = GetLastError();
+            throw std::runtime_error("WAIT_ABANDONED error:" + std::to_string(error));
+        } else if (result == WAIT_FAILED) {
+            DWORD error = GetLastError();
+            throw std::runtime_error("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
+        }
+        if (result != WAIT_OBJECT_0) {
+            throw std::runtime_error("WaitForSingleObject failed: " + std::to_string(result));
         }
         DWORD exit_code;
         GetExitCodeProcess(process_info.hProcess, &exit_code);
@@ -314,7 +344,16 @@ namespace subprocess {
         DWORD ms = timeout < 0? INFINITE : timeout*1000.0;
         DWORD result = WaitForSingleObject(process_info.hProcess, ms);
         if (result == WAIT_TIMEOUT) {
-            throw TimeoutExpired("no time");
+            throw TimeoutExpired("timeout of " + std::to_string(ms) + " expired");
+        } else if (result == WAIT_ABANDONED) {
+            DWORD error = GetLastError();
+            throw std::runtime_error("WAIT_ABANDONED error:" + std::to_string(error));
+        } else if (result == WAIT_FAILED) {
+            DWORD error = GetLastError();
+            throw std::runtime_error("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
+        }
+        if (result != WAIT_OBJECT_0) {
+            throw std::runtime_error("WaitForSingleObject failed: " + std::to_string(result));
         }
         DWORD exit_code;
         GetExitCodeProcess(process_info.hProcess, &exit_code);

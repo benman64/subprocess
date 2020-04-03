@@ -40,4 +40,20 @@ namespace subprocess {
             ++size;
         return size;
     }
+
+    template<typename T>
+    std::string lptstr_to_string_t(T str) {
+        if (str == nullptr)
+            return "";
+        if constexpr (sizeof(*str) == 1) {
+            static_assert(sizeof(*str) == 1);
+            return (const char*)str;
+        } else {
+            static_assert(sizeof(*str) == 2);
+            return utf16_to_utf8((const wchar_t*)str);
+        }
+    }
+    std::string lptstr_to_string(LPTSTR str) {
+        return lptstr_to_string_t(str);
+    }
 }
