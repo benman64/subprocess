@@ -214,9 +214,18 @@ public:
         // cause we can
         subprocess::EnvGuard guard;
         std::string path = subprocess::cenv["PATH"];
-        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        path = std::string() + TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        TS_TRACE("TEST_BINARY_DIR = " TEST_BINARY_DIR);
+
+        TS_TRACE("setting PATH = " + path);
         subprocess::cenv["PATH"] = path;
-        // TOOD: test cerr to cout
+
+        auto completed = RunBuilder({"echo", "hello", "world"})
+            .cerr(subprocess::PipeOption::pipe)
+            .cout(PipeOption::cerr).run();
+
+        TS_ASSERT_EQUALS(completed.cout, "");
+        TS_ASSERT_EQUALS(completed.cerr, "hello world" EOL);
     }
 
     void testPoll() {
