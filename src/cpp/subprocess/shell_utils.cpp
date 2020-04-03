@@ -171,12 +171,15 @@ namespace subprocess {
 #endif
         return "";
     }
+
+    static std::mutex g_program_cache_mutex;
+    static std::map<std::string, std::string> g_program_cache;
+
     static std::string find_program_in_path(const std::string& name) {
         // because of the cache variable is static we do this to be thread safe
-        static std::mutex mutex;
-        std::unique_lock lock(mutex);
+        std::unique_lock lock(g_program_cache_mutex);
 
-        static std::map<std::string, std::string> cache;
+        std::map<std::string, std::string>& cache = g_program_cache;
         if(name.empty())
             return "";
         if(name.size() >= 2) {
@@ -264,6 +267,11 @@ namespace subprocess {
             }
         }
         return "";
+    }
+
+    void find_program_clear_cache() {
+        std::unique_lock<std::mutex> lock(g_program_cache_mutex);
+        g_program_cache.clear();
     }
     std::string escape_shell_arg(std::string arg) {
         bool needs_quote = false;

@@ -179,11 +179,44 @@ public:
         TS_ASSERT_DELTA(timer.seconds(), 1, 0.1);
     }
     void testCerrToCout() {
+        subprocess::EnvGuard guard;
+        std::string path = subprocess::cenv["PATH"];
+        path = std::string() + TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        TS_TRACE("TEST_BINARY_DIR = " TEST_BINARY_DIR);
+
+        TS_TRACE("setting PATH = " + path);
+        subprocess::cenv["PATH"] = path;
+        path = subprocess::cenv["PATH"];
+        TS_TRACE("PATH = " + path);
+        subprocess::cenv["USE_CERR"] = "1";
+        subprocess::find_program_clear_cache();
+        std::string echo_path = subprocess::find_program("echo");
+        TS_TRACE("echo is at " + echo_path);
+        // TOOD: test cerr to cout
+        auto completed = RunBuilder({"echo", "hello", "world"})
+            .cout(subprocess::PipeOption::pipe)
+            .cerr(subprocess::PipeOption::pipe)
+            .env(subprocess::current_env_copy())
+            .run();
+        TS_ASSERT_EQUALS(completed.cout, "");
+        TS_ASSERT_EQUALS(completed.cerr, "hello world" EOL);
+
+        completed = RunBuilder({"echo", "hello", "world"})
+            .cerr(subprocess::PipeOption::cout)
+            .cout(PipeOption::pipe).run();
+
+        TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
+        TS_ASSERT_EQUALS(completed.cerr, "");
 
     }
 
     void testCoutToCerr() {
         // cause we can
+        subprocess::EnvGuard guard;
+        std::string path = subprocess::cenv["PATH"];
+        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        subprocess::cenv["PATH"] = path;
+        // TOOD: test cerr to cout
     }
 
     void testPoll() {
@@ -191,6 +224,11 @@ public:
     }
 
     void testWaitTimeout() {
+        subprocess::EnvGuard guard;
+        std::string path = subprocess::cenv["PATH"];
+        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        subprocess::cenv["PATH"] = path;
+
         auto popen = RunBuilder({"sleep", "10"}).popen();
         subprocess::StopWatch timer;
 
@@ -209,6 +247,11 @@ public:
     }
 
     void testKill() {
+        subprocess::EnvGuard guard;
+        std::string path = subprocess::cenv["PATH"];
+        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        subprocess::cenv["PATH"] = path;
+
         auto popen = RunBuilder({"sleep", "10"}).popen();
         subprocess::StopWatch timer;
         std::thread thread([&] {
@@ -225,6 +268,11 @@ public:
     }
 
     void testTerminate() {
+        subprocess::EnvGuard guard;
+        std::string path = subprocess::cenv["PATH"];
+        path = TEST_BINARY_DIR + subprocess::kPathDelimiter + path;
+        subprocess::cenv["PATH"] = path;
+
         auto popen = RunBuilder({"sleep", "10"}).popen();
         subprocess::StopWatch timer;
         std::thread thread([&] {

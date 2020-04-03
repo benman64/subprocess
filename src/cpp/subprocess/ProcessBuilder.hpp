@@ -168,7 +168,7 @@ namespace subprocess {
         RunBuilder& cout(const PipeVar& cout) {options.cout = cout; return *this;}
         RunBuilder& cerr(const PipeVar& cerr) {options.cerr = cerr; return *this;}
         RunBuilder& cwd(std::string cwd) {options.cwd = cwd; return *this;}
-        RunBuilder& env(EnvMap& env) {options.env = env; return *this;}
+        RunBuilder& env(const EnvMap& env) {options.env = env; return *this;}
         RunBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
 
         operator RunOptions() const {return options;}
