@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <vector>
 #include <string>
 
@@ -188,6 +189,7 @@ namespace subprocess {
 
         RunBuilder(){}
         RunBuilder(CommandLine cmd) : command(cmd){}
+        RunBuilder(std::initializer_list<std::string> command) : command(command){}
         RunBuilder& check(bool ch) {options.check = ch; return *this;}
         RunBuilder& cin(const PipeVar& cin) {options.cin = cin; return *this;}
         RunBuilder& cout(const PipeVar& cout) {options.cout = cout; return *this;}

@@ -669,7 +669,7 @@ namespace subprocess {
 
         popen.wait();
         completed.returncode = popen.returncode;
-        completed.args = CommandLine(command.begin()+1, command.end());
+        completed.args = command;
         if (options.check) {
             CalledProcessError error("failed to execute " + command[0]);
             error.cmd           = command;

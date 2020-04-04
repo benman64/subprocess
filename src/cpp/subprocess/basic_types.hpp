@@ -137,6 +137,9 @@ namespace subprocess {
     };
 
     struct CompletedProcess {
+        /** The args used for the process. This includes the first first arg
+            which is the command/executable itself.
+        */
         CommandLine     args;
         /** negative number -N means it was terminated by signal N. */
         int             returncode = -1;

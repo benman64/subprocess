@@ -92,7 +92,7 @@ public:
         TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
-        CommandLine args = {"hello", "world"};
+        CommandLine args = {"echo", "hello", "world"};
         TS_ASSERT_EQUALS(completed.args, args);
 
         completed = subprocess::run({"echo", "hello", "world"}, RunBuilder()
@@ -113,10 +113,31 @@ public:
         TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
-        CommandLine args = {"hello", "world"};
+        CommandLine args = {"echo", "hello", "world"};
         TS_ASSERT_EQUALS(completed.args, args);
 
         completed = subprocess::RunBuilder({"echo", "hello", "world"})
+            .cout(PipeOption::cerr)
+            .cerr(PipeOption::pipe).run();
+
+        TS_ASSERT_EQUALS(completed.cerr, "hello world" EOL);
+        TS_ASSERT(completed.cout.empty());
+        TS_ASSERT_EQUALS(completed.returncode, 0);
+        TS_ASSERT_EQUALS(completed.args, args);
+
+    }
+
+    void testHelloWorldBuilderSmaller() {
+        CompletedProcess completed = subprocess::RunBuilder{"echo", "hello", "world"}
+            .cout(PipeOption::pipe)
+            .run();
+        TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
+        TS_ASSERT(completed.cerr.empty());
+        TS_ASSERT_EQUALS(completed.returncode, 0);
+        CommandLine args = {"echo", "hello", "world"};
+        TS_ASSERT_EQUALS(completed.args, args);
+
+        completed = subprocess::RunBuilder{"echo", "hello", "world"}
             .cout(PipeOption::cerr)
             .cerr(PipeOption::pipe).run();
 

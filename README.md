@@ -2,6 +2,17 @@
 cross platform subprocess library for c++ similar to design of python
 subprocess.
 
+
+# supports
+
+- very python like style of subprocess. With very nice syntax for c++20.
+- Connect output of process A to input of process B. However not pretty API for
+  this.
+
+## Shakey elements
+
+- The os error level exceptions is still changing. I'm thinking of having an
+  OSError subclass to abstract the OS differences.
 # requirements
 
 - c++17
