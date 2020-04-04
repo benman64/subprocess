@@ -5,6 +5,7 @@ subprocess.
 # requirements
 
 - c++17
+- linked with support for threading, filesystem
 
 # Integration
 
@@ -110,7 +111,6 @@ linux for windows using mingw. The library is almost feature complete.
 
 must to be implemented
 
-- tests
 - documentation
 - bugs, there is lots of them to be discovered.
 - main structure is set in place and help is welcome.

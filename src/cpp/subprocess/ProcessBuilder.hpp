@@ -165,11 +165,23 @@ namespace subprocess {
                         returns non-zero exit code.
 
         @returns a Filled out CompletedProcess.
+
+        @throw  CalledProcessException if check=true and process returned
+                non-zero error code
+        @throw  TimeoutExpired if subprocess does not finish by timeout
+                seconds.
+        @throw  std::runtime_error for various errors.
+        @return a CompletedProcess once the command has finished.
     */
     CompletedProcess run(Popen& popen, bool check=false);
-    CompletedProcess run(CommandLine command, RunOptions options={});
-    CompletedProcess capture(CommandLine command, RunOptions options={});
+    /** Run a command blocking until completion.
 
+        @param command  The command to run. First element must be executable.
+        @param options  Options specifying how to run the command.
+    */
+    CompletedProcess run(CommandLine command, RunOptions options={});
+
+    /** Helper class to construct RunOptions with minimal typing. */
     struct RunBuilder {
         RunOptions options;
         CommandLine command;
@@ -186,11 +198,22 @@ namespace subprocess {
 
         operator RunOptions() const {return options;}
 
+        /** Runs the command already configured.
+
+            see subprocess::run() for more details.
+        */
         CompletedProcess run() {return subprocess::run(command, options);}
         Popen popen() { return Popen(command, options); }
     };
 
+    /** @return seconds went by from some origin monotonically increasing. */
     double monotonic_seconds();
+    /** Sleep for a number of seconds.
+
+        @param seconds  The number of seconds to sleep for.
+
+        @return how many seconds have been slept.
+    */
     double sleep_seconds(double seconds);
 
     class StopWatch {
