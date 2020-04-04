@@ -1,3 +1,4 @@
+/** @cond private */
 #include <string>
 #ifdef _WIN32
 #include <windows.h>
@@ -15,3 +16,5 @@ namespace subprocess {
     std::string lptstr_to_string(LPTSTR str);
 #endif
 }
+
+/** @endcond */

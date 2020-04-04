@@ -42,7 +42,17 @@ namespace subprocess {
         @returns true on success
     */
     bool pipe_close(PipeHandle handle);
+    /** Creates a pair of pipes for input/output
+
+        @param inheritable  if true subprocesses will inherit the pipe.
+
+        @return pipe pair. If failure returned pipes will have values of kBadPipeValue
+    */
     PipePair pipe_create(bool inheritable = true);
+    /** Set the pipe to be inheritable or not for subprocess.
+
+        @param inheritable if true handle will be inherited in subprocess.
+    */
     bool pipe_set_inheritable(PipeHandle handle, bool inheritable);
 
     /**

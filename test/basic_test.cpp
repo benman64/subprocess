@@ -291,11 +291,8 @@ public:
         TS_ASSERT(!!pipe);
         TS_ASSERT(!!pipe);
 
-        subprocess::pipe_set_inheritable(pipe.input, true);
         subprocess::Popen cat = RunBuilder({"cat"}).cout(PipeOption::pipe)
             .cin(pipe.input).popen();
-
-        subprocess::pipe_set_inheritable(pipe.output, true);
         subprocess::Popen echo = RunBuilder({"echo", "hello", "world"}).cout(pipe.output).popen();
         pipe.close();
         CompletedProcess process = subprocess::run(cat);

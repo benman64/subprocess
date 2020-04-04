@@ -63,6 +63,7 @@ namespace subprocess {
             siStartInfo.hStdInput = cin_pair.input;
             disable_inherit(cin_pair.output);
         } else if (cin_option == PipeOption::specific) {
+            pipe_set_inheritable(cin_pipe, true);
             siStartInfo.hStdInput = cin_pipe;
         } else if (cin_option == PipeOption::pipe) {
             cin_pair = pipe_create();
@@ -84,6 +85,7 @@ namespace subprocess {
         } else if (cout_option == PipeOption::cerr) {
             // Do this when stderr is setup bellow
         } else if (cout_option == PipeOption::specific) {
+            pipe_set_inheritable(cout_pipe, true);
             siStartInfo.hStdOutput = cout_pipe;
         }
 
@@ -99,6 +101,7 @@ namespace subprocess {
         } else if (cerr_option == PipeOption::cout) {
             siStartInfo.hStdError = siStartInfo.hStdOutput;
         } else if (cerr_option == PipeOption::specific) {
+            pipe_set_inheritable(cerr_pipe, true);
             siStartInfo.hStdError = cerr_pipe;
         }
 

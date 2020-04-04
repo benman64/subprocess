@@ -22,11 +22,30 @@ namespace subprocess {
     */
 
     struct RunOptions {
+        /** Set to true for subprocess::run() to throw exception. Ignored when
+            using Popen directly.
+        */
         bool        check   = false;
+        /** Option for cin, data to pipe to cin.  or created handle to use.
+
+            if a pipe handle is used it will be made inheritable automatically
+            when process is created and closed on the parents end.
+        */
         PipeVar     cin     = PipeOption::inherit;
+        /** Option for cout, or handle to use.
+
+            if a pipe handle is used it will be made inheritable automatically
+            when process is created and closed on the parents end.
+        */
         PipeVar     cout    = PipeOption::inherit;
+        /** Option for cout, or handle to use.
+
+            if a pipe handle is used it will be made inheritable automatically
+            when process is created and closed on the parents end.
+        */
         PipeVar     cerr    = PipeOption::inherit;
 
+        /** current working directory for new process to use */
         std::string cwd;
         /** If empty inherits from current process */
         EnvMap      env;
@@ -44,8 +63,11 @@ namespace subprocess {
     */
     struct Popen {
     public:
+        /** Initialized as empty and invalid */
         Popen(){}
+        /** Starts command with specified options */
         Popen(CommandLine command, const RunOptions& options);
+        /** Starts command with specified options */
         Popen(CommandLine command, RunOptions&& options);
         Popen(const Popen&)=delete;
         Popen& operator=(const Popen&)=delete;
@@ -175,7 +197,7 @@ namespace subprocess {
 
         @returns a Filled out CompletedProcess.
 
-        @throw  CalledProcessException if check=true and process returned
+        @throw  CalledProcessError if check=true and process returned
                 non-zero error code
         @throw  TimeoutExpired if subprocess does not finish by timeout
                 seconds.
@@ -201,14 +223,23 @@ namespace subprocess {
         CommandLine command;
 
         RunBuilder(){}
+        /** Constructs builder with cmd as command to run */
         RunBuilder(CommandLine cmd) : command(cmd){}
+        /** Constructs builder with command to run */
         RunBuilder(std::initializer_list<std::string> command) : command(command){}
+        /** Only for run(), throws exception if command returns non-zero exit code */
         RunBuilder& check(bool ch) {options.check = ch; return *this;}
+        /** Set the cin option. Could be PipeOption, input handle, std::string with data to pass. */
         RunBuilder& cin(const PipeVar& cin) {options.cin = cin; return *this;}
+        /** Sets the cout option. Could be a PipeOption, output handle */
         RunBuilder& cout(const PipeVar& cout) {options.cout = cout; return *this;}
+        /** Sets the cerr option. Could be a PipeOption, output handle */
         RunBuilder& cerr(const PipeVar& cerr) {options.cerr = cerr; return *this;}
+        /** Sets the current working directory to use for subprocess */
         RunBuilder& cwd(std::string cwd) {options.cwd = cwd; return *this;}
+        /** Sets the environment to use. Default is current environment if unset */
         RunBuilder& env(const EnvMap& env) {options.env = env; return *this;}
+        /** Timeout to use for run() invocation only. */
         RunBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
 
         operator RunOptions() const {return options;}

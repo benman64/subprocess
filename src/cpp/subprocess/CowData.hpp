@@ -1,6 +1,8 @@
+/** @cond PRIVATE */
 #include <cstdint>
 #include <memory>
 
+// experemnting with this to reduce amount of copies for some APIs
 namespace subprocess {
     class RefCount {
     public:
@@ -29,3 +31,4 @@ namespace subprocess {
         std::shared_ptr<std::string> mData;
     };
 }
+/** @endcond */

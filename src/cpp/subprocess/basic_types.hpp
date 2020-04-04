@@ -60,9 +60,11 @@ namespace subprocess {
 #ifndef _WIN32
     typedef int PipeHandle;
     typedef ::pid_t pid_t;
-
+    
+    /** The path seperator for PATH environment variable. */
     constexpr char kPathDelimiter = ':';
     // to please windows we can't have this be a constexpr and be standard c++
+    /** The value representing an invalid pipe */
     const PipeHandle kBadPipeValue = (PipeHandle)-1;
 #else
     typedef HANDLE PipeHandle;
@@ -75,6 +77,7 @@ namespace subprocess {
     constexpr int kStdOutValue  = 1;
     constexpr int kStdErrValue  = 2;
 
+    /** The value representing an invalid exit code possible for a process. */
     constexpr int kBadReturnCode = -1000;
 
     typedef std::vector<std::string> CommandLine;
@@ -85,8 +88,8 @@ namespace subprocess {
         inherit, ///< Inherits current process handle
         cout,       ///< Redirects to stdout
         cerr,       ///< redirects to stderr
-        /** Redirects to provided pipe. You can open /dev/null. It is your
-            responsibility to close this handle.
+        /** Redirects to provided pipe. You can open /dev/null. Pipe handle
+            that you specify will be made inheritable and closed automatically.
         */
         specific,
         pipe,       ///< Redirects to a new handle created for you.
@@ -141,6 +144,7 @@ namespace subprocess {
         std::string cerr;
     };
 
+    /** Details about a completed process. */
     struct CompletedProcess {
         /** The args used for the process. This includes the first first arg
             which is the command/executable itself.

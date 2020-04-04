@@ -497,6 +497,7 @@ namespace subprocess {
                 throw std::runtime_error("ProcessBuilder: bad pipe value for cin");
             }
 
+            pipe_set_inheritable(this->cin_pipe, true);
             posix_spawn_file_actions_adddup2(&action, this->cin_pipe, kStdInValue);
             posix_spawn_file_actions_addclose(&action, this->cin_pipe);
         } else if (cin_option == PipeOption::pipe) {
@@ -522,6 +523,7 @@ namespace subprocess {
             if (this->cout_pipe == kBadPipeValue) {
                 throw std::runtime_error("ProcessBuilder: bad pipe value for cout");
             }
+            pipe_set_inheritable(this->cout_pipe, true);
             posix_spawn_file_actions_adddup2(&action, this->cout_pipe, kStdOutValue);
             posix_spawn_file_actions_addclose(&action, this->cout_pipe);
         }
@@ -540,6 +542,8 @@ namespace subprocess {
             if (this->cerr_pipe == kBadPipeValue) {
                 throw std::runtime_error("ProcessBuilder: bad pipe value for cerr");
             }
+
+            pipe_set_inheritable(this->cerr_pipe, true);
             posix_spawn_file_actions_adddup2(&action, this->cerr_pipe, kStdErrValue);
             posix_spawn_file_actions_addclose(&action, this->cerr_pipe);
         }

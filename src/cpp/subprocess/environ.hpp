@@ -21,11 +21,16 @@ namespace subprocess {
     private:
         std::string mName;
     };
+
+    /** Used for working with environment variables */
     class Environ {
     public:
         EnvironSetter operator[](const std::string&);
     };
 
+    /** Makes it easy to get/set environment variables.
+        e.g. like so `subprocess::cenv["VAR"] = "Value";`
+    */
     extern Environ cenv;
 
     /** Creates a copy of current environment variables and returns the map */
@@ -33,6 +38,10 @@ namespace subprocess {
     /** suitable for windows */
     std::u16string create_env_block(const EnvMap& map);
 
+    /** Use this to put a guard for changing current working directory. On
+        destruction the current working directory will be reset to as it was
+        on construction.
+    */
     class CwdGuard {
     public:
         CwdGuard() {
@@ -45,6 +54,10 @@ namespace subprocess {
     private:
         std::string mCwd;
     };
+
+    /** On destruction reset environment variables and current working directory
+        to as it was on construction.
+    */
     class EnvGuard : public CwdGuard {
     public:
         EnvGuard() {
