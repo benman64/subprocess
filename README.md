@@ -1,6 +1,7 @@
 # subprocess
 cross platform subprocess library for c++ similar to design of python
-subprocess.
+subprocess. See [subprocess documentation](https://benman64.github.io/subprocess/index.html)
+for further documentation.
 
 
 # supports
