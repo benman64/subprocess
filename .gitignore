@@ -34,4 +34,6 @@
 
 /build
 .DS_Store
-./doc-gen
+/doc-gen
+/build-*
+/build2
