@@ -96,14 +96,19 @@ namespace subprocess {
     struct SubprocessError : std::runtime_error {
         using std::runtime_error::runtime_error;
     };
+
+    struct OSError : SubprocessError {
+        using SubprocessError::SubprocessError;
+    };
+
     struct CommandNotFoundError : SubprocessError {
         using SubprocessError::SubprocessError;
     };
 
     // when the API for spawning a process fails. I don't know if this ever
     // happens in practice.
-    struct SpawnError : SubprocessError {
-        using SubprocessError::SubprocessError;
+    struct SpawnError : OSError {
+        using OSError::OSError;
     };
 
     struct TimeoutExpired : SubprocessError {

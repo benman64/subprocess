@@ -81,7 +81,10 @@ namespace subprocess {
         void ignore_cerr() { pipe_ignore_and_close(cerr); cerr = kBadPipeValue; }
         /** calls pipe_ignore_and_close on cout, cerr if open */
         void ignore_output() { ignore_cout(); ignore_cerr(); }
-        /** @return true if terminated. */
+        /** @return true if terminated.
+
+            @throw OSError  If os specific error has been encountered.
+        */
         bool poll();
         /** Waits for process to finish.
 
@@ -94,6 +97,9 @@ namespace subprocess {
             @param timeout  timeout in seconds. Raises TimeoutExpired on
                             timeout. NOT IMPLEMENTED, WILL WAIT FOREVER.
             @return returncode
+
+            @throw OSError          If there was an os level error call OS API's
+            @throw TimeoutExpired   If the timeout has expired.
         */
         int wait(double timeout=-1);
         /** Send the signal to the process.
@@ -128,6 +134,8 @@ namespace subprocess {
 
     /** This class does the bulk of the work for starting a process. It is the
         most customizable and hence the most complex.
+
+        @note Undecided if this should be public API or private.
     */
     class ProcessBuilder {
     public:
@@ -171,14 +179,19 @@ namespace subprocess {
                 non-zero error code
         @throw  TimeoutExpired if subprocess does not finish by timeout
                 seconds.
+        @throw  OSError for os level exceptions.
         @throw  std::runtime_error for various errors.
         @return a CompletedProcess once the command has finished.
     */
     CompletedProcess run(Popen& popen, bool check=false);
     /** Run a command blocking until completion.
 
+        see subprocess::run(Popen&,bool) for more details about exceptions.
+
         @param command  The command to run. First element must be executable.
         @param options  Options specifying how to run the command.
+
+        @return CompletedProcess containing details about execution.
     */
     CompletedProcess run(CommandLine command, RunOptions options={});
 
@@ -205,6 +218,10 @@ namespace subprocess {
             see subprocess::run() for more details.
         */
         CompletedProcess run() {return subprocess::run(command, options);}
+        /** Creates a Popen object running the process asynchronously
+
+            @return Popen object with  current configuration.
+        */
         Popen popen() { return Popen(command, options); }
     };
 

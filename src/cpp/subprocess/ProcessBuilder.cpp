@@ -69,13 +69,21 @@ namespace subprocess {
     double monotonic_seconds() {
         static bool needs_init = true;
         static std::chrono::steady_clock::time_point begin;
+        static double last_value = 0;
         if (needs_init) {
             begin = std::chrono::steady_clock::now();
             needs_init = false;
         }
         std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
         std::chrono::duration<double> duration = now - begin;
-        return duration.count();
+        double result = duration.count();
+
+        // some OS's have bugs and not exactly monotonic. Or perhaps there is
+        // floating point errors or something. I don't know.
+        if (result < last_value)
+            return last_value;
+        last_value = result;
+        return result;
     }
 
     double sleep_seconds(double seconds) {
@@ -330,13 +338,13 @@ namespace subprocess {
             return false;
         } else if (result == WAIT_ABANDONED) {
             DWORD error = GetLastError();
-            throw std::runtime_error("WAIT_ABANDONED error:" + std::to_string(error));
+            throw OSError("WAIT_ABANDONED error:" + std::to_string(error));
         } else if (result == WAIT_FAILED) {
             DWORD error = GetLastError();
-            throw std::runtime_error("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
+            throw OSError("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
         }
         if (result != WAIT_OBJECT_0) {
-            throw std::runtime_error("WaitForSingleObject failed: " + std::to_string(result));
+            throw OSError("WaitForSingleObject failed: " + std::to_string(result));
         }
         DWORD exit_code;
         GetExitCodeProcess(process_info.hProcess, &exit_code);
@@ -353,13 +361,13 @@ namespace subprocess {
             throw TimeoutExpired("timeout of " + std::to_string(ms) + " expired");
         } else if (result == WAIT_ABANDONED) {
             DWORD error = GetLastError();
-            throw std::runtime_error("WAIT_ABANDONED error:" + std::to_string(error));
+            throw OSError("WAIT_ABANDONED error:" + std::to_string(error));
         } else if (result == WAIT_FAILED) {
             DWORD error = GetLastError();
-            throw std::runtime_error("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
+            throw OSError("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
         }
         if (result != WAIT_OBJECT_0) {
-            throw std::runtime_error("WaitForSingleObject failed: " + std::to_string(result));
+            throw OSError("WaitForSingleObject failed: " + std::to_string(result));
         }
         DWORD exit_code;
         GetExitCodeProcess(process_info.hProcess, &exit_code);
