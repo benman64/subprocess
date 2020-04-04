@@ -364,15 +364,18 @@ namespace subprocess {
     bool Popen::send_signal(int signum) {
         if (returncode != kBadReturnCode)
             return false;
-        if (signum == PSIGKILL) {
+        bool success = false;
+        if (signum == PSIGKILL || signum == PSIGTERM) {
             return TerminateProcess(process_info.hProcess, 1);
         } else if (signum == PSIGINT) {
             // can I use pid for processgroupid?
-            return GenerateConsoleCtrlEvent(CTRL_C_EVENT, pid);
+            success = GenerateConsoleCtrlEvent(CTRL_C_EVENT, pid);
         } else if (signum == PSIGTERM) {
-            return GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
+            success = GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
+        } else {
+            success = GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
         }
-        return GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
+        return success;
     }
 #else
     bool Popen::poll() {
