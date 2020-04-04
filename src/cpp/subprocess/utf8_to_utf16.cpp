@@ -53,7 +53,9 @@ namespace subprocess {
             return utf16_to_utf8((const wchar_t*)str);
         }
     }
+#ifdef _WIN32
     std::string lptstr_to_string(LPTSTR str) {
         return lptstr_to_string_t(str);
     }
+#endif
 }

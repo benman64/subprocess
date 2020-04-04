@@ -210,31 +210,37 @@ namespace subprocess {
         }
     }
     Popen::Popen(CommandLine command, const RunOptions& optionsIn) {
-        ProcessBuilder builder;
         // we have to make a copy because of const
         RunOptions options = optionsIn;
-        builder.cin_option  = get_pipe_option(options.cin);
-        builder.cout_option = get_pipe_option(options.cout);
-        builder.cerr_option = get_pipe_option(options.cerr);
-
-        builder.env = options.env;
-        builder.cwd = options.cwd;
-
-        *this = builder.run_command(command);
-
-        setup_redirect_stream(options.cin, cin);
-        setup_redirect_stream(cout, options.cout);
-        setup_redirect_stream(cerr, options.cerr);
+        init(command, options);
     }
 
     Popen::Popen(CommandLine command, RunOptions&& optionsIn) {
         RunOptions options = std::move(optionsIn);
+        init(command, options);
+    }
+    void Popen::init(CommandLine& command, RunOptions& options) {
         ProcessBuilder builder;
 
         builder.cin_option  = get_pipe_option(options.cin);
         builder.cout_option = get_pipe_option(options.cout);
         builder.cerr_option = get_pipe_option(options.cerr);
 
+        if (builder.cin_option == PipeOption::specific) {
+            builder.cin_pipe = std::get<PipeHandle>(options.cin);
+            if (builder.cin_pipe == kBadPipeValue)
+                throw std::runtime_error("bad pipe value for cin");
+        }
+        if (builder.cout_option == PipeOption::specific) {
+            builder.cout_pipe = std::get<PipeHandle>(options.cout);
+            if (builder.cout_pipe == kBadPipeValue)
+                throw std::runtime_error("Popen constructor: bad pipe value for cout");
+        }
+        if (builder.cerr_option == PipeOption::specific) {
+            builder.cerr_pipe = std::get<PipeHandle>(options.cerr);
+            if (builder.cout_pipe == kBadPipeValue)
+                throw std::runtime_error("Popen constructor: bad pipe value for cout");
+        }
         builder.env = options.env;
         builder.cwd = options.cwd;
 
@@ -479,6 +485,10 @@ namespace subprocess {
         if (cin_option == PipeOption::close)
             posix_spawn_file_actions_addclose(&action, kStdInValue);
         else if (cin_option == PipeOption::specific) {
+            if (this->cin_pipe == kBadPipeValue) {
+                throw std::runtime_error("ProcessBuilder: bad pipe value for cin");
+            }
+
             posix_spawn_file_actions_adddup2(&action, this->cin_pipe, kStdInValue);
             posix_spawn_file_actions_addclose(&action, this->cin_pipe);
         } else if (cin_option == PipeOption::pipe) {
@@ -501,6 +511,9 @@ namespace subprocess {
         } else if (cout_option == PipeOption::cerr) {
             // we have to wait until stderr is setup first
         } else if (cout_option == PipeOption::specific) {
+            if (this->cout_pipe == kBadPipeValue) {
+                throw std::runtime_error("ProcessBuilder: bad pipe value for cout");
+            }
             posix_spawn_file_actions_adddup2(&action, this->cout_pipe, kStdOutValue);
             posix_spawn_file_actions_addclose(&action, this->cout_pipe);
         }
@@ -516,6 +529,9 @@ namespace subprocess {
         } else if (cerr_option == PipeOption::cout) {
             posix_spawn_file_actions_adddup2(&action, kStdOutValue, kStdErrValue);
         } else if (cerr_option == PipeOption::specific) {
+            if (this->cerr_pipe == kBadPipeValue) {
+                throw std::runtime_error("ProcessBuilder: bad pipe value for cerr");
+            }
             posix_spawn_file_actions_adddup2(&action, this->cerr_pipe, kStdErrValue);
             posix_spawn_file_actions_addclose(&action, this->cerr_pipe);
         }
@@ -567,11 +583,56 @@ namespace subprocess {
         cout_pair.disown();
         cerr_pair.disown();
         process.pid = pid;
-        process.args = CommandLine(command.begin()+1, command.end());
+        process.args = command;
         return process;
     }
 #endif
 
+    CompletedProcess run(Popen& popen, bool check) {
+        CompletedProcess completed;
+        std::thread cout_thread;
+        std::thread cerr_thread;
+        if (popen.cout != kBadPipeValue) {
+            cout_thread = std::thread([&]() {
+                try {
+                    completed.cout = pipe_read_all(popen.cout);
+                } catch (...) {
+                }
+                pipe_close(popen.cout);
+                popen.cout = kBadPipeValue;
+            });
+        }
+        if (popen.cerr != kBadPipeValue) {
+            cerr_thread = std::thread([&]() {
+                try {
+                    completed.cerr = pipe_read_all(popen.cerr);
+                } catch (...) {
+                }
+                pipe_close(popen.cerr);
+                popen.cerr = kBadPipeValue;
+            });
+        }
+
+        if (cout_thread.joinable()) {
+            cout_thread.join();
+        }
+        if (cerr_thread.joinable()) {
+            cerr_thread.join();
+        }
+
+        popen.wait();
+        completed.returncode = popen.returncode;
+        completed.args = CommandLine(popen.args.begin()+1, popen.args.end());
+        if (check) {
+            CalledProcessError error("failed to execute " + popen.args[0]);
+            error.cmd           = popen.args;
+            error.returncode    = completed.returncode;
+            error.cout          = std::move(completed.cout);
+            error.cerr          = std::move(completed.cerr);
+            throw error;
+        }
+        return completed;
+    }
 
     CompletedProcess run(CommandLine command, RunOptions options) {
         Popen popen(command, std::move(options));

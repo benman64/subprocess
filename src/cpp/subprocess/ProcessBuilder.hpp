@@ -116,6 +116,8 @@ namespace subprocess {
         }
         friend ProcessBuilder;
     private:
+        void init(CommandLine& command, RunOptions& options);
+
 #ifdef _WIN32
         PROCESS_INFORMATION process_info;
 #endif
@@ -154,6 +156,17 @@ namespace subprocess {
         Popen run_command(const CommandLine& command);
     };
 
+    /** If you have stuff to pipe this will run the process to completion.
+
+        This will read stdout/stderr if they exist and store in cout, cerr.
+
+        @param popen    An already running process.
+        @param check    if true will throw CalledProcessException if process
+                        returns non-zero exit code.
+
+        @returns a Filled out CompletedProcess.
+    */
+    CompletedProcess run(Popen& popen, bool check=false);
     CompletedProcess run(CommandLine command, RunOptions options={});
     CompletedProcess capture(CommandLine command, RunOptions options={});
 

@@ -154,6 +154,7 @@ namespace subprocess {
         cout_pair.disown();
         cerr_pair.disown();
 
+        process.args = command;
         // TODO: get error and add it to throw
         if (!bSuccess )
             throw SpawnError("CreateProcess failed");

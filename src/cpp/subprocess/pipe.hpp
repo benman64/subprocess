@@ -43,7 +43,7 @@ namespace subprocess {
     */
     bool pipe_close(PipeHandle handle);
     PipePair pipe_create(bool inheritable = true);
-    bool pipe_set_no_inherit(PipeHandle handle);
+    bool pipe_set_inheritable(PipeHandle handle, bool inheritable);
 
     /**
         @returns    -1 on error. if 0 it could be the end, or perhaps wait for

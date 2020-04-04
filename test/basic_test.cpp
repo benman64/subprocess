@@ -263,6 +263,25 @@ public:
     }
 
     void test2ProcessConnect() {
+        subprocess::EnvGuard guard;
+        prepend_this_to_path();
+
+        subprocess::PipePair pipe = subprocess::pipe_create(false);
+        TS_ASSERT(!!pipe);
+        TS_ASSERT(!!pipe);
+
+        subprocess::pipe_set_inheritable(pipe.input, true);
+        subprocess::Popen cat = RunBuilder({"cat"}).cout(PipeOption::pipe)
+            .cin(pipe.input).popen();
+
+        subprocess::pipe_set_inheritable(pipe.output, true);
+        subprocess::Popen echo = RunBuilder({"echo", "hello", "world"}).cout(pipe.output).popen();
+        pipe.close();
+        CompletedProcess process = subprocess::run(cat);
+        echo.close();
+        cat.close();
+        TS_ASSERT_EQUALS(process.cout, "hello world" EOL);
+
     }
 
     void testKill() {

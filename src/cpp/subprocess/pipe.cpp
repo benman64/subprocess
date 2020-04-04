@@ -2,6 +2,10 @@
 
 #include <thread>
 
+#ifndef _WIN32
+#include <fcntl.h>
+#endif
+
 namespace subprocess {
     PipePair& PipePair::operator=(PipePair&& other) {
         close();
@@ -30,6 +34,9 @@ namespace subprocess {
         }
     }
 #ifdef _WIN32
+    bool pipe_set_inheritable(subprocess::PipeHandle handle, bool inheritable) {
+        return !!SetHandleInformation(handle, HANDLE_FLAG_INHERIT, inheritable? HANDLE_FLAG_INHERIT : 0);
+    }
     bool pipe_close(PipeHandle handle) {
         return !!CloseHandle(handle);
     }
@@ -62,6 +69,12 @@ namespace subprocess {
     }
 
 #else
+    bool pipe_set_inheritable(PipeHandle handle, bool inherits) {
+        if (handle == kBadPipeValue)
+            return false;
+        fcntl(handle, F_SETFD, inherits? 0 : FD_CLOEXEC);
+        return true;
+    }
     bool pipe_close(PipeHandle handle) {
         if (handle == kBadPipeValue)
             return false;
@@ -74,6 +87,10 @@ namespace subprocess {
         if (!success) {
             throw std::runtime_error("could not create pipe");
             return {};
+        }
+        if (!inheritable) {
+            pipe_set_inheritable(fd[0], false);
+            pipe_set_inheritable(fd[1], false);
         }
         return {fd[0], fd[1]};
     }
