@@ -28,6 +28,14 @@ for further documentation.
 3. make sure cpp files are compiled.
 4. add `#include <subprocess.hpp>` to start using in source files.
 
+## [Teaport](https://bitbucket.org/benman/teaport)
+
+add this to your dependencies:
+
+```
+"subprocess": "0.1.+"
+```
+
 ## Todo add to cocoapods and perhaps others.
 
 # Examples
