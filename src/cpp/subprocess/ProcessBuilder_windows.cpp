@@ -126,13 +126,17 @@ namespace subprocess {
             envblock = create_env_block(this->env);
             env = (void*)envblock.data();
         }
+        DWORD process_flags = CREATE_UNICODE_ENVIRONMENT;
+        if (this->new_process_group) {
+            process_flags |= CREATE_NEW_PROCESS_GROUP;
+        }
         // Create the child process.
         bSuccess = CreateProcess(program.c_str(),
             (char*)args.c_str(),            // command line
             NULL,                           // process security attributes
             NULL,                           // primary thread security attributes
             TRUE,                           // handles are inherited
-            CREATE_UNICODE_ENVIRONMENT,     // creation flags
+            process_flags,                  // creation flags
             env,                            // environment
             cwd,                            // use parent's current directory
             &siStartInfo,                   // STARTUPINFO pointer

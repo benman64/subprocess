@@ -249,6 +249,8 @@ namespace subprocess {
             if (builder.cout_pipe == kBadPipeValue)
                 throw std::runtime_error("Popen constructor: bad pipe value for cout");
         }
+
+        builder.new_process_group = options.new_process_group;
         builder.env = options.env;
         builder.cwd = options.cwd;
 
@@ -592,7 +594,7 @@ namespace subprocess {
         sigemptyset(&signal_mask);
         posix_spawnattr_setsigmask(&attributes, &signal_mask);
 #endif
-        int flags = 0;
+        int flags = this->new_process_group? POSIX_SPAWN_SETSIGMASK : 0;
 #ifdef POSIX_SPAWN_USEVFORK
         flags |= POSIX_SPAWN_USEVFORK;
 #endif
