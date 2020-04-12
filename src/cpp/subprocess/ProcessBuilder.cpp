@@ -569,6 +569,21 @@ namespace subprocess {
             env_store.push_back(nullptr);
             env = &env_store[0];
         }
+
+        posix_spawnattr_t attributes;
+        posix_spawnattr_init(&attributes);
+#if 0
+        // I can't think of a nice way to make this configurable.
+        posix_spawnattr_setflags(&attributes, POSIX_SPAWN_SETSIGMASK);
+        sigset_t signal_mask;
+        sigemptyset(&signal_mask);
+        posix_spawnattr_setsigmask(&attributes, &signal_mask);
+#endif
+        int flags = 0;
+#ifdef POSIX_SPAWN_USEVFORK
+        flags |= POSIX_SPAWN_USEVFORK;
+#endif
+        posix_spawnattr_setflags(&attributes, flags);
         {
             /*  I should have gone with vfork() :(
                 TODO: reimplement with vfork for thread safety.
@@ -580,9 +595,11 @@ namespace subprocess {
             CwdGuard cwdGuard;
             if (!this->cwd.empty())
                 subprocess::setcwd(this->cwd);
-            if(posix_spawn(&pid, args[0], &action, NULL, &args[0], env) != 0)
+            if(posix_spawn(&pid, args[0], &action, &attributes, &args[0], env) != 0)
                 throw SpawnError("posix_spawn failed with error: " + std::string(strerror(errno)));
         }
+        posix_spawnattr_destroy(&attributes);
+        posix_spawn_file_actions_destroy(&action);
         args.clear();
         env_store.clear();
         if (cin_pair)
