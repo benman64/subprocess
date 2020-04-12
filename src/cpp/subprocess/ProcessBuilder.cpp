@@ -399,8 +399,15 @@ namespace subprocess {
         auto child = waitpid(pid, &exit_code, WNOHANG);
         if (child == 0)
             return false;
-        if (child > 0)
-            returncode = exit_code;
+        if (child > 0) {
+            if(WIFEXITED(exit_code)) {
+                returncode = WEXITSTATUS(exit_code);
+            } else if (WIFSIGNALED(exit_code)) {
+                returncode = -WTERMSIG(exit_code);
+            } else {
+                returncode = 1;
+            }
+        }
         return child > 0;
     }
     int Popen::wait(double timeout) {
@@ -418,7 +425,13 @@ namespace subprocess {
                 }
                 break;
             }
-            returncode = exit_code;
+            if(WIFEXITED(exit_code)) {
+                returncode = WEXITSTATUS(exit_code);
+            } else if (WIFSIGNALED(exit_code)) {
+                returncode = -WTERMSIG(exit_code);
+            } else {
+                returncode = 1;
+            }
             return returncode;
         }
         StopWatch watch;
