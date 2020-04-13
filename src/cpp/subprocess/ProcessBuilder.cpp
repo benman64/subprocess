@@ -25,6 +25,8 @@
 
 using std::nullptr_t;
 
+// TODO: throw exceptions on various os errors.
+
 namespace subprocess {
     namespace details {
         void throw_os_error(const char* function, int errno_code) {
@@ -319,7 +321,11 @@ namespace subprocess {
             throw OSError("WaitForSingleObject failed: " + std::to_string(result));
         }
         DWORD exit_code;
-        GetExitCodeProcess(process_info.hProcess, &exit_code);
+        int ret = GetExitCodeProcess(process_info.hProcess, &exit_code);
+        if (ret == 0) {
+            DWORD error = GetLastError();
+            throw OSError("GetExitCodeProcess failed: " + std::to_string(error) + ":" + lastErrorString());
+        }
         returncode = exit_code;
         return true;
     }
@@ -342,7 +348,11 @@ namespace subprocess {
             throw OSError("WaitForSingleObject failed: " + std::to_string(result));
         }
         DWORD exit_code;
-        GetExitCodeProcess(process_info.hProcess, &exit_code);
+        int ret = GetExitCodeProcess(process_info.hProcess, &exit_code);
+        if (ret == 0) {
+            DWORD error = GetLastError();
+            throw OSError("GetExitCodeProcess failed: " + std::to_string(error) + ":" + lastErrorString());
+        }
         returncode = exit_code;
         return returncode;
     }
