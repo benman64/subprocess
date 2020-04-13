@@ -205,8 +205,11 @@ namespace subprocess {
                 non-zero error code
         @throw  TimeoutExpired if subprocess does not finish by timeout
                 seconds.
-        @throw  OSError for os level exceptions.
+        @throw  OSError for os level exceptions such as failing OS commands.
         @throw  std::runtime_error for various errors.
+        @throw  std::invalid_argument if argument is invalid for current usage.
+        @throw  std::domain_error when arguments don't make sense working together
+
         @return a CompletedProcess once the command has finished.
     */
     CompletedProcess run(Popen& popen, bool check=false);

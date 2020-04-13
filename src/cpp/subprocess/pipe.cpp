@@ -48,7 +48,7 @@ namespace subprocess {
         bool result = CreatePipe(&input, &output, &security, 0);
         if (!result) {
             input = output = kBadPipeValue;
-            throw std::runtime_error("could not create pipe");
+            throw OSError("could not create pipe");
         }
         return {input, output};
     }
@@ -85,7 +85,7 @@ namespace subprocess {
         int fd[2];
         bool success =!::pipe(fd);
         if (!success) {
-            throw std::runtime_error("could not create pipe");
+            throw OSError("could not create pipe");
             return {};
         }
         if (!inheritable) {
