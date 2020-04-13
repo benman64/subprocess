@@ -66,10 +66,12 @@ namespace subprocess {
     }
     struct FileActions {
         FileActions() {
-            posix_spawn_file_actions_init(&actions);
+            int result = posix_spawn_file_actions_init(&actions);
+            throw_os_error("posix_spawn_file_actions_init", result);
         }
         ~FileActions() {
-            posix_spawn_file_actions_destroy(&actions);
+            int result = posix_spawn_file_actions_destroy(&actions);
+            throw_os_error("posix_spawn_file_actions_destroy", result);
         }
 
         void adddup2(int fd, int newfd) {
