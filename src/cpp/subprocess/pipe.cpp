@@ -4,7 +4,10 @@
 
 #ifndef _WIN32
 #include <fcntl.h>
+#include <cerrno>
 #endif
+
+using namespace subprocess::details;
 
 namespace subprocess {
     PipePair& PipePair::operator=(PipePair&& other) {
@@ -34,8 +37,14 @@ namespace subprocess {
         }
     }
 #ifdef _WIN32
-    bool pipe_set_inheritable(subprocess::PipeHandle handle, bool inheritable) {
-        return !!SetHandleInformation(handle, HANDLE_FLAG_INHERIT, inheritable? HANDLE_FLAG_INHERIT : 0);
+    void pipe_set_inheritable(subprocess::PipeHandle handle, bool inheritable) {
+        if (handle == kBadPipeValue)
+            throw std::invalid_argument("pipe_set_inheritable: handle is invalid");
+
+        bool success = !!SetHandleInformation(handle, HANDLE_FLAG_INHERIT, inheritable? HANDLE_FLAG_INHERIT : 0);
+        if (!success) {
+            throw OSError("SetHandleInformation failed");
+        }
     }
     bool pipe_close(PipeHandle handle) {
         return !!CloseHandle(handle);
@@ -69,11 +78,11 @@ namespace subprocess {
     }
 
 #else
-    bool pipe_set_inheritable(PipeHandle handle, bool inherits) {
+    void pipe_set_inheritable(PipeHandle handle, bool inherits) {
         if (handle == kBadPipeValue)
-            return false;
-        fcntl(handle, F_SETFD, inherits? 0 : FD_CLOEXEC);
-        return true;
+            throw std::invalid_argument("pipe_set_inheritable: handle is invalid");
+        int result = fcntl(handle, F_SETFD, inherits? 0 : FD_CLOEXEC);
+        throw_os_error("fcntl", errno);
     }
     bool pipe_close(PipeHandle handle) {
         if (handle == kBadPipeValue)
@@ -85,7 +94,7 @@ namespace subprocess {
         int fd[2];
         bool success =!::pipe(fd);
         if (!success) {
-            throw OSError("could not create pipe");
+            throw_os_error("pipe", errno);
             return {};
         }
         if (!inheritable) {

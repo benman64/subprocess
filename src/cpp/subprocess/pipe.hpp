@@ -46,14 +46,18 @@ namespace subprocess {
 
         @param inheritable  if true subprocesses will inherit the pipe.
 
+        @throw OSError if system call fails.
+
         @return pipe pair. If failure returned pipes will have values of kBadPipeValue
     */
     PipePair pipe_create(bool inheritable = true);
     /** Set the pipe to be inheritable or not for subprocess.
 
+        @throw OSError if system call fails.
+
         @param inheritable if true handle will be inherited in subprocess.
     */
-    bool pipe_set_inheritable(PipeHandle handle, bool inheritable);
+    void pipe_set_inheritable(PipeHandle handle, bool inheritable);
 
     /**
         @returns    -1 on error. if 0 it could be the end, or perhaps wait for

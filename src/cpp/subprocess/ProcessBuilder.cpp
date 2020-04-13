@@ -17,6 +17,7 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
+#include <cstring>
 
 #include "shell_utils.hpp"
 #include "utf8_to_utf16.hpp"
@@ -25,6 +26,16 @@
 using std::nullptr_t;
 
 namespace subprocess {
+    namespace details {
+        void throw_os_error(const char* function, int errno_code) {
+            if (errno_code == 0)
+                return;
+            std::string message = function;
+            message += " failed: " + std::to_string(errno) + ": ";
+            message += std::strerror(errno_code);
+            throw OSError(message);
+        }
+    }
     double monotonic_seconds() {
         static bool needs_init = true;
         static std::chrono::steady_clock::time_point begin;

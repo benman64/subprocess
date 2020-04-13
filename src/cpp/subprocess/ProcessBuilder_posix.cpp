@@ -1,3 +1,4 @@
+#ifndef _WIN32
 #include "ProcessBuilder.hpp"
 
 #include <spawn.h>
@@ -11,6 +12,7 @@ extern "C" char **environ;
 
 using std::nullptr_t;
 
+using namespace subprocess::details;
 
 namespace {
     struct cstring_vector {
@@ -55,15 +57,6 @@ namespace {
 
 
 namespace subprocess {
-
-    void throw_os_error(const char* function, int errno_code) {
-        if (errno_code == 0)
-            return;
-        std::string message = function;
-        message += " failed: " + std::to_string(errno) + ": ";
-        message += std::strerror(errno_code);
-        throw OSError(message);
-    }
     struct FileActions {
         FileActions() {
             int result = posix_spawn_file_actions_init(&actions);
@@ -246,3 +239,4 @@ namespace subprocess {
 
 #endif
 }
+#endif

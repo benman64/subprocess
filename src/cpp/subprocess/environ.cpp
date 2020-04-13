@@ -73,6 +73,9 @@ namespace subprocess {
 #ifdef _WIN32
         static_assert(sizeof(wchar_t) == 2, "unexpected size of wchar_t");
         wchar_t* list = GetEnvironmentStringsW();
+        if (list == nullptr) {
+            throw OSError("GetEnvironmentStringsW failed");
+        }
         for (;*list; list += strlen16(list)+1) {
             std::string u8str = utf16_to_utf8(list);
             const char *name_start = u8str.c_str();

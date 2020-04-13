@@ -160,4 +160,8 @@ namespace subprocess {
             return returncode == 0;
         }
     };
+
+    namespace details {
+        void throw_os_error(const char* function, int errno_code);
+    }
 }
