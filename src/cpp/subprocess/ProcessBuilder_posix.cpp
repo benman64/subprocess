@@ -191,11 +191,16 @@ namespace subprocess {
                 this->attributes = &attributes;
             }
             ~SpawnAttr() {
-                posix_spawnattr_destroy(attributes);
+                int ret = posix_spawnattr_destroy(attributes);
+                throw_os_error("posix_spawnattr_destroy", ret);
             }
 
+            void setflags(short flags) {
+                int ret = posix_spawnattr_setflags(attributes, flags);
+                throw_os_error("posix_spawnattr_setflags", ret);
+            }
             posix_spawnattr_t* attributes;
-        } attributes_destroy(attributes);
+        } attributes_raii(attributes);
 #if 0
         // I can't think of a nice way to make this configurable.
         posix_spawnattr_setflags(&attributes, POSIX_SPAWN_SETSIGMASK);
@@ -207,7 +212,7 @@ namespace subprocess {
 #ifdef POSIX_SPAWN_USEVFORK
         flags |= POSIX_SPAWN_USEVFORK;
 #endif
-        posix_spawnattr_setflags(&attributes, flags);
+        attributes_raii.setflags(flags);
         {
             /*  I should have gone with vfork() :(
                 TODO: reimplement with vfork for thread safety.
@@ -219,8 +224,9 @@ namespace subprocess {
             CwdGuard cwdGuard;
             if (!this->cwd.empty())
                 subprocess::setcwd(this->cwd);
-            if(posix_spawn(&pid, args[0], actions.get(), &attributes, &args[0], env) != 0)
-                throw SpawnError("posix_spawn failed with error: " + std::string(strerror(errno)));
+            int ret = posix_spawn(&pid, args[0], actions.get(), &attributes, &args[0], env);
+            if(ret != 0)
+                throw SpawnError("posix_spawn failed with error: " + std::string(strerror(ret)));
         }
         args.clear();
         env_store.clear();
