@@ -503,6 +503,16 @@ namespace subprocess {
         PipePair cerr_pair;
 
         posix_spawn_file_actions_t action;
+        struct FileActions {
+            FileActions(posix_spawn_file_actions_t& actions) {
+                this->actions = &actions;
+            }
+            ~FileActions() {
+                posix_spawn_file_actions_destroy(actions);
+            }
+
+            posix_spawn_file_actions_t* actions;
+        } actions_destroy(action);
 
         posix_spawn_file_actions_init(&action);
         if (cin_option == PipeOption::close)
@@ -587,6 +597,16 @@ namespace subprocess {
 
         posix_spawnattr_t attributes;
         posix_spawnattr_init(&attributes);
+        struct SpawnAttr {
+            SpawnAttr(posix_spawnattr_t& attributes) {
+                this->attributes = &attributes;
+            }
+            ~SpawnAttr() {
+                posix_spawnattr_destroy(attributes);
+            }
+
+            posix_spawnattr_t* attributes;
+        } attributes_destroy(attributes);
 #if 0
         // I can't think of a nice way to make this configurable.
         posix_spawnattr_setflags(&attributes, POSIX_SPAWN_SETSIGMASK);
@@ -613,8 +633,6 @@ namespace subprocess {
             if(posix_spawn(&pid, args[0], &action, &attributes, &args[0], env) != 0)
                 throw SpawnError("posix_spawn failed with error: " + std::string(strerror(errno)));
         }
-        posix_spawnattr_destroy(&attributes);
-        posix_spawn_file_actions_destroy(&action);
         args.clear();
         env_store.clear();
         if (cin_pair)
