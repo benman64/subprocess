@@ -55,6 +55,36 @@ namespace {
 
 
 namespace subprocess {
+
+    void throw_os_error(const char* function, int errno_code) {
+        if (errno_code == 0)
+            return;
+        std::string message = function;
+        message += " failed: " + std::to_string(errno) + ": ";
+        message += std::strerror(errno_code);
+        throw OSError(message);
+    }
+    struct FileActions {
+        FileActions() {
+            posix_spawn_file_actions_init(&actions);
+        }
+        ~FileActions() {
+            posix_spawn_file_actions_destroy(&actions);
+        }
+
+        void adddup2(int fd, int newfd) {
+            int result = posix_spawn_file_actions_adddup2(&actions, fd, newfd);
+            throw_os_error("posix_spawn_file_actions_adddup2", result);
+        }
+        void addclose(int fd) {
+            int result = posix_spawn_file_actions_addclose(&actions, fd);
+            throw_os_error("posix_spawn_file_actions_addclose", result);
+        }
+
+        posix_spawn_file_actions_t* get() {return &actions;}
+        posix_spawn_file_actions_t actions;
+    };
+
 #ifndef _WIN32
     Popen ProcessBuilder::run_command(const CommandLine& command) {
         if (command.empty()) {
@@ -70,45 +100,34 @@ namespace subprocess {
         PipePair cout_pair;
         PipePair cerr_pair;
 
-        posix_spawn_file_actions_t action;
-        struct FileActions {
-            FileActions(posix_spawn_file_actions_t& actions) {
-                this->actions = &actions;
-            }
-            ~FileActions() {
-                posix_spawn_file_actions_destroy(actions);
-            }
+        FileActions actions;
 
-            posix_spawn_file_actions_t* actions;
-        } actions_destroy(action);
-
-        posix_spawn_file_actions_init(&action);
         if (cin_option == PipeOption::close)
-            posix_spawn_file_actions_addclose(&action, kStdInValue);
+            actions.addclose(kStdInValue);
         else if (cin_option == PipeOption::specific) {
             if (this->cin_pipe == kBadPipeValue) {
                 throw std::invalid_argument("ProcessBuilder: bad pipe value for cin");
             }
 
             pipe_set_inheritable(this->cin_pipe, true);
-            posix_spawn_file_actions_adddup2(&action, this->cin_pipe, kStdInValue);
-            posix_spawn_file_actions_addclose(&action, this->cin_pipe);
+            actions.adddup2(this->cin_pipe, kStdInValue);
+            actions.addclose(this->cin_pipe);
         } else if (cin_option == PipeOption::pipe) {
             cin_pair = pipe_create();
-            posix_spawn_file_actions_addclose(&action, cin_pair.output);
-            posix_spawn_file_actions_adddup2(&action, cin_pair.input, kStdInValue);
-            posix_spawn_file_actions_addclose(&action, cin_pair.input);
+            actions.addclose(cin_pair.output);
+            actions.adddup2(cin_pair.input, kStdInValue);
+            actions.addclose(cin_pair.input);
             process.cin = cin_pair.output;
         }
 
 
         if (cout_option == PipeOption::close)
-            posix_spawn_file_actions_addclose(&action, kStdOutValue);
+            actions.addclose(kStdOutValue);
         else if (cout_option == PipeOption::pipe) {
             cout_pair = pipe_create();
-            posix_spawn_file_actions_addclose(&action, cout_pair.input);
-            posix_spawn_file_actions_adddup2(&action, cout_pair.output, kStdOutValue);
-            posix_spawn_file_actions_addclose(&action, cout_pair.output);
+            actions.addclose(cout_pair.input);
+            actions.adddup2(cout_pair.output, kStdOutValue);
+            actions.addclose(cout_pair.output);
             process.cout = cout_pair.input;
         } else if (cout_option == PipeOption::cerr) {
             // we have to wait until stderr is setup first
@@ -117,32 +136,32 @@ namespace subprocess {
                 throw std::invalid_argument("ProcessBuilder: bad pipe value for cout");
             }
             pipe_set_inheritable(this->cout_pipe, true);
-            posix_spawn_file_actions_adddup2(&action, this->cout_pipe, kStdOutValue);
-            posix_spawn_file_actions_addclose(&action, this->cout_pipe);
+            actions.adddup2(this->cout_pipe, kStdOutValue);
+            actions.addclose(this->cout_pipe);
         }
 
         if (cerr_option == PipeOption::close)
-            posix_spawn_file_actions_addclose(&action, kStdErrValue);
+            actions.addclose(kStdErrValue);
         else if (cerr_option == PipeOption::pipe) {
             cerr_pair = pipe_create();
-            posix_spawn_file_actions_addclose(&action, cerr_pair.input);
-            posix_spawn_file_actions_adddup2(&action, cerr_pair.output, kStdErrValue);
-            posix_spawn_file_actions_addclose(&action, cerr_pair.output);
+            actions.addclose(cerr_pair.input);
+            actions.adddup2(cerr_pair.output, kStdErrValue);
+            actions.addclose(cerr_pair.output);
             process.cerr = cerr_pair.input;
         } else if (cerr_option == PipeOption::cout) {
-            posix_spawn_file_actions_adddup2(&action, kStdOutValue, kStdErrValue);
+            actions.adddup2(kStdOutValue, kStdErrValue);
         } else if (cerr_option == PipeOption::specific) {
             if (this->cerr_pipe == kBadPipeValue) {
                 throw std::invalid_argument("ProcessBuilder: bad pipe value for cerr");
             }
 
             pipe_set_inheritable(this->cerr_pipe, true);
-            posix_spawn_file_actions_adddup2(&action, this->cerr_pipe, kStdErrValue);
-            posix_spawn_file_actions_addclose(&action, this->cerr_pipe);
+            actions.adddup2(this->cerr_pipe, kStdErrValue);
+            actions.addclose(this->cerr_pipe);
         }
 
         if (cout_option == PipeOption::cerr) {
-            posix_spawn_file_actions_adddup2(&action, kStdErrValue, kStdOutValue);
+            actions.adddup2(kStdErrValue, kStdOutValue);
         }
         pid_t pid;
         cstring_vector args;
@@ -198,7 +217,7 @@ namespace subprocess {
             CwdGuard cwdGuard;
             if (!this->cwd.empty())
                 subprocess::setcwd(this->cwd);
-            if(posix_spawn(&pid, args[0], &action, &attributes, &args[0], env) != 0)
+            if(posix_spawn(&pid, args[0], actions.get(), &attributes, &args[0], env) != 0)
                 throw SpawnError("posix_spawn failed with error: " + std::string(strerror(errno)));
         }
         args.clear();
