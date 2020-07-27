@@ -24,7 +24,7 @@
    <div id="projectname">subprocess
    &#160;<span id="projectnumber">0.1.0</span>
    </div>
-   <div id="projectbrief">Modernsubprocesslibraryforc++</div>
+   <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
  </tr>
  </tbody>
@@ -84,60 +84,61 @@ $(function() {
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html#a79da1514feb35edd486c5ec9c2ecee50">EnvironSetter</a>(<span class="keyword">const</span> std::string&amp; name);</div>
 <div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classsubprocess_1_1EnvironSetter.html#a2c4fb295c66a03266e62652a2a4780de">   13</a></span>&#160;        <span class="keyword">operator</span> std::string() { <span class="keywordflow">return</span> <a class="code" href="classsubprocess_1_1EnvironSetter.html#a955a7d6b84d41e28d63522ae9c0ad12e">to_string</a>(); }</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        std::string <a class="code" href="classsubprocess_1_1EnvironSetter.html#a955a7d6b84d41e28d63522ae9c0ad12e">to_string</a>();</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keyword">const</span> std::string &amp;str);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* str);</div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classsubprocess_1_1EnvironSetter.html#a58cd2abaaa08b3676257a022f988d2dd">   17</a></span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#a58cd2abaaa08b3676257a022f988d2dd">operator=</a>(std::nullptr_t) { <span class="keywordflow">return</span> *<span class="keyword">this</span> = (<span class="keyword">const</span> <span class="keywordtype">char</span>*)0;}</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keywordtype">int</span> value);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keywordtype">bool</span> value);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keywordtype">float</span> value);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;        std::string mName;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    };</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classsubprocess_1_1Environ.html">   26</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classsubprocess_1_1Environ.html">Environ</a> {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> <a class="code" href="classsubprocess_1_1Environ.html#af3287b06903fadeac33bcba6b0be107b">operator[]</a>(<span class="keyword">const</span> std::string&amp;);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    };</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">extern</span> <a class="code" href="classsubprocess_1_1Environ.html">Environ</a> <a class="code" href="namespacesubprocess.html#aca240ebce6584aaa3d9d3f49fd3a166c">cenv</a>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="namespacesubprocess.html#acad7789bae0ee9b8423fea542ae6ee38">EnvMap</a> <a class="code" href="namespacesubprocess.html#a9d1b7a4596c5db84d5ffacec6f14f8e5">current_env_copy</a>();</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::u16string <a class="code" href="namespacesubprocess.html#ac94ac29aaf9aaec4f6ed92e9c597ba4e">create_env_block</a>(<span class="keyword">const</span> <a class="code" href="namespacesubprocess.html#acad7789bae0ee9b8423fea542ae6ee38">EnvMap</a>&amp; map);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classsubprocess_1_1CwdGuard.html">   45</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classsubprocess_1_1CwdGuard.html">CwdGuard</a> {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classsubprocess_1_1CwdGuard.html#a0616cd23aa8d7badc37be63c20a190a8">   47</a></span>&#160;        <a class="code" href="classsubprocess_1_1CwdGuard.html#a0616cd23aa8d7badc37be63c20a190a8">CwdGuard</a>() {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            mCwd = <a class="code" href="namespacesubprocess.html#afac049e0e05d20376c1287582933b15c">subprocess::getcwd</a>();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        }</div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classsubprocess_1_1CwdGuard.html#aa4c74ce3e4a69d2303a130703054ac1d">   50</a></span>&#160;        <a class="code" href="classsubprocess_1_1CwdGuard.html#aa4c74ce3e4a69d2303a130703054ac1d">~CwdGuard</a>() {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <a class="code" href="namespacesubprocess.html#a2d29b3109bc9a487bd87bcc38e738b71">subprocess::setcwd</a>(mCwd);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        std::string mCwd;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    };</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classsubprocess_1_1EnvGuard.html">   61</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classsubprocess_1_1EnvGuard.html">EnvGuard</a> : <span class="keyword">public</span> <a class="code" href="classsubprocess_1_1CwdGuard.html">CwdGuard</a> {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classsubprocess_1_1EnvGuard.html#a4842db821ac2044516ca7dc1facd5770">   63</a></span>&#160;        <a class="code" href="classsubprocess_1_1EnvGuard.html#a4842db821ac2044516ca7dc1facd5770">EnvGuard</a>() {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            mEnv = <a class="code" href="namespacesubprocess.html#a9d1b7a4596c5db84d5ffacec6f14f8e5">current_env_copy</a>();</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        }</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <a class="code" href="classsubprocess_1_1EnvGuard.html#ad002dc3b17756dc6726367a34ee16e56">~EnvGuard</a>();</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <a class="code" href="namespacesubprocess.html#acad7789bae0ee9b8423fea542ae6ee38">EnvMap</a> mEnv;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    };</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">explicit</span> <span class="keyword">operator</span> bool() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        std::string <a class="code" href="classsubprocess_1_1EnvironSetter.html#a955a7d6b84d41e28d63522ae9c0ad12e">to_string</a>();</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keyword">const</span> std::string &amp;str);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* str);</div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classsubprocess_1_1EnvironSetter.html#a58cd2abaaa08b3676257a022f988d2dd">   18</a></span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#a58cd2abaaa08b3676257a022f988d2dd">operator=</a>(std::nullptr_t) { <span class="keywordflow">return</span> *<span class="keyword">this</span> = (<span class="keyword">const</span> <span class="keywordtype">char</span>*)0;}</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keywordtype">int</span> value);</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keywordtype">bool</span> value);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> &amp;<a class="code" href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">operator=</a>(<span class="keywordtype">float</span> value);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        std::string mName;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    };</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classsubprocess_1_1Environ.html">   27</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classsubprocess_1_1Environ.html">Environ</a> {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <a class="code" href="classsubprocess_1_1EnvironSetter.html">EnvironSetter</a> <a class="code" href="classsubprocess_1_1Environ.html#af3287b06903fadeac33bcba6b0be107b">operator[]</a>(<span class="keyword">const</span> std::string&amp;);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    };</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">extern</span> <a class="code" href="classsubprocess_1_1Environ.html">Environ</a> <a class="code" href="namespacesubprocess.html#aca240ebce6584aaa3d9d3f49fd3a166c">cenv</a>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="namespacesubprocess.html#acad7789bae0ee9b8423fea542ae6ee38">EnvMap</a> <a class="code" href="namespacesubprocess.html#a9d1b7a4596c5db84d5ffacec6f14f8e5">current_env_copy</a>();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    std::u16string <a class="code" href="namespacesubprocess.html#ac94ac29aaf9aaec4f6ed92e9c597ba4e">create_env_block</a>(<span class="keyword">const</span> <a class="code" href="namespacesubprocess.html#acad7789bae0ee9b8423fea542ae6ee38">EnvMap</a>&amp; map);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classsubprocess_1_1CwdGuard.html">   46</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classsubprocess_1_1CwdGuard.html">CwdGuard</a> {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classsubprocess_1_1CwdGuard.html#a0616cd23aa8d7badc37be63c20a190a8">   48</a></span>&#160;        <a class="code" href="classsubprocess_1_1CwdGuard.html#a0616cd23aa8d7badc37be63c20a190a8">CwdGuard</a>() {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            mCwd = <a class="code" href="namespacesubprocess.html#afac049e0e05d20376c1287582933b15c">subprocess::getcwd</a>();</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        }</div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classsubprocess_1_1CwdGuard.html#aa4c74ce3e4a69d2303a130703054ac1d">   51</a></span>&#160;        <a class="code" href="classsubprocess_1_1CwdGuard.html#aa4c74ce3e4a69d2303a130703054ac1d">~CwdGuard</a>() {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <a class="code" href="namespacesubprocess.html#a2d29b3109bc9a487bd87bcc38e738b71">subprocess::setcwd</a>(mCwd);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        std::string mCwd;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    };</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classsubprocess_1_1EnvGuard.html">   62</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classsubprocess_1_1EnvGuard.html">EnvGuard</a> : <span class="keyword">public</span> <a class="code" href="classsubprocess_1_1CwdGuard.html">CwdGuard</a> {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classsubprocess_1_1EnvGuard.html#a4842db821ac2044516ca7dc1facd5770">   64</a></span>&#160;        <a class="code" href="classsubprocess_1_1EnvGuard.html#a4842db821ac2044516ca7dc1facd5770">EnvGuard</a>() {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            mEnv = <a class="code" href="namespacesubprocess.html#a9d1b7a4596c5db84d5ffacec6f14f8e5">current_env_copy</a>();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <a class="code" href="classsubprocess_1_1EnvGuard.html#ad002dc3b17756dc6726367a34ee16e56">~EnvGuard</a>();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <a class="code" href="namespacesubprocess.html#acad7789bae0ee9b8423fea542ae6ee38">EnvMap</a> mEnv;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    };</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacesubprocess_html_afac049e0e05d20376c1287582933b15c"><div class="ttname"><a href="namespacesubprocess.html#afac049e0e05d20376c1287582933b15c">subprocess::getcwd</a></div><div class="ttdeci">std::string getcwd()</div></div>
 <div class="ttc" id="aclasssubprocess_1_1EnvironSetter_html"><div class="ttname"><a href="classsubprocess_1_1EnvironSetter.html">subprocess::EnvironSetter</a></div><div class="ttdef"><b>Definition:</b> environ.hpp:10</div></div>
-<div class="ttc" id="aclasssubprocess_1_1EnvGuard_html_a4842db821ac2044516ca7dc1facd5770"><div class="ttname"><a href="classsubprocess_1_1EnvGuard.html#a4842db821ac2044516ca7dc1facd5770">subprocess::EnvGuard::EnvGuard</a></div><div class="ttdeci">EnvGuard()</div><div class="ttdef"><b>Definition:</b> environ.hpp:63</div></div>
-<div class="ttc" id="aclasssubprocess_1_1EnvGuard_html"><div class="ttname"><a href="classsubprocess_1_1EnvGuard.html">subprocess::EnvGuard</a></div><div class="ttdef"><b>Definition:</b> environ.hpp:61</div></div>
-<div class="ttc" id="aclasssubprocess_1_1Environ_html"><div class="ttname"><a href="classsubprocess_1_1Environ.html">subprocess::Environ</a></div><div class="ttdef"><b>Definition:</b> environ.hpp:26</div></div>
-<div class="ttc" id="aclasssubprocess_1_1EnvironSetter_html_a58cd2abaaa08b3676257a022f988d2dd"><div class="ttname"><a href="classsubprocess_1_1EnvironSetter.html#a58cd2abaaa08b3676257a022f988d2dd">subprocess::EnvironSetter::operator=</a></div><div class="ttdeci">EnvironSetter &amp; operator=(std::nullptr_t)</div><div class="ttdef"><b>Definition:</b> environ.hpp:17</div></div>
+<div class="ttc" id="aclasssubprocess_1_1EnvGuard_html_a4842db821ac2044516ca7dc1facd5770"><div class="ttname"><a href="classsubprocess_1_1EnvGuard.html#a4842db821ac2044516ca7dc1facd5770">subprocess::EnvGuard::EnvGuard</a></div><div class="ttdeci">EnvGuard()</div><div class="ttdef"><b>Definition:</b> environ.hpp:64</div></div>
+<div class="ttc" id="aclasssubprocess_1_1EnvGuard_html"><div class="ttname"><a href="classsubprocess_1_1EnvGuard.html">subprocess::EnvGuard</a></div><div class="ttdef"><b>Definition:</b> environ.hpp:62</div></div>
+<div class="ttc" id="aclasssubprocess_1_1Environ_html"><div class="ttname"><a href="classsubprocess_1_1Environ.html">subprocess::Environ</a></div><div class="ttdef"><b>Definition:</b> environ.hpp:27</div></div>
+<div class="ttc" id="aclasssubprocess_1_1EnvironSetter_html_a58cd2abaaa08b3676257a022f988d2dd"><div class="ttname"><a href="classsubprocess_1_1EnvironSetter.html#a58cd2abaaa08b3676257a022f988d2dd">subprocess::EnvironSetter::operator=</a></div><div class="ttdeci">EnvironSetter &amp; operator=(std::nullptr_t)</div><div class="ttdef"><b>Definition:</b> environ.hpp:18</div></div>
 <div class="ttc" id="aclasssubprocess_1_1EnvironSetter_html_abae20963a35f647ecc9497b6b0d34463"><div class="ttname"><a href="classsubprocess_1_1EnvironSetter.html#abae20963a35f647ecc9497b6b0d34463">subprocess::EnvironSetter::operator=</a></div><div class="ttdeci">EnvironSetter &amp; operator=(const std::string &amp;str)</div></div>
 <div class="ttc" id="anamespacesubprocess_html_acad7789bae0ee9b8423fea542ae6ee38"><div class="ttname"><a href="namespacesubprocess.html#acad7789bae0ee9b8423fea542ae6ee38">subprocess::EnvMap</a></div><div class="ttdeci">std::map&lt; std::string, std::string &gt; EnvMap</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:84</div></div>
 <div class="ttc" id="anamespacesubprocess_html_aca240ebce6584aaa3d9d3f49fd3a166c"><div class="ttname"><a href="namespacesubprocess.html#aca240ebce6584aaa3d9d3f49fd3a166c">subprocess::cenv</a></div><div class="ttdeci">Environ cenv</div></div>
@@ -145,15 +146,15 @@ $(function() {
 <div class="ttc" id="anamespacesubprocess_html_a9d1b7a4596c5db84d5ffacec6f14f8e5"><div class="ttname"><a href="namespacesubprocess.html#a9d1b7a4596c5db84d5ffacec6f14f8e5">subprocess::current_env_copy</a></div><div class="ttdeci">EnvMap current_env_copy()</div></div>
 <div class="ttc" id="aclasssubprocess_1_1EnvironSetter_html_a79da1514feb35edd486c5ec9c2ecee50"><div class="ttname"><a href="classsubprocess_1_1EnvironSetter.html#a79da1514feb35edd486c5ec9c2ecee50">subprocess::EnvironSetter::EnvironSetter</a></div><div class="ttdeci">EnvironSetter(const std::string &amp;name)</div></div>
 <div class="ttc" id="aclasssubprocess_1_1EnvironSetter_html_a955a7d6b84d41e28d63522ae9c0ad12e"><div class="ttname"><a href="classsubprocess_1_1EnvironSetter.html#a955a7d6b84d41e28d63522ae9c0ad12e">subprocess::EnvironSetter::to_string</a></div><div class="ttdeci">std::string to_string()</div></div>
-<div class="ttc" id="aclasssubprocess_1_1CwdGuard_html"><div class="ttname"><a href="classsubprocess_1_1CwdGuard.html">subprocess::CwdGuard</a></div><div class="ttdef"><b>Definition:</b> environ.hpp:45</div></div>
+<div class="ttc" id="aclasssubprocess_1_1CwdGuard_html"><div class="ttname"><a href="classsubprocess_1_1CwdGuard.html">subprocess::CwdGuard</a></div><div class="ttdef"><b>Definition:</b> environ.hpp:46</div></div>
 <div class="ttc" id="anamespacesubprocess_html_ac94ac29aaf9aaec4f6ed92e9c597ba4e"><div class="ttname"><a href="namespacesubprocess.html#ac94ac29aaf9aaec4f6ed92e9c597ba4e">subprocess::create_env_block</a></div><div class="ttdeci">std::u16string create_env_block(const EnvMap &amp;map)</div></div>
 <div class="ttc" id="anamespacesubprocess_html"><div class="ttname"><a href="namespacesubprocess.html">subprocess</a></div><div class="ttdef"><b>Definition:</b> basic_types.hpp:19</div></div>
-<div class="ttc" id="aclasssubprocess_1_1CwdGuard_html_aa4c74ce3e4a69d2303a130703054ac1d"><div class="ttname"><a href="classsubprocess_1_1CwdGuard.html#aa4c74ce3e4a69d2303a130703054ac1d">subprocess::CwdGuard::~CwdGuard</a></div><div class="ttdeci">~CwdGuard()</div><div class="ttdef"><b>Definition:</b> environ.hpp:50</div></div>
+<div class="ttc" id="aclasssubprocess_1_1CwdGuard_html_aa4c74ce3e4a69d2303a130703054ac1d"><div class="ttname"><a href="classsubprocess_1_1CwdGuard.html#aa4c74ce3e4a69d2303a130703054ac1d">subprocess::CwdGuard::~CwdGuard</a></div><div class="ttdeci">~CwdGuard()</div><div class="ttdef"><b>Definition:</b> environ.hpp:51</div></div>
 <div class="ttc" id="abasic__types_8hpp_html"><div class="ttname"><a href="basic__types_8hpp.html">basic_types.hpp</a></div></div>
 <div class="ttc" id="aclasssubprocess_1_1EnvGuard_html_ad002dc3b17756dc6726367a34ee16e56"><div class="ttname"><a href="classsubprocess_1_1EnvGuard.html#ad002dc3b17756dc6726367a34ee16e56">subprocess::EnvGuard::~EnvGuard</a></div><div class="ttdeci">~EnvGuard()</div></div>
 <div class="ttc" id="anamespacesubprocess_html_a2d29b3109bc9a487bd87bcc38e738b71"><div class="ttname"><a href="namespacesubprocess.html#a2d29b3109bc9a487bd87bcc38e738b71">subprocess::setcwd</a></div><div class="ttdeci">void setcwd(const std::string &amp;path)</div></div>
 <div class="ttc" id="ashell__utils_8hpp_html"><div class="ttname"><a href="shell__utils_8hpp.html">shell_utils.hpp</a></div></div>
-<div class="ttc" id="aclasssubprocess_1_1CwdGuard_html_a0616cd23aa8d7badc37be63c20a190a8"><div class="ttname"><a href="classsubprocess_1_1CwdGuard.html#a0616cd23aa8d7badc37be63c20a190a8">subprocess::CwdGuard::CwdGuard</a></div><div class="ttdeci">CwdGuard()</div><div class="ttdef"><b>Definition:</b> environ.hpp:47</div></div>
+<div class="ttc" id="aclasssubprocess_1_1CwdGuard_html_a0616cd23aa8d7badc37be63c20a190a8"><div class="ttname"><a href="classsubprocess_1_1CwdGuard.html#a0616cd23aa8d7badc37be63c20a190a8">subprocess::CwdGuard::CwdGuard</a></div><div class="ttdeci">CwdGuard()</div><div class="ttdef"><b>Definition:</b> environ.hpp:48</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

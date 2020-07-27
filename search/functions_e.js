@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['wait_238',['wait',['../structsubprocess_1_1Popen.html#a41f7e47cf5715d430e91b97bc857f06c',1,'subprocess::Popen']]],
-  ['windows_5fargs_239',['windows_args',['../classsubprocess_1_1ProcessBuilder.html#abe928d9fdfb7b15d82bd322e9fd384f2',1,'subprocess::ProcessBuilder::windows_args()'],['../classsubprocess_1_1ProcessBuilder.html#a2f3e14c104dc1ce53c8f109d29ccc996',1,'subprocess::ProcessBuilder::windows_args(const CommandLine &amp;command)']]],
-  ['windows_5fcommand_240',['windows_command',['../classsubprocess_1_1ProcessBuilder.html#a53913f61954311eb5fcdc8989f08b599',1,'subprocess::ProcessBuilder']]]
+  ['terminate_240',['terminate',['../structsubprocess_1_1Popen.html#a7d119b0d4bee95e6998d2bbc4421a50e',1,'subprocess::Popen']]],
+  ['throw_5fos_5ferror_241',['throw_os_error',['../namespacesubprocess_1_1details.html#aa6de83c6850959a88ae8c3eb94906d1e',1,'subprocess::details']]],
+  ['timeout_242',['timeout',['../structsubprocess_1_1RunBuilder.html#af9ee981ad884d4f57385616039db324c',1,'subprocess::RunBuilder']]],
+  ['to_5fstring_243',['to_string',['../classsubprocess_1_1EnvironSetter.html#a955a7d6b84d41e28d63522ae9c0ad12e',1,'subprocess::EnvironSetter']]]
 ];

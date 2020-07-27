@@ -1,6 +1,9 @@
 var searchData=
 [
-  ['terminate_235',['terminate',['../structsubprocess_1_1Popen.html#a7d119b0d4bee95e6998d2bbc4421a50e',1,'subprocess::Popen']]],
-  ['timeout_236',['timeout',['../structsubprocess_1_1RunBuilder.html#af9ee981ad884d4f57385616039db324c',1,'subprocess::RunBuilder']]],
-  ['to_5fstring_237',['to_string',['../classsubprocess_1_1EnvironSetter.html#a955a7d6b84d41e28d63522ae9c0ad12e',1,'subprocess::EnvironSetter']]]
+  ['seconds_234',['seconds',['../classsubprocess_1_1StopWatch.html#a026152e8dde285831446394ccf829a9f',1,'subprocess::StopWatch']]],
+  ['send_5fsignal_235',['send_signal',['../structsubprocess_1_1Popen.html#a744bb5141eb9e037761e9cfd94d16f85',1,'subprocess::Popen']]],
+  ['setcwd_236',['setcwd',['../namespacesubprocess.html#a2d29b3109bc9a487bd87bcc38e738b71',1,'subprocess']]],
+  ['sleep_5fseconds_237',['sleep_seconds',['../namespacesubprocess.html#aa997fc79d7ae9f6d7c3bda6ae3dd733f',1,'subprocess']]],
+  ['start_238',['start',['../classsubprocess_1_1StopWatch.html#ae0a5fa81f20e00600b62ee7b4ac67702',1,'subprocess::StopWatch']]],
+  ['stopwatch_239',['StopWatch',['../classsubprocess_1_1StopWatch.html#afbd9231566106c1ac0d785e55e657206',1,'subprocess::StopWatch']]]
 ];

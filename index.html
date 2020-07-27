@@ -24,7 +24,7 @@
    <div id="projectname">subprocess
    &#160;<span id="projectnumber">0.1.0</span>
    </div>
-   <div id="projectbrief">Modernsubprocesslibraryforc++</div>
+   <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
  </tr>
  </tbody>
@@ -67,7 +67,7 @@ $(function() {
 <div class="title">subprocess </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>cross platform subprocess library for c++ similar to design of python subprocess.</p>
+<div class="textblock"><p>cross platform subprocess library for c++ similar to design of python subprocess. See <a href="https://benman64.github.io/subprocess/index.html">subprocess documentation</a> for further documentation.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 supports</h1>
 <ul>
@@ -96,81 +96,112 @@ Adhoc</h2>
 <li>add <code>#include &lt;<a class="el" href="subprocess_8hpp.html">subprocess.hpp</a>&gt;</code> to start using in source files.</li>
 </ol>
 <h2><a class="anchor" id="autotoc_md6"></a>
+&lt;a href="https://bitbucket.org/benman/teaport"&gt;Teaport&lt;/a&gt;</h2>
+<p>add this to your dependencies:</p>
+<div class="fragment"><div class="line">&quot;subprocess&quot;: &quot;0.1.+&quot;</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
 Todo add to cocoapods and perhaps others.</h2>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Examples</h1>
-<h2><a class="anchor" id="autotoc_md8"></a>
-Simple examples</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="subprocess_8hpp.html">subprocess.hpp</a>&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;thread&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;cstring&gt;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// quick echo it, doesn&#39;t capture</span></div>
-<div class="line"><a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>});</div>
+<div class="line"><span class="keywordtype">void</span> simple() {</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="structsubprocess_1_1CompletedProcess.html">subprocess::CompletedProcess</a>;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="structsubprocess_1_1RunBuilder.html">subprocess::RunBuilder</a>;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98b">subprocess::PipeOption</a>;</div>
+<div class="line">    <span class="comment">// quick echo it, doesn&#39;t capture</span></div>
+<div class="line">    <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>});</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// simplest capture output.</span></div>
-<div class="line">CompletedProcess process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>},</div>
-<div class="line">    RunBuilder.cout(PipeOption::pipe));</div>
+<div class="line">    <span class="comment">// simplest capture output.</span></div>
+<div class="line">    CompletedProcess process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>},</div>
+<div class="line">        RunBuilder().cout(PipeOption::pipe));</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// simplest sending data example</span></div>
-<div class="line">CompletedProcess process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;cat&quot;</span>},</div>
-<div class="line">    RunBuilder().cin(<span class="stringliteral">&quot;hello world&quot;</span>));</div>
+<div class="line">    <span class="comment">// simplest sending data example</span></div>
+<div class="line">    process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;cat&quot;</span>},</div>
+<div class="line">        RunBuilder().cin(<span class="stringliteral">&quot;hello world\n&quot;</span>));</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// simplest send &amp; capture</span></div>
-<div class="line">CompletedProcess process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;cat&quot;</span>},</div>
-<div class="line">    PopenBuilder().cin(<span class="stringliteral">&quot;hello world&quot;</span>).cout(PipeOption::pipe));</div>
-<div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;captured: &quot;</span> &lt;&lt; process.<a class="code" href="structsubprocess_1_1CompletedProcess.html#ac20c360d51c14eff1067c3afc57136d4">cout</a> &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line">    <span class="comment">// simplest send &amp; capture</span></div>
+<div class="line">    process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;cat&quot;</span>},</div>
+<div class="line">        RunBuilder().cin(<span class="stringliteral">&quot;hello world&quot;</span>).cout(PipeOption::pipe));</div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;captured: &quot;</span> &lt;&lt; process.<a class="code" href="structsubprocess_1_1CompletedProcess.html#ac20c360d51c14eff1067c3afc57136d4">cout</a> &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// capture stderr too.</span></div>
-<div class="line">CompletedProcess process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>},</div>
-<div class="line">    PopenBuilder().cerr(PipeOption::pipe)</div>
-<div class="line">    .cout(PipeOption::pipe)</div>
-<div class="line">    .check(<span class="keyword">true</span>) <span class="comment">// will throw CalledProcessError if returncode != 0.</span></div>
-<div class="line">);</div>
-<div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;cerr was: &quot;</span> &lt;&lt; process.<a class="code" href="structsubprocess_1_1CompletedProcess.html#a86455cf29388fc285f61caf1fd0ed881">cerr</a>;</div>
+<div class="line">    <span class="comment">// capture stderr too.</span></div>
+<div class="line">    process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>},</div>
+<div class="line">        RunBuilder().cerr(PipeOption::pipe)</div>
+<div class="line">        .cout(PipeOption::pipe)</div>
+<div class="line">        .check(<span class="keyword">true</span>) <span class="comment">// will throw CalledProcessError if returncode != 0.</span></div>
+<div class="line">    );</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// capture output. You can do this syntax if you have C++20</span></div>
-<div class="line">CompletedProcess process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>}, {</div>
-<div class="line">    .cout = PipeOption::pipe,</div>
-<div class="line">    <span class="comment">// make true to throw exception</span></div>
-<div class="line">    .check = <span class="keyword">false</span></div>
-<div class="line">});</div>
+<div class="line">    <span class="comment">// there is no cerr so it will be empty</span></div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;cerr was: &quot;</span> &lt;&lt; process.<a class="code" href="structsubprocess_1_1CompletedProcess.html#a86455cf29388fc285f61caf1fd0ed881">cerr</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line"> </div>
-<div class="line">std::cout &lt;&lt; <span class="stringliteral">&quot;captured: &quot;</span> &lt;&lt; process.<a class="code" href="structsubprocess_1_1CompletedProcess.html#ac20c360d51c14eff1067c3afc57136d4">cout</a> &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md9"></a>
-Popen examples</h2>
-<p>These examples show using the library while the subprocess is still running.</p>
-<div class="fragment"><div class="line"><span class="comment">// simplest example</span></div>
-<div class="line"><span class="comment">// capture is enabled by default</span></div>
-<div class="line">Popen popen = <a class="code" href="structsubprocess_1_1Popen.html">subprocess::Popen</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>}, RunBuilder().cout(PipeOption::pipe));</div>
-<div class="line"><span class="keywordtype">char</span> buf[1024] = {0}; <span class="comment">// initializes everything to 0</span></div>
-<div class="line"><a class="code" href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">subprocess::pipe_read</a>(popen.cout, buffer, 1024);</div>
-<div class="line">std::cout &lt;&lt; buf;</div>
-<div class="line"><span class="comment">// the destructor will call wait on your behalf.</span></div>
-<div class="line">popen.close();</div>
+<div class="line"><span class="preprocessor">#if __cplusplus &gt;= 202002L</span></div>
+<div class="line">    <span class="comment">// capture output. You can do this syntax if you have C++20</span></div>
+<div class="line">    process = <a class="code" href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>}, {</div>
+<div class="line">        .cout = PipeOption::pipe,</div>
+<div class="line">        <span class="comment">// make true to throw exception</span></div>
+<div class="line">        .check = <span class="keyword">false</span></div>
+<div class="line">    });</div>
+<div class="line"> </div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;captured: &quot;</span> &lt;&lt; process.<a class="code" href="structsubprocess_1_1CompletedProcess.html#ac20c360d51c14eff1067c3afc57136d4">cout</a> &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><span class="preprocessor">#endif</span></div>
+<div class="line">}</div>
 <div class="line"> </div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// communicate with data</span></div>
-<div class="line">Popen popen = <a class="code" href="structsubprocess_1_1Popen.html">subprocess::Popen</a>({<span class="stringliteral">&quot;cat&quot;</span>}, RunBuilder().cin(PipeOption::pipe).cout(PipeOption::pipe));</div>
-<div class="line"><span class="comment">/*  if we write more data than the buffer, we would dead lock if the subprocess</span></div>
-<div class="line"><span class="comment">    is deadlocked trying to write. So we spin a new thread for writing. When</span></div>
-<div class="line"><span class="comment">    you provide buffers for cin, internally the library spins it&#39;s own thread.</span></div>
-<div class="line"><span class="comment">*/</span></div>
-<div class="line">std::thread write_thread([&amp;]() {</div>
-<div class="line">    <a class="code" href="namespacesubprocess.html#ae0d00f29b5f126fb2111ffc24a094737">pipe_write</a>(popen.cin, <span class="stringliteral">&quot;hello world\n&quot;</span>, strlen(<span class="stringliteral">&quot;hello world\n&quot;</span>));</div>
-<div class="line">    <span class="comment">// no more data to send. If we don&#39;t close we may run into a deadlock as</span></div>
-<div class="line">    <span class="comment">// we are looking to read for more.</span></div>
-<div class="line">    popen.cin_close();</div>
-<div class="line">});</div>
-<div class="line"><span class="keywordtype">char</span> buf[1024] = {0}; <span class="comment">// initializes everything to 0</span></div>
-<div class="line"><a class="code" href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">subprocess::pipe_read</a>(popen.cout, buffer, 1024);</div>
-<div class="line">std::cout &lt;&lt; buf;</div>
-<div class="line">popen.close();</div>
-<div class="line"><span class="keywordflow">if</span> (write_thread.joinable())</div>
-<div class="line">    write_thread.join();</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md10"></a>
+<div class="line"><span class="keywordtype">void</span> popen_examples() {</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="structsubprocess_1_1CompletedProcess.html">subprocess::CompletedProcess</a>;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="structsubprocess_1_1RunBuilder.html">subprocess::RunBuilder</a>;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="structsubprocess_1_1Popen.html">subprocess::Popen</a>;</div>
+<div class="line">    <span class="keyword">using</span> <a class="code" href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98b">subprocess::PipeOption</a>;</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// simplest example</span></div>
+<div class="line">    <span class="comment">// capture is enabled by default</span></div>
+<div class="line">    Popen popen = <a class="code" href="structsubprocess_1_1RunBuilder.html">subprocess::RunBuilder</a>({<span class="stringliteral">&quot;echo&quot;</span>, <span class="stringliteral">&quot;hello&quot;</span>, <span class="stringliteral">&quot;world&quot;</span>})</div>
+<div class="line">        .<a class="code" href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98ba3f3e6d90d65e2596ac7a14f8ede70192">cout</a>(PipeOption::pipe).popen();</div>
+<div class="line">    <span class="keywordtype">char</span> buf[1024] = {0}; <span class="comment">// initializes everything to 0</span></div>
+<div class="line">    <a class="code" href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">subprocess::pipe_read</a>(popen.cout, buf, 1024);</div>
+<div class="line">    std::cout &lt;&lt; buf;</div>
+<div class="line">    <span class="comment">// the destructor will call wait on your behalf.</span></div>
+<div class="line">    popen.close();</div>
+<div class="line"> </div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// communicate with data</span></div>
+<div class="line">    popen = <a class="code" href="structsubprocess_1_1RunBuilder.html">subprocess::RunBuilder</a>({<span class="stringliteral">&quot;cat&quot;</span>}).cin(PipeOption::pipe)</div>
+<div class="line">        .<a class="code" href="structsubprocess_1_1RunBuilder.html#a6dfcf29723367d1fdc06c309052a6a99">cout</a>(PipeOption::pipe).<a class="code" href="structsubprocess_1_1RunBuilder.html#a3263e9aef6d1e15e055879b313b28f74">popen</a>();</div>
+<div class="line">    <span class="comment">/*  if we write more data than the buffer, we would dead lock if the subprocess</span></div>
+<div class="line"><span class="comment">        is deadlocked trying to write. So we spin a new thread for writing. When</span></div>
+<div class="line"><span class="comment">        you provide buffers for cin, internally the library spins it&#39;s own thread.</span></div>
+<div class="line"><span class="comment">    */</span></div>
+<div class="line">    std::thread write_thread([&amp;]() {</div>
+<div class="line">        <a class="code" href="namespacesubprocess.html#ae0d00f29b5f126fb2111ffc24a094737">subprocess::pipe_write</a>(popen.cin, <span class="stringliteral">&quot;hello world\n&quot;</span>, std::strlen(<span class="stringliteral">&quot;hello world\n&quot;</span>));</div>
+<div class="line">        <span class="comment">// no more data to send. If we don&#39;t close we may run into a deadlock as</span></div>
+<div class="line">        <span class="comment">// we are looking to read for more.</span></div>
+<div class="line">        popen.close_cin();</div>
+<div class="line">    });</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; c : buf)</div>
+<div class="line">        c = 0;</div>
+<div class="line"> </div>
+<div class="line">    <a class="code" href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">subprocess::pipe_read</a>(popen.cout, buf, 1024);</div>
+<div class="line">    std::cout &lt;&lt; buf;</div>
+<div class="line">    popen.close();</div>
+<div class="line">    <span class="keywordflow">if</span> (write_thread.joinable())</div>
+<div class="line">        write_thread.join();</div>
+<div class="line">}</div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;running basic examples\n&quot;</span>;</div>
+<div class="line">    simple();</div>
+<div class="line">    std::cout &lt;&lt; <span class="stringliteral">&quot;running popen_examples\n&quot;</span>;</div>
+<div class="line">    popen_examples();</div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md9"></a>
 Design</h1>
 <p>stdin, stdout, stderr are macros, so it's not possible to use those variable names. Instead c++ variable names is used cin, cout, cerr where the std* would have been respectively.</p>
 <p>PopenBuilder was a bad idea. Removed, now only RunBuilder remains which is enough. Have both is too confusing.</p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md10"></a>
 current progress</h1>
 <p>All tests are passing on macos, linux. Most tests pass on cross compiling on linux for windows using mingw. The library is almost feature complete.</p>
 <p>must to be implemented</p>
@@ -179,18 +210,31 @@ current progress</h1>
 <li>bugs, there is lots of them to be discovered.</li>
 <li>main structure is set in place and help is welcome.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md11"></a>
 not good</h1>
 <ul>
-<li>due to types c++ is more wordy </li>
+<li>due to types c++ is more wordy</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md12"></a>
+Changelog</h1>
+<h1><a class="anchor" id="autotoc_md13"></a>
+0.2.0</h1>
+<ul>
+<li>omg setting check=true is fixed. What a typo </li>
 </ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <div class="ttc" id="astructsubprocess_1_1CompletedProcess_html_a86455cf29388fc285f61caf1fd0ed881"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html#a86455cf29388fc285f61caf1fd0ed881">subprocess::CompletedProcess::cerr</a></div><div class="ttdeci">std::string cerr</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:158</div></div>
+<div class="ttc" id="astructsubprocess_1_1RunBuilder_html_a6dfcf29723367d1fdc06c309052a6a99"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html#a6dfcf29723367d1fdc06c309052a6a99">subprocess::RunBuilder::cout</a></div><div class="ttdeci">RunBuilder &amp; cout(const PipeVar &amp;cout)</div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:242</div></div>
 <div class="ttc" id="anamespacesubprocess_html_a92795bc72dbf89ea40ff81518544d71a"><div class="ttname"><a href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a></div><div class="ttdeci">CompletedProcess run(Popen &amp;popen, bool check=false)</div></div>
+<div class="ttc" id="astructsubprocess_1_1RunBuilder_html"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html">subprocess::RunBuilder</a></div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:228</div></div>
+<div class="ttc" id="anamespacesubprocess_html_a6956dd39174d68489539fb03c131c98b"><div class="ttname"><a href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98b">subprocess::PipeOption</a></div><div class="ttdeci">PipeOption</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:87</div></div>
 <div class="ttc" id="anamespacesubprocess_html_a23d8aee23835d946b7e099e4d2b00b08"><div class="ttname"><a href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">subprocess::pipe_read</a></div><div class="ttdeci">ssize_t pipe_read(PipeHandle, void *buffer, size_t size)</div></div>
-<div class="ttc" id="astructsubprocess_1_1Popen_html"><div class="ttname"><a href="structsubprocess_1_1Popen.html">subprocess::Popen</a></div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:64</div></div>
+<div class="ttc" id="astructsubprocess_1_1Popen_html"><div class="ttname"><a href="structsubprocess_1_1Popen.html">subprocess::Popen</a></div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:67</div></div>
 <div class="ttc" id="asubprocess_8hpp_html"><div class="ttname"><a href="subprocess_8hpp.html">subprocess.hpp</a></div></div>
+<div class="ttc" id="astructsubprocess_1_1CompletedProcess_html"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html">subprocess::CompletedProcess</a></div><div class="ttdef"><b>Definition:</b> basic_types.hpp:148</div></div>
+<div class="ttc" id="anamespacesubprocess_html_a6956dd39174d68489539fb03c131c98ba3f3e6d90d65e2596ac7a14f8ede70192"><div class="ttname"><a href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98ba3f3e6d90d65e2596ac7a14f8ede70192">subprocess::PipeOption::cout</a></div><div class="ttdeci">@ cout</div><div class="ttdoc">Redirects to stdout.</div></div>
+<div class="ttc" id="astructsubprocess_1_1RunBuilder_html_a3263e9aef6d1e15e055879b313b28f74"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html#a3263e9aef6d1e15e055879b313b28f74">subprocess::RunBuilder::popen</a></div><div class="ttdeci">Popen popen()</div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:264</div></div>
 <div class="ttc" id="astructsubprocess_1_1CompletedProcess_html_ac20c360d51c14eff1067c3afc57136d4"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html#ac20c360d51c14eff1067c3afc57136d4">subprocess::CompletedProcess::cout</a></div><div class="ttdeci">std::string cout</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:156</div></div>
 <div class="ttc" id="anamespacesubprocess_html_ae0d00f29b5f126fb2111ffc24a094737"><div class="ttname"><a href="namespacesubprocess.html#ae0d00f29b5f126fb2111ffc24a094737">subprocess::pipe_write</a></div><div class="ttdeci">ssize_t pipe_write(PipeHandle, const void *buffer, size_t size)</div></div>
 <!-- start footer part -->

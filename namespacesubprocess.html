@@ -24,7 +24,7 @@
    <div id="projectname">subprocess
    &#160;<span id="projectnumber">0.1.0</span>
    </div>
-   <div id="projectbrief">Modernsubprocesslibraryforc++</div>
+   <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
  </tr>
  </tbody>
@@ -64,6 +64,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
@@ -74,6 +75,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacesubprocess_1_1details"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess_1_1details.html">details</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsubprocess_1_1CalledProcessError.html">CalledProcessError</a></td></tr>
@@ -200,8 +206,8 @@ Functions</h2></td></tr>
 <tr class="separator:a593a8219169ade914be6501fe2045e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a519135a4810727048634d45646975110"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsubprocess_1_1PipePair.html">PipePair</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a519135a4810727048634d45646975110">pipe_create</a> (bool inheritable=true)</td></tr>
 <tr class="separator:a519135a4810727048634d45646975110"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab56ce74a27173a2741c5ba15efdad05d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#ab56ce74a27173a2741c5ba15efdad05d">pipe_set_inheritable</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a> handle, bool inheritable)</td></tr>
-<tr class="separator:ab56ce74a27173a2741c5ba15efdad05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba834c46c4308f2d91b117900b2bb217"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#aba834c46c4308f2d91b117900b2bb217">pipe_set_inheritable</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a> handle, bool inheritable)</td></tr>
+<tr class="separator:aba834c46c4308f2d91b117900b2bb217"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23d8aee23835d946b7e099e4d2b00b08"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">pipe_read</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>, void *buffer, size_t size)</td></tr>
 <tr class="separator:a23d8aee23835d946b7e099e4d2b00b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0d00f29b5f126fb2111ffc24a094737"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#ae0d00f29b5f126fb2111ffc24a094737">pipe_write</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>, const void *buffer, size_t size)</td></tr>
@@ -699,6 +705,12 @@ Variables</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structsubprocess_1_1OSError.html">OSError</a></td><td>if system call fails.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>pipe pair. If failure returned pipes will have values of kBadPipeValue </dd></dl>
 
 </div>
@@ -778,14 +790,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab56ce74a27173a2741c5ba15efdad05d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab56ce74a27173a2741c5ba15efdad05d">&#9670;&nbsp;</a></span>pipe_set_inheritable()</h2>
+<a id="aba834c46c4308f2d91b117900b2bb217"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba834c46c4308f2d91b117900b2bb217">&#9670;&nbsp;</a></span>pipe_set_inheritable()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool subprocess::pipe_set_inheritable </td>
+          <td class="memname">void subprocess::pipe_set_inheritable </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>&#160;</td>
           <td class="paramname"><em>handle</em>, </td>
@@ -804,6 +816,12 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Set the pipe to be inheritable or not for subprocess.</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="structsubprocess_1_1OSError.html">OSError</a></td><td>if system call fails.</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">inheritable</td><td>if true handle will be inherited in subprocess. </td></tr>
@@ -925,8 +943,10 @@ Variables</h2></td></tr>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="structsubprocess_1_1CalledProcessError.html">CalledProcessError</a></td><td>if check=true and process returned non-zero error code </td></tr>
     <tr><td class="paramname"><a class="el" href="structsubprocess_1_1TimeoutExpired.html">TimeoutExpired</a></td><td>if subprocess does not finish by timeout seconds. </td></tr>
-    <tr><td class="paramname"><a class="el" href="structsubprocess_1_1OSError.html">OSError</a></td><td>for os level exceptions. </td></tr>
+    <tr><td class="paramname"><a class="el" href="structsubprocess_1_1OSError.html">OSError</a></td><td>for os level exceptions such as failing OS commands. </td></tr>
     <tr><td class="paramname">std::runtime_error</td><td>for various errors. </td></tr>
+    <tr><td class="paramname">std::invalid_argument</td><td>if argument is invalid for current usage. </td></tr>
+    <tr><td class="paramname">std::domain_error</td><td>when arguments don't make sense working together</td></tr>
   </table>
   </dd>
 </dl>
