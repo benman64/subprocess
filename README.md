@@ -160,3 +160,10 @@ must to be implemented
 # not good
 
 - due to types c++ is more wordy
+
+# Changelog
+
+# 0.2.0
+
+- omg setting check=true is fixed. What a typo
+
