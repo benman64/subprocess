@@ -11,6 +11,7 @@ namespace subprocess {
     public:
         EnvironSetter(const std::string& name);
         operator std::string() { return to_string(); }
+        explicit operator bool() const;
         std::string to_string();
         EnvironSetter &operator=(const std::string &str);
         EnvironSetter &operator=(const char* str);

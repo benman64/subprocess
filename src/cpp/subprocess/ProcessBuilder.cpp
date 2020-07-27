@@ -366,8 +366,6 @@ namespace subprocess {
         } else if (signum == PSIGINT) {
             // can I use pid for processgroupid?
             success = GenerateConsoleCtrlEvent(CTRL_C_EVENT, pid);
-        } else if (signum == PSIGTERM) {
-            success = GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
         } else {
             success = GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
         }

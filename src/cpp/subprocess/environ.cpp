@@ -14,6 +14,13 @@ namespace subprocess {
     EnvironSetter::EnvironSetter(const std::string& name) {
         mName = name;
     }
+    EnvironSetter::operator bool() const {
+        if (mName.empty())
+            return false;
+        const char* value = ::getenv(mName.c_str());
+        if (value == nullptr) return false;
+        return !!*value;
+    }
     std::string EnvironSetter::to_string() {
         const char *value = ::getenv(mName.c_str());
         return value? value : "" ;
