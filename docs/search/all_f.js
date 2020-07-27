@@ -1,7 +1,19 @@
 var searchData=
 [
-  ['terminate_142',['terminate',['../structsubprocess_1_1Popen.html#a7d119b0d4bee95e6998d2bbc4421a50e',1,'subprocess::Popen']]],
-  ['timeout_143',['timeout',['../structsubprocess_1_1TimeoutExpired.html#a654a9ff4a3c7c5178128591a06cdc811',1,'subprocess::TimeoutExpired::timeout()'],['../structsubprocess_1_1RunOptions.html#a42a1261e1600291246bb750f3d14d26a',1,'subprocess::RunOptions::timeout()'],['../structsubprocess_1_1RunBuilder.html#af9ee981ad884d4f57385616039db324c',1,'subprocess::RunBuilder::timeout()']]],
-  ['timeoutexpired_144',['TimeoutExpired',['../structsubprocess_1_1TimeoutExpired.html',1,'subprocess']]],
-  ['to_5fstring_145',['to_string',['../classsubprocess_1_1EnvironSetter.html#a955a7d6b84d41e28d63522ae9c0ad12e',1,'subprocess::EnvironSetter']]]
+  ['details_128',['details',['../namespacesubprocess_1_1details.html',1,'subprocess']]],
+  ['subprocess_129',['subprocess',['../index.html',1,'']]],
+  ['seconds_130',['seconds',['../classsubprocess_1_1StopWatch.html#a026152e8dde285831446394ccf829a9f',1,'subprocess::StopWatch']]],
+  ['send_5fsignal_131',['send_signal',['../structsubprocess_1_1Popen.html#a744bb5141eb9e037761e9cfd94d16f85',1,'subprocess::Popen']]],
+  ['setcwd_132',['setcwd',['../namespacesubprocess.html#a2d29b3109bc9a487bd87bcc38e738b71',1,'subprocess']]],
+  ['shell_5futils_2ehpp_133',['shell_utils.hpp',['../shell__utils_8hpp.html',1,'']]],
+  ['signum_134',['SigNum',['../namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81',1,'subprocess']]],
+  ['sleep_5fseconds_135',['sleep_seconds',['../namespacesubprocess.html#aa997fc79d7ae9f6d7c3bda6ae3dd733f',1,'subprocess']]],
+  ['spawnerror_136',['SpawnError',['../structsubprocess_1_1SpawnError.html',1,'subprocess']]],
+  ['specific_137',['specific',['../namespacesubprocess.html#a6956dd39174d68489539fb03c131c98ba2067d966684a2ac6af99feb1da26dc25',1,'subprocess']]],
+  ['start_138',['start',['../classsubprocess_1_1StopWatch.html#ae0a5fa81f20e00600b62ee7b4ac67702',1,'subprocess::StopWatch']]],
+  ['stopwatch_139',['StopWatch',['../classsubprocess_1_1StopWatch.html',1,'subprocess::StopWatch'],['../classsubprocess_1_1StopWatch.html#afbd9231566106c1ac0d785e55e657206',1,'subprocess::StopWatch::StopWatch()']]],
+  ['string_140',['string',['../namespacesubprocess.html#aa573822f190b62487cffe4f280a7dea5ab45cffe084dd3d20d928bee85e7b0f21',1,'subprocess']]],
+  ['subprocess_141',['subprocess',['../namespacesubprocess.html',1,'']]],
+  ['subprocess_2ehpp_142',['subprocess.hpp',['../subprocess_8hpp.html',1,'']]],
+  ['subprocesserror_143',['SubprocessError',['../structsubprocess_1_1SubprocessError.html',1,'subprocess']]]
 ];

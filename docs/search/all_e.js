@@ -1,18 +1,9 @@
 var searchData=
 [
-  ['subprocess_127',['subprocess',['../index.html',1,'']]],
-  ['seconds_128',['seconds',['../classsubprocess_1_1StopWatch.html#a026152e8dde285831446394ccf829a9f',1,'subprocess::StopWatch']]],
-  ['send_5fsignal_129',['send_signal',['../structsubprocess_1_1Popen.html#a744bb5141eb9e037761e9cfd94d16f85',1,'subprocess::Popen']]],
-  ['setcwd_130',['setcwd',['../namespacesubprocess.html#a2d29b3109bc9a487bd87bcc38e738b71',1,'subprocess']]],
-  ['shell_5futils_2ehpp_131',['shell_utils.hpp',['../shell__utils_8hpp.html',1,'']]],
-  ['signum_132',['SigNum',['../namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81',1,'subprocess']]],
-  ['sleep_5fseconds_133',['sleep_seconds',['../namespacesubprocess.html#aa997fc79d7ae9f6d7c3bda6ae3dd733f',1,'subprocess']]],
-  ['spawnerror_134',['SpawnError',['../structsubprocess_1_1SpawnError.html',1,'subprocess']]],
-  ['specific_135',['specific',['../namespacesubprocess.html#a6956dd39174d68489539fb03c131c98ba2067d966684a2ac6af99feb1da26dc25',1,'subprocess']]],
-  ['start_136',['start',['../classsubprocess_1_1StopWatch.html#ae0a5fa81f20e00600b62ee7b4ac67702',1,'subprocess::StopWatch']]],
-  ['stopwatch_137',['StopWatch',['../classsubprocess_1_1StopWatch.html',1,'subprocess::StopWatch'],['../classsubprocess_1_1StopWatch.html#afbd9231566106c1ac0d785e55e657206',1,'subprocess::StopWatch::StopWatch()']]],
-  ['string_138',['string',['../namespacesubprocess.html#aa573822f190b62487cffe4f280a7dea5ab45cffe084dd3d20d928bee85e7b0f21',1,'subprocess']]],
-  ['subprocess_139',['subprocess',['../namespacesubprocess.html',1,'']]],
-  ['subprocess_2ehpp_140',['subprocess.hpp',['../subprocess_8hpp.html',1,'']]],
-  ['subprocesserror_141',['SubprocessError',['../structsubprocess_1_1SubprocessError.html',1,'subprocess']]]
+  ['readme_2emd_122',['README.md',['../README_8md.html',1,'']]],
+  ['returncode_123',['returncode',['../structsubprocess_1_1CalledProcessError.html#a7b236e2239c02c9e4a681e84f3177263',1,'subprocess::CalledProcessError::returncode()'],['../structsubprocess_1_1CompletedProcess.html#a3ea40dc26462940ab298b97b409b2a66',1,'subprocess::CompletedProcess::returncode()'],['../structsubprocess_1_1Popen.html#a0571b631650032877f3645d2c2bd5f8d',1,'subprocess::Popen::returncode()']]],
+  ['run_124',['run',['../classsubprocess_1_1ProcessBuilder.html#a058141a3c06f0d335ffeaeea6748dd76',1,'subprocess::ProcessBuilder::run()'],['../structsubprocess_1_1RunBuilder.html#aed5e7401e40b8ed35148e93839c3dcd7',1,'subprocess::RunBuilder::run()'],['../namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a',1,'subprocess::run(Popen &amp;popen, bool check=false)'],['../namespacesubprocess.html#aa06c757ba8f7240549ac6738e7acf041',1,'subprocess::run(CommandLine command, RunOptions options={})']]],
+  ['run_5fcommand_125',['run_command',['../classsubprocess_1_1ProcessBuilder.html#a0eb58655bb218f6c762447531082b417',1,'subprocess::ProcessBuilder']]],
+  ['runbuilder_126',['RunBuilder',['../structsubprocess_1_1RunBuilder.html',1,'subprocess::RunBuilder'],['../structsubprocess_1_1RunBuilder.html#a0b996565468b767487d8061020e62a67',1,'subprocess::RunBuilder::RunBuilder()'],['../structsubprocess_1_1RunBuilder.html#af2ab7d79146882e35b717c20dbec2c22',1,'subprocess::RunBuilder::RunBuilder(CommandLine cmd)'],['../structsubprocess_1_1RunBuilder.html#a3d818021904473502ccd72b4fac344ad',1,'subprocess::RunBuilder::RunBuilder(std::initializer_list&lt; std::string &gt; command)']]],
+  ['runoptions_127',['RunOptions',['../structsubprocess_1_1RunOptions.html',1,'subprocess']]]
 ];

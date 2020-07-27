@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">subprocess
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">0.2.0</span>
    </div>
    <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
@@ -207,7 +207,11 @@ $(function() {
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="structsubprocess_1_1CompletedProcess.html#a3ea40dc26462940ab298b97b409b2a66">returncode</a> == 0;</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        }</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    };</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;}</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno"><a class="line" href="namespacesubprocess_1_1details.html">  164</a></span>&#160;    <span class="keyword">namespace </span>details {</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacesubprocess_1_1details.html#aa6de83c6850959a88ae8c3eb94906d1e">throw_os_error</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">function</span>, <span class="keywordtype">int</span> errno_code);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacesubprocess_html_acf957435c587dd44dc06bdb404ec4e81a3660c6f0bbbd25e9ad22b39ee8fc16e7"><div class="ttname"><a href="namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81a3660c6f0bbbd25e9ad22b39ee8fc16e7">subprocess::PSIGPROF</a></div><div class="ttdeci">@ PSIGPROF</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:56</div></div>
 <div class="ttc" id="anamespacesubprocess_html_acf957435c587dd44dc06bdb404ec4e81ab57079c7bfd3fe362268fc3675f9dd1a"><div class="ttname"><a href="namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81ab57079c7bfd3fe362268fc3675f9dd1a">subprocess::PSIGINT</a></div><div class="ttdeci">@ PSIGINT</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:30</div></div>
@@ -272,6 +276,7 @@ $(function() {
 <div class="ttc" id="astructsubprocess_1_1CalledProcessError_html"><div class="ttname"><a href="structsubprocess_1_1CalledProcessError.html">subprocess::CalledProcessError</a></div><div class="ttdef"><b>Definition:</b> basic_types.hpp:130</div></div>
 <div class="ttc" id="anamespacesubprocess_html_acbf0a910de2a5b56e1a2bb5b9984d4fb"><div class="ttname"><a href="namespacesubprocess.html#acbf0a910de2a5b56e1a2bb5b9984d4fb">subprocess::kStdOutValue</a></div><div class="ttdeci">constexpr int kStdOutValue</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:77</div></div>
 <div class="ttc" id="anamespacesubprocess_html_acf957435c587dd44dc06bdb404ec4e81a81a54c3dc030c4b749cf9c6ec8623ee0"><div class="ttname"><a href="namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81a81a54c3dc030c4b749cf9c6ec8623ee0">subprocess::PSIGIO</a></div><div class="ttdeci">@ PSIGIO</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:58</div></div>
+<div class="ttc" id="anamespacesubprocess_1_1details_html_aa6de83c6850959a88ae8c3eb94906d1e"><div class="ttname"><a href="namespacesubprocess_1_1details.html#aa6de83c6850959a88ae8c3eb94906d1e">subprocess::details::throw_os_error</a></div><div class="ttdeci">void throw_os_error(const char *function, int errno_code)</div></div>
 <div class="ttc" id="astructsubprocess_1_1SpawnError_html"><div class="ttname"><a href="structsubprocess_1_1SpawnError.html">subprocess::SpawnError</a></div><div class="ttdef"><b>Definition:</b> basic_types.hpp:113</div></div>
 <div class="ttc" id="anamespacesubprocess_html_acf957435c587dd44dc06bdb404ec4e81a370d71cb121606d2cbd9015783b82259"><div class="ttname"><a href="namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81a370d71cb121606d2cbd9015783b82259">subprocess::PSIGURG</a></div><div class="ttdeci">@ PSIGURG</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:52</div></div>
 <div class="ttc" id="anamespacesubprocess_html_acf957435c587dd44dc06bdb404ec4e81a2f8e463718ab8b1c1c5330c2528a02a1"><div class="ttname"><a href="namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81a2f8e463718ab8b1c1c5330c2528a02a1">subprocess::PSIGILL</a></div><div class="ttdeci">@ PSIGILL</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:32</div></div>
