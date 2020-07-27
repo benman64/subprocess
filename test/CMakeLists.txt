@@ -55,3 +55,4 @@ add_executable(echo ./echo_main.cpp)
 add_executable(sleep ./sleep_main.cpp)
 add_executable(printenv ./printenv_main.cpp)
 
+add_executable(examples ./examples.cpp)

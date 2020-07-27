@@ -1,46 +1,3 @@
-# subprocess
-cross platform subprocess library for c++ similar to design of python
-subprocess. See [subprocess documentation](https://benman64.github.io/subprocess/index.html)
-for further documentation.
-
-
-# supports
-
-- very python like style of subprocess. With very nice syntax for c++20.
-- Connect output of process A to input of process B. However not pretty API for
-  this.
-
-## Shakey elements
-
-- The os error level exceptions is still changing. I'm thinking of having an
-  OSError subclass to abstract the OS differences.
-# requirements
-
-- c++17
-- linked with support for threading, filesystem
-
-# Integration
-
-##  Adhoc
-
-1. copy files in src/cpp to your project.
-2. add the top folder as include.
-3. make sure cpp files are compiled.
-4. add `#include <subprocess.hpp>` to start using in source files.
-
-## [Teaport](https://bitbucket.org/benman/teaport)
-
-add this to your dependencies:
-
-```
-"subprocess": "0.1.+"
-```
-
-## Todo add to cocoapods and perhaps others.
-
-# Examples
-
-```cpp
 #include <subprocess.hpp>
 #include <thread>
 #include <cstring>
@@ -135,28 +92,3 @@ int main(int argc, char** argv) {
     popen_examples();
     return 0;
 }
-```
-
-# Design
-
-stdin, stdout, stderr are macros, so it's not possible to use those variable
-names. Instead c++ variable names is used cin, cout, cerr where the std* would
-have been respectively.
-
-PopenBuilder was a bad idea. Removed, now only RunBuilder remains which is enough.
-Have both is too confusing.
-
-# current progress
-
-All tests are passing on macos, linux. Most tests pass on cross compiling on
-linux for windows using mingw. The library is almost feature complete.
-
-must to be implemented
-
-- documentation
-- bugs, there is lots of them to be discovered.
-- main structure is set in place and help is welcome.
-
-# not good
-
-- due to types c++ is more wordy

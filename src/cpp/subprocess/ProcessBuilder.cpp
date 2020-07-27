@@ -545,7 +545,7 @@ namespace subprocess {
         popen.wait();
         completed.returncode = popen.returncode;
         completed.args = command;
-        if (options.check) {
+        if (options.check && completed.returncode != 0) {
             CalledProcessError error("failed to execute " + command[0]);
             error.cmd           = command;
             error.returncode    = completed.returncode;
