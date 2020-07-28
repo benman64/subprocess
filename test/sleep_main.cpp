@@ -3,6 +3,7 @@
 #include <chrono>
 #include <charconv>
 #include <thread>
+#include <string>
 
 void sleep_seconds(double seconds) {
     std::chrono::duration<double> duration(seconds);
