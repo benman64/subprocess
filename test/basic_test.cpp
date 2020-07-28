@@ -5,6 +5,8 @@
 
 #include "test_config.h"
 
+#include <subprocess/utf8_to_utf16.hpp>
+
 using subprocess::CommandLine;
 using subprocess::CompletedProcess;
 using subprocess::PipeOption;
@@ -59,6 +61,13 @@ public:
     void testPath() {
         std::string path = subprocess::cenv["PATH"];
         TS_ASSERT(!path.empty());
+    }
+
+    void test_utf() {
+        auto utf16 = subprocess::utf8_to_utf16("hello world");
+        TS_ASSERT_EQUALS(utf16.size(), 11);
+        auto utf8 = subprocess::utf16_to_utf8(utf16);
+        TS_ASSERT_EQUALS(utf8, "hello world");
     }
 
     void testEnvGuard() {
