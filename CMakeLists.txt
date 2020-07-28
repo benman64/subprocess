@@ -30,7 +30,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 enable_cxx_compiler_flag_if_supported(-pedantic)
 
 if(MSVC)
-    add_compile_options(subprocess PUBLIC -Zc:__cplusplus)
+    add_compile_options(-Zc:__cplusplus)
 endif()
 
 
