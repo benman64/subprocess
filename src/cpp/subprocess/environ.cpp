@@ -79,11 +79,11 @@ namespace subprocess {
         EnvMap env;
 #ifdef _WIN32
         static_assert(sizeof(wchar_t) == 2, "unexpected size of wchar_t");
-        wchar_t* list = GetEnvironmentStringsW();
-        if (list == nullptr) {
+        wchar_t* env_block = GetEnvironmentStringsW();
+        if (env_block == nullptr) {
             throw OSError("GetEnvironmentStringsW failed");
         }
-        for (;*list; list += strlen16(list)+1) {
+        for (wchar_t* list = env_block; *list; list += strlen16(list)+1) {
             std::string u8str = utf16_to_utf8(list);
             const char *name_start = u8str.c_str();
             const char *name_end = name_start;
@@ -96,7 +96,7 @@ namespace subprocess {
                 continue;
             env[name] = value;
         }
-        FreeEnvironmentStringsW(list);
+        FreeEnvironmentStringsW(env_block);
 #else
         for (char** list = environ; *list; ++list) {
             char *name_start = *list;
