@@ -1,6 +1,6 @@
 {
     "name": "subprocess",
-    "version": "0.1.0",
+    "version": "scan-https://github.com/benman64/subprocess/releases/",
     "summary": "cross platform modern c++ subprocess library",
     "description": "",
     "homepage": "https://github.com/benman64/subprocess.git",
@@ -9,8 +9,7 @@
         "text": ""
     },
     "artifact": {
-        "git": "https://github.com/benman64/subprocess.git",
-        "tag": "0.1.0"
+        "archive": "https://github.com/benman64/subprocess/archive/v$version.zip"
     },
     "constraints": [
     ],

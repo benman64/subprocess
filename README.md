@@ -148,20 +148,24 @@ Have both is too confusing.
 
 # current progress
 
-All tests are passing on macos, linux. Most tests pass on cross compiling on
-linux for windows using mingw. The library is almost feature complete.
-
-must to be implemented
-
-- documentation
-- bugs, there is lots of them to be discovered.
-- main structure is set in place and help is welcome.
+all tests pass on linux & mac. Most pass under mingw. MSVC all tests pass but
+I don't believe it because mingw has some fail cases. Must be a bug in some of
+the tests.
 
 # not good
 
 - due to types c++ is more wordy
+- should termination deviate from what python does? Python sends the equivalent
+  SIGKILL on windows. I don't understand why, and it makes sense to send CTRL+Break.
+  Being different may be a surprise to python developers. But not being different
+  will be a surprise to people not aware of what python subprocess does.
 
 # Changelog
+
+# 0.3.0 coming soon
+
+- fixed MSVC issues & compiles
+- documentation should be complete. Please report any missing
 
 # 0.2.0
 
