@@ -53,9 +53,9 @@ namespace subprocess {
         BOOL bSuccess = FALSE;
 
         siStartInfo.cb          = sizeof(STARTUPINFO);
-        siStartInfo.hStdInput   = g_startupInfo.hStdInput;
-        siStartInfo.hStdOutput  = g_startupInfo.hStdOutput;
-        siStartInfo.hStdError   = g_startupInfo.hStdError;
+        siStartInfo.hStdInput   = GetStdHandle(STD_INPUT_HANDLE);
+        siStartInfo.hStdOutput  = GetStdHandle(STD_OUTPUT_HANDLE);
+        siStartInfo.hStdError   = GetStdHandle(STD_ERROR_HANDLE);
         siStartInfo.dwFlags    |= STARTF_USESTDHANDLES;
 
         if (cin_option == PipeOption::close) {

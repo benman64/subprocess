@@ -9,7 +9,8 @@
         "text": ""
     },
     "artifact": {
-        "archive": "https://github.com/benman64/subprocess/archive/v$version.zip"
+        "archive": "https://github.com/benman64/subprocess/archive/v$version.zip",
+        "remove_nests": true
     },
     "constraints": [
     ],
