@@ -171,6 +171,8 @@ the tests.
 # 0.4.0 coming soon
 
 - `CTRL_BREAK_EVENT` is sent for SIGTERM & terminate() functions on windows.
+- fixed invalid handles when launching a python script that then launches new
+  processes.
 
 # 0.3.0
 
