@@ -279,7 +279,7 @@ public:
     void testWaitTimeout() {
         subprocess::EnvGuard guard;
         prepend_this_to_path();
-        auto popen = RunBuilder({"sleep", "10"}).popen();
+        auto popen = RunBuilder({"sleep", "10"}).new_process_group(true).popen();
         subprocess::StopWatch timer;
 
         TS_ASSERT_THROWS(popen.wait(3), subprocess::TimeoutExpired)
@@ -334,7 +334,7 @@ public:
         subprocess::EnvGuard guard;
         prepend_this_to_path();
 
-        auto popen = RunBuilder({"sleep", "10"}).popen();
+        auto popen = RunBuilder({"sleep", "10"}).new_process_group(true).popen();
         subprocess::StopWatch timer;
         std::thread thread([&] {
             subprocess::sleep_seconds(3);
@@ -353,7 +353,7 @@ public:
         subprocess::EnvGuard guard;
         prepend_this_to_path();
 
-        auto popen = RunBuilder({"sleep", "10"}).popen();
+        auto popen = RunBuilder({"sleep", "10"}).new_process_group(true).popen();
         subprocess::StopWatch timer;
         std::thread thread([&] {
             subprocess::sleep_seconds(3);
