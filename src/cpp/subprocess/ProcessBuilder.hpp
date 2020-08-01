@@ -129,9 +129,13 @@ namespace subprocess {
         int wait(double timeout=-1);
         /** Send the signal to the process.
 
-            on windows all signals do CTRL_BREAK_EVENT. SIGINT sends a
-            CTRL_C_EVENT, and SIGKILL does hard termination with
-            TerminateProcess().
+            On windows SIGKILL does TerminateProcess, SIGINT sends CTRL_C_EVENT,
+            and anything else including SIGTERM sends CTRL_BREAK_EVENT. It is
+            important to note that such signals is sent to all processes
+            including your own and parents. This might result in your
+            application being terminated if you don't handle CTRL_BREAK_EVENT or
+            CTRL_C_EVENT. To mitigate this set the new process group flag
+            using RunBuilder::new_progress_group() to true.
 
             This deviates from pythons subprocess library behavior in which
             SIGTERM does the equivalent of SIGKILL in python.
@@ -253,7 +257,12 @@ namespace subprocess {
         RunBuilder& env(const EnvMap& env) {options.env = env; return *this;}
         /** Timeout to use for run() invocation only. */
         RunBuilder& timeout(double timeout) {options.timeout = timeout; return *this;}
-        /** Set to true to run as new process group */
+        /** Set to true to run as new process group. On windows the new process
+            has CTRL+C handler disabled so CTRL+C or sending SIGINT won't kill
+            the process. If you want to send CTRL+C you will need to make a new
+            exe that's sole purpose is enabling CTRL+C handling and launching
+            new process and giving process id back to parent process for use.
+         */
         RunBuilder& new_process_group(bool new_group) {options.new_process_group = new_group; return *this;}
         operator RunOptions() const {return options;}
 

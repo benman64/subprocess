@@ -365,7 +365,8 @@ namespace subprocess {
             // 137 just like when process is killed SIGKILL
             return TerminateProcess(process_info.hProcess, 137);
         } else if (signum == PSIGINT) {
-            // can I use pid for processgroupid?
+            // pid can be used as process group id. The signals are sent
+            // to the entire process group, including parents.
             success = GenerateConsoleCtrlEvent(CTRL_C_EVENT, pid);
         } else {
             success = GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
