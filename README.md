@@ -168,7 +168,7 @@ the tests.
 
 # Changelog
 
-# 0.4.0
+# 0.4.0 coming soon
 
 - `CTRL_BREAK_EVENT` is sent for SIGTERM & terminate() functions on windows.
 
