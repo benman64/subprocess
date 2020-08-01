@@ -18,7 +18,7 @@ function(enable_cxx_compiler_flag_if_supported flag)
     endif()
 endfunction()
 
-project(subprocess VERSION 0.2.0 LANGUAGES CXX C)
+project(subprocess VERSION 0.4.0 LANGUAGES CXX C)
 
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)

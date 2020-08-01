@@ -137,6 +137,12 @@ int main(int argc, char** argv) {
 }
 ```
 
+# Deviations
+
+- On windows terminating a process sends CTRL_BREAK_EVENT instead of hard
+  termination. You can send a SIGKILL and it will do a hard termination as
+  expected.
+
 # Design
 
 stdin, stdout, stderr are macros, so it's not possible to use those variable
@@ -162,7 +168,11 @@ the tests.
 
 # Changelog
 
-# 0.3.0 coming soon
+# 0.4.0
+
+- `CTRL_BREAK_EVENT` is sent for SIGTERM & terminate() functions on windows.
+
+# 0.3.0
 
 - fixed MSVC issues & compiles
 - documentation should be complete. Please report any missing

@@ -129,12 +129,17 @@ namespace subprocess {
         int wait(double timeout=-1);
         /** Send the signal to the process.
 
-            On windows SIGTERM is an alias for terminate()
+            on windows all signals do CTRL_BREAK_EVENT. SIGINT sends a
+            CTRL_C_EVENT, and SIGKILL does hard termination with
+            TerminateProcess().
+
+            This deviates from pythons subprocess library behavior in which
+            SIGTERM does the equivalent of SIGKILL in python.
         */
         bool send_signal(int signal);
-        /** Sends SIGTERM, on windows calls TerminateProcess() */
+        /** Sends SIGTERM, on windows sends CTRL_BREAK_EVENT */
         bool terminate();
-        /** sends SIGKILL on linux, alias for terminate() on windows. */
+        /** equivalent to send_signal(SIGKILL) */
         bool kill();
 
         /** Destructs the object and initializes to basic state */

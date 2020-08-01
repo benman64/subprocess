@@ -361,13 +361,18 @@ namespace subprocess {
         if (returncode != kBadReturnCode)
             return false;
         bool success = false;
-        if (signum == PSIGKILL || signum == PSIGTERM) {
-            return TerminateProcess(process_info.hProcess, 1);
+        if (signum == PSIGKILL) {
+            // 137 just like when process is killed SIGKILL
+            return TerminateProcess(process_info.hProcess, 137);
         } else if (signum == PSIGINT) {
             // can I use pid for processgroupid?
             success = GenerateConsoleCtrlEvent(CTRL_C_EVENT, pid);
         } else {
             success = GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
+        }
+        if (!success) {
+            std::string str = lastErrorString();
+            std::cout << "error: " << str << "\n";
         }
         return success;
     }
