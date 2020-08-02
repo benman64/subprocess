@@ -9,11 +9,25 @@ for further documentation.
 - very python like style of subprocess. With very nice syntax for c++20.
 - Connect output of process A to input of process B. However not pretty API for
   this.
+- Environment utilities to make it easy to get/set environment variables. as
+  easy as `subprocess::cenv["MY_VAR"] = "value"`.
+- subprocess::EnvGuard that will save the environment and reload it when scope
+  block ends, making it easy to have a temporary environment. Obviously this is
+  not thread safe as environment variable changes effects process wide.
+- Get a copy of environment so you can modify a std::map as you please for use
+  in a thread safe manner of environment and pass it along to subprocesses.
+- cross-platform `find_program`
+- find_program has special handling of "python3" on windows making it easy to
+  find python3 executable. It searches the path for python and inspects it's
+  version so that `find_program("python3")` is cross-platform.
+- Supports connecting process stdin, stdout, stderr to C++ streams making
+  redirection convenient. stdin can be connected with a std::string too.
 
 ## Shakey elements
 
 - The os error level exceptions is still changing. I'm thinking of having an
   OSError subclass to abstract the OS differences.
+
 # requirements
 
 - c++17
@@ -33,7 +47,7 @@ for further documentation.
 add this to your dependencies:
 
 ```
-"subprocess": "0.1.+"
+"subprocess": "0.4.+"
 ```
 
 ## Todo add to cocoapods and perhaps others.
@@ -141,30 +155,15 @@ int main(int argc, char** argv) {
 
 - On windows terminating a process sends CTRL_BREAK_EVENT instead of hard
   termination. You can send a SIGKILL and it will do a hard termination as
-  expected.
-
-# Design
-
-stdin, stdout, stderr are macros, so it's not possible to use those variable
-names. Instead c++ variable names is used cin, cout, cerr where the std* would
-have been respectively.
-
-PopenBuilder was a bad idea. Removed, now only RunBuilder remains which is enough.
-Have both is too confusing.
+  expected. Becareful as this may kill your process as it's sent to the process
+  group. See send_signal for more details.
+- cin, cout, cerr variable names are used instead of stdin, stdout, stderr as
+  std* are macros and cannot be used as names in C++.
 
 # current progress
 
-all tests pass on linux & mac. Most pass under mingw. MSVC all tests pass but
-I don't believe it because mingw has some fail cases. Must be a bug in some of
-the tests.
+All tests pass on linux & mac. Most pass under mingw & MSVC.
 
-# not good
-
-- due to types c++ is more wordy
-- should termination deviate from what python does? Python sends the equivalent
-  SIGKILL on windows. I don't understand why, and it makes sense to send CTRL+Break.
-  Being different may be a surprise to python developers. But not being different
-  will be a surprise to people not aware of what python subprocess does.
 
 # Changelog
 
@@ -173,6 +172,9 @@ the tests.
 - `CTRL_BREAK_EVENT` is sent for SIGTERM & terminate() functions on windows.
 - fixed invalid handles when launching a python script that then launches new
   processes.
+- new `kIsWin32` constant to help avoid ifdef use.
+- Documentation wording to be more confident as the library is looking pretty
+  good, and I haven't felt like changing much of the API.
 
 # 0.3.0
 

@@ -20,6 +20,16 @@ namespace subprocess {
     // ssize_t is not a standard type and not supported in MSVC
     typedef intptr_t ssize_t;
 
+
+    #ifdef _WIN32
+    /** True if on windows platform. This constant is useful so you can use
+        regular if statements instead of ifdefs and have both branches compile
+        therebye reducing chance of compiler error on a different platform.
+    */
+    constexpr bool kIsWin32 = true;
+    #else
+    constexpr bool kIsWin32 = false;
+    #endif
     /*  windows doesnt'h have all of these. The numeric values I hope are
         standardized. Posix specifies the number in the standard so most
         systems should be fine.

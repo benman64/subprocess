@@ -10,6 +10,9 @@ namespace subprocess {
 
         on windows tries adding suffixes specified in PATHEXT environment
         variable.
+
+        on windows an input of "python3" will also search "python" executables
+        and inspect their version to find an executable that offers python 3.x.
     */
     std::string find_program(const std::string& name);
     /** Clears cache used by find_program.
