@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">subprocess
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
    <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
@@ -119,6 +119,8 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:a7b1339acd8c78c245b684e6db4f28a0d"><td class="memItemLeft" align="right" valign="top">typedef intptr_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a7b1339acd8c78c245b684e6db4f28a0d">ssize_t</a></td></tr>
+<tr class="separator:a7b1339acd8c78c245b684e6db4f28a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a605699c6f2fd5a85dbd9851b352ecafe"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a></td></tr>
 <tr class="separator:a605699c6f2fd5a85dbd9851b352ecafe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91f6d5afd4edc86e5cde6021baec2197"><td class="memItemLeft" align="right" valign="top">typedef ::<a class="el" href="namespacesubprocess.html#a91f6d5afd4edc86e5cde6021baec2197">pid_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a91f6d5afd4edc86e5cde6021baec2197">pid_t</a></td></tr>
@@ -208,9 +210,9 @@ Functions</h2></td></tr>
 <tr class="separator:a519135a4810727048634d45646975110"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba834c46c4308f2d91b117900b2bb217"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#aba834c46c4308f2d91b117900b2bb217">pipe_set_inheritable</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a> handle, bool inheritable)</td></tr>
 <tr class="separator:aba834c46c4308f2d91b117900b2bb217"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23d8aee23835d946b7e099e4d2b00b08"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">pipe_read</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>, void *buffer, size_t size)</td></tr>
+<tr class="memitem:a23d8aee23835d946b7e099e4d2b00b08"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesubprocess.html#a7b1339acd8c78c245b684e6db4f28a0d">ssize_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">pipe_read</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>, void *buffer, size_t size)</td></tr>
 <tr class="separator:a23d8aee23835d946b7e099e4d2b00b08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0d00f29b5f126fb2111ffc24a094737"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#ae0d00f29b5f126fb2111ffc24a094737">pipe_write</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>, const void *buffer, size_t size)</td></tr>
+<tr class="memitem:ae0d00f29b5f126fb2111ffc24a094737"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesubprocess.html#a7b1339acd8c78c245b684e6db4f28a0d">ssize_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#ae0d00f29b5f126fb2111ffc24a094737">pipe_write</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>, const void *buffer, size_t size)</td></tr>
 <tr class="separator:ae0d00f29b5f126fb2111ffc24a094737"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf308aac4499e9090db043fbe2c686c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#aaf308aac4499e9090db043fbe2c686c7">pipe_ignore_and_close</a> (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a> handle)</td></tr>
 <tr class="separator:aaf308aac4499e9090db043fbe2c686c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -243,6 +245,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a7e40a8eeddaabd8a0ddaa0480c10c8d2"><td class="memItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a7e40a8eeddaabd8a0ddaa0480c10c8d2">kIsWin32</a> = false</td></tr>
+<tr class="separator:a7e40a8eeddaabd8a0ddaa0480c10c8d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f9a3c2166d9bec76ce74dc8df672667"><td class="memItemLeft" align="right" valign="top">constexpr char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a7f9a3c2166d9bec76ce74dc8df672667">kPathDelimiter</a> = ':'</td></tr>
 <tr class="separator:a7f9a3c2166d9bec76ce74dc8df672667"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8405b7d35896e58aa3570d5f345a65a1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesubprocess.html#a8405b7d35896e58aa3570d5f345a65a1">kBadPipeValue</a> = (<a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>)-1</td></tr>
@@ -323,6 +327,20 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">typedef std::variant&lt;<a class="el" href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98b">PipeOption</a>, std::string, <a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>, std::istream*, std::ostream*, FILE*&gt; <a class="el" href="namespacesubprocess.html#afae721af9f1e6a3e71dbdc977721dd77">subprocess::PipeVar</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7b1339acd8c78c245b684e6db4f28a0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b1339acd8c78c245b684e6db4f28a0d">&#9670;&nbsp;</a></span>ssize_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef intptr_t <a class="el" href="namespacesubprocess.html#a7b1339acd8c78c245b684e6db4f28a0d">subprocess::ssize_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -497,7 +515,7 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>suitable for windows </p>
+<p>Gives an environment block used in Windows APIs. Each item is null terminated, end of list is double null-terminated and conforms to expectations of various windows API. </p>
 
 </div>
 </div>
@@ -554,7 +572,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Searches for program in PATH environment variable.</p>
-<p>on windows tries adding suffixes specified in PATHEXT environment variable. </p>
+<p>on windows tries adding suffixes specified in PATHEXT environment variable.</p>
+<p>on windows an input of "python3" will also search "python" executables and inspect their version to find an executable that offers python 3.x. </p>
 
 </div>
 </div>
@@ -741,7 +760,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">ssize_t subprocess::pipe_read </td>
+          <td class="memname"><a class="el" href="namespacesubprocess.html#a7b1339acd8c78c245b684e6db4f28a0d">ssize_t</a> subprocess::pipe_read </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>&#160;</td>
           <td class="paramname">, </td>
@@ -838,7 +857,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">ssize_t subprocess::pipe_write </td>
+          <td class="memname"><a class="el" href="namespacesubprocess.html#a7b1339acd8c78c245b684e6db4f28a0d">ssize_t</a> subprocess::pipe_write </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacesubprocess.html#a605699c6f2fd5a85dbd9851b352ecafe">PipeHandle</a>&#160;</td>
           <td class="paramname">, </td>
@@ -1050,6 +1069,28 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>The value representing an invalid exit code possible for a process. </p>
+
+</div>
+</div>
+<a id="a7e40a8eeddaabd8a0ddaa0480c10c8d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e40a8eeddaabd8a0ddaa0480c10c8d2">&#9670;&nbsp;</a></span>kIsWin32</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool subprocess::kIsWin32 = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

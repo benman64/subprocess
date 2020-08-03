@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">subprocess
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
    <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
@@ -393,7 +393,7 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Set to true to run as new process group </p>
+<p>Set to true to run as new process group. On windows the new process has CTRL+C handler disabled so CTRL+C or sending SIGINT won't kill the process. If you want to send CTRL+C you will need to make a new exe that's sole purpose is enabling CTRL+C handling and launching new process and giving process id back to parent process for use. </p>
 
 </div>
 </div>

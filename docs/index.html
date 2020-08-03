@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">subprocess
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
    <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
@@ -73,11 +73,17 @@ supports</h1>
 <ul>
 <li>very python like style of subprocess. With very nice syntax for c++20.</li>
 <li>Connect output of process A to input of process B. However not pretty API for this.</li>
+<li>Environment utilities to make it easy to get/set environment variables. as easy as <code><a class="el" href="namespacesubprocess.html#aca240ebce6584aaa3d9d3f49fd3a166c">subprocess::cenv</a>["MY_VAR"] = "value"</code>.</li>
+<li><a class="el" href="classsubprocess_1_1EnvGuard.html">subprocess::EnvGuard</a> that will save the environment and reload it when scope block ends, making it easy to have a temporary environment. Obviously this is not thread safe as environment variable changes effects process wide.</li>
+<li>Get a copy of environment so you can modify a std::map as you please for use in a thread safe manner of environment and pass it along to subprocesses.</li>
+<li>cross-platform <code>find_program</code></li>
+<li>find_program has special handling of "python3" on windows making it easy to find python3 executable. It searches the path for python and inspects it's version so that <code>find_program("python3")</code> is cross-platform.</li>
+<li>Supports connecting process stdin, stdout, stderr to C++ streams making redirection convenient. stdin can be connected with a std::string too.</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md2"></a>
 Shakey elements</h2>
 <ul>
-<li>The os error level exceptions is still changing. I'm thinking of having an OSError subclass to abstract the OS differences. </li>
+<li>The os error level exceptions is still changing. I'm thinking of having an OSError subclass to abstract the OS differences.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
 requirements</h1>
@@ -98,7 +104,7 @@ Adhoc</h2>
 <h2><a class="anchor" id="autotoc_md6"></a>
 &lt;a href="https://bitbucket.org/benman/teaport"&gt;Teaport&lt;/a&gt;</h2>
 <p>add this to your dependencies:</p>
-<div class="fragment"><div class="line">&quot;subprocess&quot;: &quot;0.1.+&quot;</div>
+<div class="fragment"><div class="line">&quot;subprocess&quot;: &quot;0.4.+&quot;</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
 Todo add to cocoapods and perhaps others.</h2>
 <h1><a class="anchor" id="autotoc_md8"></a>
@@ -198,44 +204,49 @@ Examples</h1>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md9"></a>
-Design</h1>
-<p>stdin, stdout, stderr are macros, so it's not possible to use those variable names. Instead c++ variable names is used cin, cout, cerr where the std* would have been respectively.</p>
-<p>PopenBuilder was a bad idea. Removed, now only RunBuilder remains which is enough. Have both is too confusing.</p>
+Deviations</h1>
+<ul>
+<li>On windows terminating a process sends CTRL_BREAK_EVENT instead of hard termination. You can send a SIGKILL and it will do a hard termination as expected. Becareful as this may kill your process as it's sent to the process group. See send_signal for more details.</li>
+<li>cin, cout, cerr variable names are used instead of stdin, stdout, stderr as std* are macros and cannot be used as names in C++.</li>
+</ul>
 <h1><a class="anchor" id="autotoc_md10"></a>
 current progress</h1>
-<p>All tests are passing on macos, linux. Most tests pass on cross compiling on linux for windows using mingw. The library is almost feature complete.</p>
-<p>must to be implemented</p>
-<ul>
-<li>documentation</li>
-<li>bugs, there is lots of them to be discovered.</li>
-<li>main structure is set in place and help is welcome.</li>
-</ul>
+<p>All tests pass on linux &amp; mac. Most pass under mingw &amp; MSVC.</p>
 <h1><a class="anchor" id="autotoc_md11"></a>
-not good</h1>
-<ul>
-<li>due to types c++ is more wordy</li>
-</ul>
-<h1><a class="anchor" id="autotoc_md12"></a>
 Changelog</h1>
+<h1><a class="anchor" id="autotoc_md12"></a>
+0.4.0</h1>
+<ul>
+<li><code>CTRL_BREAK_EVENT</code> is sent for SIGTERM &amp; terminate() functions on windows.</li>
+<li>fixed invalid handles when launching a python script that then launches new processes.</li>
+<li>new <code>kIsWin32</code> constant to help avoid ifdef use.</li>
+<li>Documentation wording to be more confident as the library is looking pretty good, and I haven't felt like changing much of the API.</li>
+</ul>
 <h1><a class="anchor" id="autotoc_md13"></a>
+0.3.0</h1>
+<ul>
+<li>fixed MSVC issues &amp; compiles</li>
+<li>documentation should be complete. Please report any missing</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md14"></a>
 0.2.0</h1>
 <ul>
 <li>omg setting check=true is fixed. What a typo </li>
 </ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
-<div class="ttc" id="astructsubprocess_1_1CompletedProcess_html_a86455cf29388fc285f61caf1fd0ed881"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html#a86455cf29388fc285f61caf1fd0ed881">subprocess::CompletedProcess::cerr</a></div><div class="ttdeci">std::string cerr</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:158</div></div>
-<div class="ttc" id="astructsubprocess_1_1RunBuilder_html_a6dfcf29723367d1fdc06c309052a6a99"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html#a6dfcf29723367d1fdc06c309052a6a99">subprocess::RunBuilder::cout</a></div><div class="ttdeci">RunBuilder &amp; cout(const PipeVar &amp;cout)</div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:242</div></div>
+<div class="ttc" id="astructsubprocess_1_1CompletedProcess_html_a86455cf29388fc285f61caf1fd0ed881"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html#a86455cf29388fc285f61caf1fd0ed881">subprocess::CompletedProcess::cerr</a></div><div class="ttdeci">std::string cerr</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:171</div></div>
+<div class="ttc" id="astructsubprocess_1_1RunBuilder_html_a6dfcf29723367d1fdc06c309052a6a99"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html#a6dfcf29723367d1fdc06c309052a6a99">subprocess::RunBuilder::cout</a></div><div class="ttdeci">RunBuilder &amp; cout(const PipeVar &amp;cout)</div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:251</div></div>
 <div class="ttc" id="anamespacesubprocess_html_a92795bc72dbf89ea40ff81518544d71a"><div class="ttname"><a href="namespacesubprocess.html#a92795bc72dbf89ea40ff81518544d71a">subprocess::run</a></div><div class="ttdeci">CompletedProcess run(Popen &amp;popen, bool check=false)</div></div>
-<div class="ttc" id="astructsubprocess_1_1RunBuilder_html"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html">subprocess::RunBuilder</a></div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:228</div></div>
-<div class="ttc" id="anamespacesubprocess_html_a6956dd39174d68489539fb03c131c98b"><div class="ttname"><a href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98b">subprocess::PipeOption</a></div><div class="ttdeci">PipeOption</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:87</div></div>
+<div class="ttc" id="astructsubprocess_1_1RunBuilder_html"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html">subprocess::RunBuilder</a></div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:237</div></div>
+<div class="ttc" id="anamespacesubprocess_html_a6956dd39174d68489539fb03c131c98b"><div class="ttname"><a href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98b">subprocess::PipeOption</a></div><div class="ttdeci">PipeOption</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:100</div></div>
 <div class="ttc" id="anamespacesubprocess_html_a23d8aee23835d946b7e099e4d2b00b08"><div class="ttname"><a href="namespacesubprocess.html#a23d8aee23835d946b7e099e4d2b00b08">subprocess::pipe_read</a></div><div class="ttdeci">ssize_t pipe_read(PipeHandle, void *buffer, size_t size)</div></div>
 <div class="ttc" id="astructsubprocess_1_1Popen_html"><div class="ttname"><a href="structsubprocess_1_1Popen.html">subprocess::Popen</a></div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:67</div></div>
 <div class="ttc" id="asubprocess_8hpp_html"><div class="ttname"><a href="subprocess_8hpp.html">subprocess.hpp</a></div></div>
-<div class="ttc" id="astructsubprocess_1_1CompletedProcess_html"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html">subprocess::CompletedProcess</a></div><div class="ttdef"><b>Definition:</b> basic_types.hpp:148</div></div>
+<div class="ttc" id="astructsubprocess_1_1CompletedProcess_html"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html">subprocess::CompletedProcess</a></div><div class="ttdef"><b>Definition:</b> basic_types.hpp:161</div></div>
 <div class="ttc" id="anamespacesubprocess_html_a6956dd39174d68489539fb03c131c98ba3f3e6d90d65e2596ac7a14f8ede70192"><div class="ttname"><a href="namespacesubprocess.html#a6956dd39174d68489539fb03c131c98ba3f3e6d90d65e2596ac7a14f8ede70192">subprocess::PipeOption::cout</a></div><div class="ttdeci">@ cout</div><div class="ttdoc">Redirects to stdout.</div></div>
-<div class="ttc" id="astructsubprocess_1_1RunBuilder_html_a3263e9aef6d1e15e055879b313b28f74"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html#a3263e9aef6d1e15e055879b313b28f74">subprocess::RunBuilder::popen</a></div><div class="ttdeci">Popen popen()</div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:264</div></div>
-<div class="ttc" id="astructsubprocess_1_1CompletedProcess_html_ac20c360d51c14eff1067c3afc57136d4"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html#ac20c360d51c14eff1067c3afc57136d4">subprocess::CompletedProcess::cout</a></div><div class="ttdeci">std::string cout</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:156</div></div>
+<div class="ttc" id="astructsubprocess_1_1RunBuilder_html_a3263e9aef6d1e15e055879b313b28f74"><div class="ttname"><a href="structsubprocess_1_1RunBuilder.html#a3263e9aef6d1e15e055879b313b28f74">subprocess::RunBuilder::popen</a></div><div class="ttdeci">Popen popen()</div><div class="ttdef"><b>Definition:</b> ProcessBuilder.hpp:278</div></div>
+<div class="ttc" id="astructsubprocess_1_1CompletedProcess_html_ac20c360d51c14eff1067c3afc57136d4"><div class="ttname"><a href="structsubprocess_1_1CompletedProcess.html#ac20c360d51c14eff1067c3afc57136d4">subprocess::CompletedProcess::cout</a></div><div class="ttdeci">std::string cout</div><div class="ttdef"><b>Definition:</b> basic_types.hpp:169</div></div>
 <div class="ttc" id="anamespacesubprocess_html_ae0d00f29b5f126fb2111ffc24a094737"><div class="ttname"><a href="namespacesubprocess.html#ae0d00f29b5f126fb2111ffc24a094737">subprocess::pipe_write</a></div><div class="ttdeci">ssize_t pipe_write(PipeHandle, const void *buffer, size_t size)</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -167,7 +167,7 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 
 # Changelog
 
-# 0.4.0 coming soon
+# 0.4.0
 
 - `CTRL_BREAK_EVENT` is sent for SIGTERM & terminate() functions on windows.
 - fixed invalid handles when launching a python script that then launches new

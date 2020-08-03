@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">subprocess
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.4.0</span>
    </div>
    <div id="projectbrief">Modern subprocess library for c++</div>
   </td>
@@ -421,7 +421,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>sends SIGKILL on linux, alias for <a class="el" href="structsubprocess_1_1Popen.html#a7d119b0d4bee95e6998d2bbc4421a50e">terminate()</a> on windows. </p>
+<p>equivalent to send_signal(SIGKILL) </p>
 
 </div>
 </div>
@@ -509,7 +509,8 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Send the signal to the process.</p>
-<p>On windows SIGTERM is an alias for <a class="el" href="structsubprocess_1_1Popen.html#a7d119b0d4bee95e6998d2bbc4421a50e">terminate()</a> </p>
+<p>On windows SIGKILL does TerminateProcess, SIGINT sends CTRL_C_EVENT, and anything else including SIGTERM sends CTRL_BREAK_EVENT. It is important to note that such signals is sent to all processes including your own and parents. This might result in your application being terminated if you don't handle CTRL_BREAK_EVENT or CTRL_C_EVENT. To mitigate this set the new process group flag using RunBuilder::new_progress_group() to true.</p>
+<p>This deviates from pythons subprocess library behavior in which SIGTERM does the equivalent of SIGKILL in python. </p>
 
 </div>
 </div>
@@ -527,7 +528,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sends SIGTERM, on windows calls TerminateProcess() </p>
+<p>Sends SIGTERM, on windows sends CTRL_BREAK_EVENT </p>
 
 </div>
 </div>
