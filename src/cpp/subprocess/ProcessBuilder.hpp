@@ -151,7 +151,9 @@ namespace subprocess {
         /** Closes the cin pipe */
         void close_cin() {
             if (cin != kBadPipeValue) {
-                pipe_close(cin);
+				if (!cin_is_autoclosed) {
+					pipe_close(cin);
+				}
                 cin = kBadPipeValue;
             }
         }
@@ -162,6 +164,7 @@ namespace subprocess {
 #ifdef _WIN32
         PROCESS_INFORMATION process_info;
 #endif
+		bool cin_is_autoclosed = false;
     };
 
 
