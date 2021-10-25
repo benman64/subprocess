@@ -159,7 +159,7 @@ namespace subprocess {
         case PipeVarIndex::handle:
         case PipeVarIndex::option: return;
         case PipeVarIndex::string: // doesn't make sense
-        case PipeVarIndex::istream: // dousn't make sense
+        case PipeVarIndex::istream: // doesn't make sense
             throw std::domain_error("expected something to output to");
         case PipeVarIndex::ostream:
             pipe_thread(input, std::get<std::ostream*>(output));
