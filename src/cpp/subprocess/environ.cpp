@@ -10,7 +10,7 @@ using std::to_string;
 #define _DCRTIMP
 #endif
 
-extern "C" _DCRTIMP char** environ;
+extern "C" _DCRTIMP char **environ;
 
 namespace subprocess {
     Environ cenv;
