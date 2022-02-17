@@ -98,6 +98,7 @@ namespace subprocess {
         pid_t       pid         = 0;
         /** The exit value of the process. Valid once process is completed */
         int         returncode  = kBadReturnCode;
+        std::string cwd;
         CommandLine args;
 
         /** calls pipe_ignore_and_close on cout */
