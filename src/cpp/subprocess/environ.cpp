@@ -6,7 +6,11 @@
 #include "utf8_to_utf16.hpp"
 using std::to_string;
 
-extern "C" char **environ;
+#if !defined(_DCRTIMP)     // Windows-specific RTL DLL import macro
+#define _DCRTIMP
+#endif
+
+extern "C" _DCRTIMP char** environ;
 
 namespace subprocess {
     Environ cenv;
