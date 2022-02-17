@@ -129,9 +129,10 @@ namespace subprocess {
             process_flags |= CREATE_NEW_PROCESS_GROUP;
         }
         
+        process.cwd = this->cwd;
         // Create the child process.
 #if _WIN64
-        static std::u16string cmd_args{ utf8_to_utf16(args) };
+        std::u16string cmd_args{ utf8_to_utf16(args) };
         bSuccess = CreateProcess(
           (LPCWSTR)utf8_to_utf16(program).c_str(),
           (LPWSTR)cmd_args.data(),                                                      // command line
@@ -144,7 +145,7 @@ namespace subprocess {
           &siStartInfo,                                                                 // STARTUPINFO pointer
           &process.process_info);                                                       // receives PROCESS_INFORMATION
 #else
-        static std::string cmd_args{ args };
+        std::string cmd_args{ args };
         bSuccess = CreateProcess(
           (LPCSTR)program.c_str(),
           (LPSTR)cmd_args.data(),                                                       // command line
