@@ -333,7 +333,7 @@ namespace subprocess {
     int Popen::wait(double timeout) {
         if (returncode != kBadReturnCode)
             return returncode;
-        DWORD ms = timeout < 0? INFINITE : timeout*1000.0;
+        DWORD ms = timeout < 0 ? INFINITE : (DWORD)(timeout*1000.0);
         DWORD result = WaitForSingleObject(process_info.hProcess, ms);
         if (result == WAIT_TIMEOUT) {
             throw TimeoutExpired("timeout of " + std::to_string(ms) + " expired");

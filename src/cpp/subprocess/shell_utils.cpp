@@ -42,7 +42,7 @@ namespace {
             if (path.empty())
                 return false;
             return std::filesystem::is_regular_file(path);
-        } catch (std::filesystem::filesystem_error& e) {
+        } catch (std::filesystem::filesystem_error&) {
             return false;
         }
     }
