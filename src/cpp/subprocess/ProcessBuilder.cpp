@@ -548,7 +548,20 @@ namespace subprocess {
             cerr_thread.join();
         }
 
-        popen.wait();
+        try {
+            popen.wait(options.timeout);
+        } catch (subprocess::TimeoutExpired& expired) {
+            popen.send_signal(subprocess::SigNum::PSIGTERM);
+            popen.wait();
+
+            subprocess::TimeoutExpired timeout("subprocess::run timeout reached");
+            timeout.cmd = command;
+            timeout.timeout = options.timeout;
+            timeout.cout = std::move(completed.cout);
+            timeout.cerr = std::move(completed.cerr);
+            throw timeout;
+        }
+
         completed.returncode = popen.returncode;
         completed.args = command;
         if (options.check && completed.returncode != 0) {

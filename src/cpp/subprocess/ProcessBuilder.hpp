@@ -22,10 +22,6 @@ namespace subprocess {
     */
 
     struct RunOptions {
-        /** Set to true for subprocess::run() to throw exception. Ignored when
-            using Popen directly.
-        */
-        bool        check   = false;
         /** Option for cin, data to pipe to cin.  or created handle to use.
 
             if a pipe handle is used it will be made inheritable automatically
@@ -50,14 +46,20 @@ namespace subprocess {
 
         /** current working directory for new process to use */
         std::string cwd;
-        /** If empty inherits from current process */
-        EnvMap      env;
 
         /** Timeout in seconds. Raise TimeoutExpired.
 
             Only available if you use subprocess_run
         */
         double timeout  = -1;
+        /** Set to true for subprocess::run() to throw exception. Ignored when
+            using Popen directly.
+        */
+        bool        check   = false;
+        /** If empty inherits from current process */
+        EnvMap      env;
+
+
     };
     class ProcessBuilder;
     /** Active running process.

@@ -10,7 +10,6 @@ void sleep_seconds(double seconds) {
     std::this_thread::sleep_for(duration);
 }
 
-// no echo on windows, so we make this to help test the library
 int main(int argc, char** argv) {
     bool print_space = false;
     if (argc != 2)

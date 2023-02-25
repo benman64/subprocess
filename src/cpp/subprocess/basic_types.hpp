@@ -73,7 +73,7 @@ namespace subprocess {
 #ifndef _WIN32
     typedef int PipeHandle;
     typedef ::pid_t pid_t;
-    
+
     /** The path seperator for PATH environment variable. */
     constexpr char kPathDelimiter = ':';
     // to please windows we can't have this be a constexpr and be standard c++
@@ -130,7 +130,7 @@ namespace subprocess {
     struct TimeoutExpired : SubprocessError {
         using SubprocessError::SubprocessError;
         /** The command that was running */
-        CommandLine command;
+        CommandLine cmd;
         /** The specified timeout */
         double      timeout;
 
