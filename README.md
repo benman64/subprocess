@@ -167,7 +167,7 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 
 # Changelog
 
-# 0.5.0
+# 0.5.0 TBA
 
 - fixed #16 is_drive had a typo and so lowercase drives weren't properly
   interpretted.
