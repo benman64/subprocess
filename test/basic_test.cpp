@@ -162,7 +162,7 @@ public:
         TS_TRACE(message);
         // gcc 9 as installed by ubuntu doesn't have -std=c++20. So we use
         // this experimental value.
-        #if __cplusplus == 201707L && 0
+        #if __cplusplus >= 202002L
         TS_TRACE("using C++20");
         CompletedProcess completed = subprocess::run({"echo", "hello", "world"}, {
             .cout = PipeOption::pipe
@@ -170,7 +170,7 @@ public:
         TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
         TS_ASSERT(completed.cerr.empty());
         TS_ASSERT_EQUALS(completed.returncode, 0);
-        CommandLine args = {"hello", "world"};
+        CommandLine args = {"echo", "hello", "world"};
         TS_ASSERT_EQUALS(completed.args, args);
 
         completed = subprocess::run({"echo", "hello", "world"}, {
@@ -182,7 +182,7 @@ public:
         TS_ASSERT_EQUALS(completed.returncode, 0);
         TS_ASSERT_EQUALS(completed.args, args);
         #else
-        TS_SKIP("not c++20");
+        TS_SKIP("HelloWorldC++20");
         #endif
     }
 
@@ -219,6 +219,7 @@ public:
     void testCerrToCout() {
         subprocess::EnvGuard guard;
         prepend_this_to_path();
+        CommandLine args = {"echo", "hello", "world"};
 
         std::string path = subprocess::cenv["PATH"];
         TS_TRACE("PATH = " + path);
@@ -234,13 +235,15 @@ public:
             .run();
         TS_ASSERT_EQUALS(completed.cout, "");
         TS_ASSERT_EQUALS(completed.cerr, "hello world" EOL);
+        TS_ASSERT_EQUALS(completed.args, args);
 
-        completed = RunBuilder({"echo", "hello", "world"})
+        completed = RunBuilder(args)
             .cerr(subprocess::PipeOption::cout)
             .cout(PipeOption::pipe).run();
 
         TS_ASSERT_EQUALS(completed.cout, "hello world" EOL);
         TS_ASSERT_EQUALS(completed.cerr, "");
+        TS_ASSERT_EQUALS(completed.args, args);
 
     }
 
@@ -273,7 +276,21 @@ public:
 
         double timeout = timer.seconds();
         TS_ASSERT_DELTA(timeout, 3, 0.1);
+    }
 
+    void testRunTimeout() {
+        subprocess::EnvGuard guard;
+        prepend_this_to_path();
+        subprocess::StopWatch timer;
+        bool didThrow = false;
+        try {
+            auto completedProcess = subprocess::run({"sleep", "3"}, {.timeout = 1});
+        } catch (subprocess::TimeoutExpired& error) {
+            didThrow = true;
+        }
+        double timeout = timer.seconds();
+        TS_ASSERT_EQUALS(didThrow, true);
+        TS_ASSERT_DELTA(timeout, 1, 0.1);
     }
 
     void testWaitTimeout() {
@@ -375,7 +392,7 @@ public:
         CompletedProcess completed = subprocess::run({"cat"},
             PopenBuilder().cout(PipeOption::pipe)
             .build());
-        
+
 
     }
 */
