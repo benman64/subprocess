@@ -228,8 +228,8 @@ namespace subprocess {
             .cout(PipeOption::pipe)
             .cerr(PipeOption::cout)
             .run();
-        
-        
+
+
         since c++20 we can do this
         CompletedProcess process = subprocess::run({path, "--version"}, {
             .cout = PipeOption::pipe,
