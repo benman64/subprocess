@@ -60,7 +60,7 @@ namespace {
     }
 #ifdef _WIN32
     bool is_drive(char c) {
-        return (c >= 'a' && c <= 'a') || (c >= 'A' && c <= 'Z');
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 #endif
     bool is_absolute_path(const std::string& path) {
@@ -228,8 +228,8 @@ namespace subprocess {
             .cout(PipeOption::pipe)
             .cerr(PipeOption::cout)
             .run();
-        
-        
+
+
         since c++20 we can do this
         CompletedProcess process = subprocess::run({path, "--version"}, {
             .cout = PipeOption::pipe,
