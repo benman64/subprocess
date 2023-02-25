@@ -152,12 +152,13 @@ namespace subprocess {
         });
         thread.detach();
     }
-    void setup_redirect_stream(PipeHandle input, PipeVar& output) {
+    bool setup_redirect_stream(PipeHandle input, PipeVar& output) {
         PipeVarIndex index = static_cast<PipeVarIndex>(output.index());
 
         switch (index) {
+        // these 2 options are handled by the underlaying platform API
         case PipeVarIndex::handle:
-        case PipeVarIndex::option: return;
+        case PipeVarIndex::option: break;
         case PipeVarIndex::string: // doesn't make sense
         case PipeVarIndex::istream: // dousn't make sense
             throw std::domain_error("expected something to output to");
@@ -168,26 +169,30 @@ namespace subprocess {
             pipe_thread(input, std::get<FILE*>(output));
             break;
         }
+        return false;
     }
 
-    void setup_redirect_stream(PipeVar& input, PipeHandle output) {
+    bool setup_redirect_stream(PipeVar& input, PipeHandle output) {
         PipeVarIndex index = static_cast<PipeVarIndex>(input.index());
 
         switch (index) {
+        // these 2 options are handled by the underlaying platform API
         case PipeVarIndex::handle:
-        case PipeVarIndex::option: return;
+        case PipeVarIndex::option: break;
         case PipeVarIndex::string:
             pipe_thread(std::get<std::string>(input), output, true);
-            break;
+            return true;
         case PipeVarIndex::istream:
             pipe_thread(std::get<std::istream*>(input), output, true);
-            break;
+            return true;
         case PipeVarIndex::ostream:
             throw std::domain_error("reading from std::ostream doesn't make sense");
         case PipeVarIndex::file:
             pipe_thread(std::get<FILE*>(input), output, true);
-            break;
+            return true;
         }
+
+        return true;
     }
     Popen::Popen(CommandLine command, const RunOptions& optionsIn) {
         // we have to make a copy because of const
@@ -228,7 +233,10 @@ namespace subprocess {
 
         *this = builder.run_command(command);
 
-        setup_redirect_stream(options.cin, cin);
+        if (setup_redirect_stream(options.cin, cin)) {
+            // ownership taken
+            cin = kBadPipeValue;
+        }
         setup_redirect_stream(cout, options.cout);
         setup_redirect_stream(cerr, options.cerr);
     }
