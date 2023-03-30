@@ -49,7 +49,7 @@ namespace subprocess {
 
 
         PROCESS_INFORMATION piProcInfo  = {0};
-        STARTUPINFO siStartInfo         = {0};
+        STARTUPINFOA siStartInfo        = {0};
         BOOL bSuccess = FALSE;
 
         siStartInfo.cb          = sizeof(STARTUPINFO);
@@ -131,7 +131,7 @@ namespace subprocess {
             process_flags |= CREATE_NEW_PROCESS_GROUP;
         }
         // Create the child process.
-        bSuccess = CreateProcess(program.c_str(),
+        bSuccess = CreateProcessA(program.c_str(),
             (char*)args.c_str(),            // command line
             NULL,                           // process security attributes
             NULL,                           // primary thread security attributes
