@@ -83,7 +83,7 @@ namespace subprocess {
             process.cout = cout_pair.input;
             disable_inherit(cout_pair.input);
         } else if (cout_option == PipeOption::cerr) {
-            // Do this when stderr is setup bellow
+            // Do this when stderr is setup below
         } else if (cout_option == PipeOption::specific) {
             pipe_set_inheritable(cout_pipe, true);
             siStartInfo.hStdOutput = cout_pipe;
