@@ -35,9 +35,9 @@ void simple() {
 #if __cplusplus >= 202002L
     // capture output. You can do this syntax if you have C++20
     process = subprocess::run({"echo", "hello", "world"}, {
-        .cout = PipeOption::pipe,
-        // make true to throw exception
-        .check = false
+		// make true to throw exception
+		.check = false,
+		.cout = PipeOption::pipe
     });
 
     std::cout << "captured: " << process.cout << '\n';
