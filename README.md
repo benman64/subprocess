@@ -175,7 +175,7 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 - breaking: RunOptions which is used in subprocess::run order is changed to be
   identical to python subprocess::run. This effects users using c++20 designated
   initializers. Prior versions of compilers didn't seem to care about order.
-- fixed #5 cin double closed. Thanks [GerHobbelt][https://github.com/GerHobbelt]
+- fixed #5 cin double closed. Thanks [GerHobbelt](https://github.com/GerHobbelt)
 
 # 0.4.0
 
