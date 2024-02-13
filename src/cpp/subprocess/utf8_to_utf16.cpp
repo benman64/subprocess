@@ -112,7 +112,7 @@ namespace subprocess {
     std::u16string utf8_to_utf16(const std::string& string) {
         static_assert(sizeof(wchar_t) == 2, "wchar_t must be of size 2");
         static_assert(sizeof(wchar_t) == sizeof(char16_t), "wchar_t must be of size 2");
-        int size = string.size()+1;
+        int size = (int)string.size()+1;
         // Determine wstring size (`MultiByteToWideChar` returns the required size if
         // its last two arguments are `NULL` and 0).
         int r = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
@@ -127,7 +127,7 @@ namespace subprocess {
         wchar_t *wstring = new wchar_t[r];
         if (wstring == NULL) {
             SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-            return NULL;
+            return {};
         }
 
         // Now we pass our allocated string and its size as the last two arguments
@@ -137,7 +137,7 @@ namespace subprocess {
             wstring, r);
         if (r == 0) {
             delete [] wstring;
-            return NULL;
+            return {};
         }
         std::u16string result((char16_t*)wstring, r-1);
         delete [] wstring;
@@ -150,7 +150,7 @@ namespace subprocess {
 #endif
 
     std::string utf16_to_utf8(const std::u16string& wstring) {
-        int size = wstring.size()+1;
+        int size = (int)wstring.size()+1;
         // Determine wstring size (`MultiByteToWideChar` returns the required size if
         // its last two arguments are `NULL` and 0).
         int r = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
@@ -166,7 +166,7 @@ namespace subprocess {
         char *string = new char[r];
         if (string == nullptr) {
             SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-            return NULL;
+            return {};
         }
 
         // Now we pass our allocated string and its size as the last two arguments
@@ -176,7 +176,7 @@ namespace subprocess {
             string, r, NULL, NULL);
         if (r == 0) {
             delete [] string;
-            return NULL;
+            return {};
         }
         std::string result(string, r-1);
         delete [] string;
@@ -184,7 +184,7 @@ namespace subprocess {
     }
 
     std::string utf16_to_utf8(const std::wstring& wstring) {
-        int size = wstring.size()+1;
+        int size = (int)wstring.size()+1;
         // Determine wstring size (`MultiByteToWideChar` returns the required size if
         // its last two arguments are `NULL` and 0).
         int r = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
@@ -200,7 +200,7 @@ namespace subprocess {
         char *string = new char[r];
         if (string == nullptr) {
             SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-            return NULL;
+            return {};
         }
 
         // Now we pass our allocated string and its size as the last two arguments
@@ -210,7 +210,7 @@ namespace subprocess {
             string, r, NULL, NULL);
         if (r == 0) {
             delete [] string;
-            return NULL;
+            return {};
         }
         std::string result(string, r-1);
         delete [] string;

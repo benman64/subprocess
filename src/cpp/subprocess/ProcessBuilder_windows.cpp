@@ -9,6 +9,7 @@
 
 #include "shell_utils.hpp"
 #include "environ.hpp"
+#include "utf8_to_utf16.hpp"
 
 static STARTUPINFO g_startupInfo;
 static bool g_startupInfoInit = false;
@@ -48,7 +49,6 @@ namespace subprocess {
         saAttr.lpSecurityDescriptor = NULL;
 
 
-        PROCESS_INFORMATION piProcInfo  = {0};
         STARTUPINFO siStartInfo         = {0};
         BOOL bSuccess = FALSE;
 
@@ -71,7 +71,6 @@ namespace subprocess {
             process.cin = cin_pair.output;
             disable_inherit(cin_pair.output);
         }
-
 
         if (cout_option == PipeOption::close) {
             cout_pair = pipe_create();
@@ -109,7 +108,6 @@ namespace subprocess {
         if (cout_option == PipeOption::cerr) {
             siStartInfo.hStdOutput = siStartInfo.hStdError;
         }
-        const char* cwd = this->cwd.empty()? nullptr : this->cwd.c_str();
         std::string args = windows_args(command);
 
         void* env = nullptr;
@@ -130,19 +128,42 @@ namespace subprocess {
         if (this->new_process_group) {
             process_flags |= CREATE_NEW_PROCESS_GROUP;
         }
+        
+        process.cwd = this->cwd;
         // Create the child process.
-        bSuccess = CreateProcess(program.c_str(),
-            (char*)args.c_str(),            // command line
-            NULL,                           // process security attributes
-            NULL,                           // primary thread security attributes
-            TRUE,                           // handles are inherited
-            process_flags,                  // creation flags
-            env,                            // environment
-            cwd,                            // use parent's current directory
-            &siStartInfo,                   // STARTUPINFO pointer
-            &piProcInfo);                   // receives PROCESS_INFORMATION
-        process.process_info = piProcInfo;
-        process.pid = piProcInfo.dwProcessId;
+#if _WIN64
+        std::u16string cmd_args{ utf8_to_utf16(args) };
+        bSuccess = CreateProcess(
+          (LPCWSTR)utf8_to_utf16(program).c_str(),
+          (LPWSTR)cmd_args.data(),                                                      // command line
+          NULL,                                                                         // process security attributes
+          NULL,                                                                         // primary thread security attributes
+          TRUE,                                                                         // handles are inherited
+          process_flags,                                                                // creation flags
+          env,                                                                          // environment
+          (LPCWSTR)(this->cwd.empty() ? nullptr : utf8_to_utf16(this->cwd).c_str()),    // use parent's current directory
+          &siStartInfo,                                                                 // STARTUPINFO pointer
+          &process.process_info);                                                       // receives PROCESS_INFORMATION
+#else
+        std::string cmd_args{ args };
+        bSuccess = CreateProcess(
+          (LPCSTR)program.c_str(),
+          (LPSTR)cmd_args.data(),                                                       // command line
+          NULL,                                                                         // process security attributes
+          NULL,                                                                         // primary thread security attributes
+          TRUE,                                                                         // handles are inherited
+          process_flags,                                                                // creation flags
+          env,                                                                          // environment
+          (LPCSTR)(this->cwd.empty() ? nullptr : this->cwd.c_str()),                    // use parent's current directory
+          &siStartInfo,                                                                 // STARTUPINFO pointer
+          &process.process_info);                                                       // receives PROCESS_INFORMATION
+
+
+        LPCSTR cwd = this->cwd.empty() ? nullptr : (LPCSTR)this->cwd.c_str();
+        LPCSTR program_arg = (LPCSTR)program.c_str();
+        LPSTR cmd_args = (LPSTR)args.c_str();            // command line
+#endif
+        process.pid = process.process_info.dwProcessId;
         if (cin_pair)
             cin_pair.close_input();
         if (cout_pair)
