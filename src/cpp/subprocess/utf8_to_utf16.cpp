@@ -144,7 +144,7 @@ namespace subprocess {
         return result;
     }
 
-#ifdef __MINGW32__
+#ifndef WC_ERR_INVALID_CHARS
     // mingw doesn't define this
     constexpr int WC_ERR_INVALID_CHARS = 0;
 #endif
