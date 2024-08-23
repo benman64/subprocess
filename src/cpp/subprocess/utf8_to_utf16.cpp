@@ -118,7 +118,7 @@ namespace subprocess {
         int r = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
             string.c_str(), size, NULL, 0);
         if (r == 0) {
-            return std::u16string();
+            return {};
         }
         assert(r > 0);
 
@@ -127,7 +127,7 @@ namespace subprocess {
         wchar_t *wstring = new wchar_t[r];
         if (wstring == NULL) {
             SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-            return NULL;
+            return {};
         }
 
         // Now we pass our allocated string and its size as the last two arguments
@@ -137,7 +137,7 @@ namespace subprocess {
             wstring, r);
         if (r == 0) {
             delete [] wstring;
-            return NULL;
+            return {};
         }
         std::u16string result((char16_t*)wstring, r-1);
         delete [] wstring;
@@ -157,7 +157,7 @@ namespace subprocess {
             (wchar_t*)wstring.c_str(), size, NULL, 0, NULL, NULL);
 
         if (r == 0) {
-            return "";
+            return {};
         }
         assert(r > 0);
 
@@ -166,7 +166,7 @@ namespace subprocess {
         char *string = new char[r];
         if (string == nullptr) {
             SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-            return NULL;
+            return {};
         }
 
         // Now we pass our allocated string and its size as the last two arguments
@@ -176,7 +176,7 @@ namespace subprocess {
             string, r, NULL, NULL);
         if (r == 0) {
             delete [] string;
-            return NULL;
+            return {};
         }
         std::string result(string, r-1);
         delete [] string;
@@ -191,7 +191,7 @@ namespace subprocess {
             (wchar_t*)wstring.c_str(), size, NULL, 0, NULL, NULL);
 
         if (r == 0) {
-            return "";
+            return {};
         }
         assert(r > 0);
 
@@ -200,7 +200,7 @@ namespace subprocess {
         char *string = new char[r];
         if (string == nullptr) {
             SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-            return NULL;
+            return {};
         }
 
         // Now we pass our allocated string and its size as the last two arguments
@@ -210,7 +210,7 @@ namespace subprocess {
             string, r, NULL, NULL);
         if (r == 0) {
             delete [] string;
-            return NULL;
+            return {};
         }
         std::string result(string, r-1);
         delete [] string;
