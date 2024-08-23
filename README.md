@@ -175,7 +175,18 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 - breaking: RunOptions which is used in subprocess::run order is changed to be
   identical to python subprocess::run. This effects users using c++20 designated
   initializers. Prior versions of compilers didn't seem to care about order.
-- fixed #5 cin double closed. Thanks [GerHobbelt](https://github.com/GerHobbelt)
+- Thanks to [urs-muff](https://github.com/urs-muff) for windows 64bit support
+
+Thanks [GerHobbelt](https://github.com/GerHobbelt) for the following
+
+- fixed #5 cin double closed.
+- `_DCRTIMP` for environ
+- order of [check](https://github.com/benman64/subprocess/pull/8/commits/cbf1a7aff1a627c961f93fb39de94601a52ceb0a) fixed, done so to match python ordering
+  rather than changing example.
+
+- [yurivict](https://github.com/yurivict) Thanks for FREEBSD compatibility (I have no way of testing this)
+- [StableAgOH](https://github.com/StableAgOH) thanks for pointing out WC_ERR_INVALID_CHARS macro exists and std::string nullptr fix
+
 
 # 0.4.0
 

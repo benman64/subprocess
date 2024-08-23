@@ -4,7 +4,7 @@
 
 #else
 #include <spawn.h>
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(__FreeBSD__)
 #include <sys/wait.h>
 #else
 #include <wait.h>
@@ -160,7 +160,7 @@ namespace subprocess {
         case PipeVarIndex::handle:
         case PipeVarIndex::option: break;
         case PipeVarIndex::string: // doesn't make sense
-        case PipeVarIndex::istream: // dousn't make sense
+        case PipeVarIndex::istream: // doesn't make sense
             throw std::domain_error("expected something to output to");
         case PipeVarIndex::ostream:
             pipe_thread(input, std::get<std::ostream*>(output));
@@ -341,7 +341,7 @@ namespace subprocess {
     int Popen::wait(double timeout) {
         if (returncode != kBadReturnCode)
             return returncode;
-        DWORD ms = timeout < 0? INFINITE : timeout*1000.0;
+        DWORD ms = timeout < 0 ? INFINITE : (DWORD)(timeout*1000.0);
         DWORD result = WaitForSingleObject(process_info.hProcess, ms);
         if (result == WAIT_TIMEOUT) {
             throw TimeoutExpired("timeout of " + std::to_string(ms) + " expired");
