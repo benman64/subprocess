@@ -184,7 +184,8 @@ Thanks [GerHobbelt](https://github.com/GerHobbelt) for the following
 - order of [check](https://github.com/benman64/subprocess/pull/8/commits/cbf1a7aff1a627c961f93fb39de94601a52ceb0a) fixed, done so to match python ordering
   rather than changing example.
 
-- [yurivict](https://github.com/yurivict) Thanks for FREEBSD compatibility (I have no way of testing this)
+- [yurivict](https://github.com/yurivict) Thanks for FREEBSD compatibility (I
+  have no way of testing this) and use BUILD_TESTING in camke
 - [StableAgOH](https://github.com/StableAgOH) thanks for pointing out WC_ERR_INVALID_CHARS macro exists and std::string nullptr fix
 
 
