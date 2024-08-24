@@ -48,11 +48,14 @@ namespace subprocess {
         saAttr.bInheritHandle       = TRUE;
         saAttr.lpSecurityDescriptor = NULL;
 
-
-        STARTUPINFO siStartInfo         = {0};
+#ifdef UNICODE
+        STARTUPINFOW siStartInfo         = {0};
+#else
+        STARTUPINFOA siStartInfo         = {0};
+#endif
         BOOL bSuccess = FALSE;
 
-        siStartInfo.cb          = sizeof(STARTUPINFO);
+        siStartInfo.cb          = sizeof(siStartInfo);
         siStartInfo.hStdInput   = GetStdHandle(STD_INPUT_HANDLE);
         siStartInfo.hStdOutput  = GetStdHandle(STD_OUTPUT_HANDLE);
         siStartInfo.hStdError   = GetStdHandle(STD_ERROR_HANDLE);
@@ -128,12 +131,12 @@ namespace subprocess {
         if (this->new_process_group) {
             process_flags |= CREATE_NEW_PROCESS_GROUP;
         }
-        
+
         process.cwd = this->cwd;
         // Create the child process.
 #ifdef UNICODE // CreateProcessW
         std::u16string cmd_args{ utf8_to_utf16(args) };
-        bSuccess = CreateProcess(
+        bSuccess = CreateProcessW(
           (LPCWSTR)utf8_to_utf16(program).c_str(),
           (LPWSTR)cmd_args.data(),                                                      // command line
           NULL,                                                                         // process security attributes
