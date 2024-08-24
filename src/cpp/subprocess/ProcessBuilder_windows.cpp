@@ -131,7 +131,7 @@ namespace subprocess {
         
         process.cwd = this->cwd;
         // Create the child process.
-#if _WIN64 && !defined(__MINGW32__)
+#ifdef UNICODE // CreateProcessW
         std::u16string cmd_args{ utf8_to_utf16(args) };
         bSuccess = CreateProcess(
           (LPCWSTR)utf8_to_utf16(program).c_str(),
@@ -144,7 +144,7 @@ namespace subprocess {
           (LPCWSTR)(this->cwd.empty() ? nullptr : utf8_to_utf16(this->cwd).c_str()),    // use parent's current directory
           &siStartInfo,                                                                 // STARTUPINFO pointer
           &process.process_info);                                                       // receives PROCESS_INFORMATION
-#else
+#else // CreateProcessA
         std::string cmd_args{ args };
         bSuccess = CreateProcess(
           (LPCSTR)program.c_str(),
@@ -183,8 +183,6 @@ namespace subprocess {
             throw SpawnError("CreateProcess failed");
         return process;
     }
-
-
 }
 
 #endif
