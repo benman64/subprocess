@@ -40,7 +40,7 @@ function(cxx_test source)
     message(STATUS "runtime = ${RUNTIME_OUTPUT_DIRECTORY}")
     # this is only a gcc option
     #set_target_properties(${target} PROPERTIES COMPILE_FLAGS "-Wno-effc++")
-    add_test(NAME ${target} COMMAND ${RUNTIME_OUTPUT_DIRECTORY}/${target})
+    add_test(NAME ${target} COMMAND ${RUNTIME_OUTPUT_DIRECTORY}/${target} -v)
     #add_custom_command(TARGET test_all
     #    COMMAND $<TARGET_FILE:${target}>
     #)

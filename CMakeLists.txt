@@ -29,7 +29,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 enable_cxx_compiler_flag_if_supported(-pedantic)
-enable_cxx_compiler_flag_if_supported(-ggdb)
+#enable_cxx_compiler_flag_if_supported(-ggdb)
 
 if(MSVC)
     add_compile_options(-Zc:__cplusplus)
@@ -45,4 +45,3 @@ if (BUILD_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif(BUILD_TESTING)
-
