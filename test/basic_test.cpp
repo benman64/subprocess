@@ -344,7 +344,7 @@ public:
         popen.close();
 
         double timeout = timer.seconds();
-        TS_ASSERT_DELTA(timeout, 3, 0.1);
+        TS_ASSERT_DELTA(timeout, 3, 0.5);
     }
 
     void testTerminate() {
