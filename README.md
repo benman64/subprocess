@@ -183,8 +183,10 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
     rather than changing example.
 - [yurivict](https://github.com/yurivict) Thanks for FREEBSD compatibility (I
   have no way of testing this) and use BUILD_TESTING in camke
-- [StableAgOH](https://github.com/StableAgOH) thanks for pointing out WC_ERR_INVALID_CHARS macro exists and std::string nullptr fix
-
+- [StableAgOH](https://github.com/StableAgOH) thanks for
+  - pointing out WC_ERR_INVALID_CHARS macro exists and std::string nullptr fix
+  - mingw compatibility fix
+  - github CI pipelines
 
 # 0.4.0
 
