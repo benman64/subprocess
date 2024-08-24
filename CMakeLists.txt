@@ -33,6 +33,7 @@ enable_cxx_compiler_flag_if_supported(-ggdb)
 
 if(MSVC)
     add_compile_options(-Zc:__cplusplus)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 
