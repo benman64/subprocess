@@ -430,6 +430,25 @@ public:
             thread.join();
     }
 
+    void testHighFrequency() {
+        // Lesson: if you got threads, just make a simple frequency test.
+        for (int i = 0; i < 100; ++i) {
+            std::stringstream stream;
+            std::ostream* ostream = &stream;
+            auto completed = subprocess::run({"echo", "hello", "world"}, subprocess::RunOptions{
+                .cout = ostream,
+                .check = false
+            });
+            auto str = stream.str();
+            TS_ASSERT_EQUALS(str, "hello world\n");
+            TS_ASSERT_EQUALS(completed.returncode, 0);
+            if (str != "hello world\n")
+                break;
+            if (completed.returncode != 0)
+                break;
+        }
+    }
+
 
 /*
     void tesxtCat() {

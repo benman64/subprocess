@@ -74,8 +74,8 @@ namespace subprocess {
     }
 
     struct AutoClosePipe {
-        AutoClosePipe(PipeHandle handle, bool autoclose) {
-            mHandle = autoclose? handle : kBadPipeValue;
+        AutoClosePipe(PipeHandle handle) {
+            mHandle = handle;
         }
         ~AutoClosePipe() {
             close();
@@ -89,8 +89,9 @@ namespace subprocess {
     private:
         PipeHandle mHandle;
     };
-    void pipe_thread(PipeHandle input, std::ostream* output) {
+    std::thread pipe_thread(PipeHandle input, std::ostream* output) {
         std::thread thread([=]() {
+            AutoClosePipe autoclose(input);
             std::vector<char> buffer(2048);
             while (true) {
                 ssize_t transfered = pipe_read(input, &buffer[0], buffer.size());
@@ -99,11 +100,12 @@ namespace subprocess {
                 output->write(&buffer[0], transfered);
             }
         });
-        thread.detach();
+        return thread;
     }
 
-    void pipe_thread(PipeHandle input, FILE* output) {
+    std::thread pipe_thread(PipeHandle input, FILE* output) {
         std::thread thread([=]() {
+            AutoClosePipe autoclose(input);
             std::vector<char> buffer(2048);
             while (true) {
                 ssize_t transfered = pipe_read(input, &buffer[0], buffer.size());
@@ -112,11 +114,11 @@ namespace subprocess {
                 fwrite(&buffer[0], 1, transfered, output);
             }
         });
-        thread.detach();
+        return thread;
     }
-    void pipe_thread(FILE* input, PipeHandle output, bool bautoclose) {
+    std::thread pipe_thread(FILE* input, PipeHandle output) {
         std::thread thread([=]() {
-            AutoClosePipe autoclose(output, bautoclose);
+            AutoClosePipe autoclose(output);
             std::vector<char> buffer(2048);
             while (true) {
                 ssize_t transfered = fread(&buffer[0], 1, buffer.size(), input);
@@ -125,11 +127,11 @@ namespace subprocess {
                 pipe_write(output, &buffer[0], transfered);
             }
         });
-        thread.detach();
+        return thread;
     }
-    void pipe_thread(std::string& input, PipeHandle output, bool bautoclose) {
-        std::thread thread([input(move(input)), output, bautoclose]() {
-            AutoClosePipe autoclose(output, bautoclose);
+    std::thread pipe_thread(std::string& input, PipeHandle output) {
+        std::thread thread([input(move(input)), output]() {
+            AutoClosePipe autoclose(output);
 
             std::size_t pos = 0;
             while (pos < input.size()) {
@@ -139,11 +141,11 @@ namespace subprocess {
                 pos += transfered;
             }
         });
-        thread.detach();
+        return thread;
     }
-    void pipe_thread(std::istream* input, PipeHandle output, bool bautoclose) {
+    std::thread pipe_thread(std::istream* input, PipeHandle output) {
         std::thread thread([=]() {
-            AutoClosePipe autoclose(output, bautoclose);
+            AutoClosePipe autoclose(output);
             std::vector<char> buffer(2048);
             while (true) {
                 input->read(&buffer[0], buffer.size());
@@ -158,9 +160,9 @@ namespace subprocess {
                 pipe_write(output, &buffer[0], transfered);
             }
         });
-        thread.detach();
+        return thread;
     }
-    bool setup_redirect_stream(PipeHandle input, PipeVar& output) {
+    std::thread setup_redirect_stream(PipeHandle input, PipeVar& output) {
         PipeVarIndex index = static_cast<PipeVarIndex>(output.index());
 
         switch (index) {
@@ -171,16 +173,14 @@ namespace subprocess {
         case PipeVarIndex::istream: // doesn't make sense
             throw std::domain_error("expected something to output to");
         case PipeVarIndex::ostream:
-            pipe_thread(input, std::get<std::ostream*>(output));
-            break;
+            return pipe_thread(input, std::get<std::ostream*>(output));
         case PipeVarIndex::file:
-            pipe_thread(input, std::get<FILE*>(output));
-            break;
+            return pipe_thread(input, std::get<FILE*>(output));
         }
-        return false;
+        return {};
     }
 
-    bool setup_redirect_stream(PipeVar& input, PipeHandle output) {
+    std::thread setup_redirect_stream(PipeVar& input, PipeHandle output) {
         PipeVarIndex index = static_cast<PipeVarIndex>(input.index());
 
         switch (index) {
@@ -188,19 +188,16 @@ namespace subprocess {
         case PipeVarIndex::handle:
         case PipeVarIndex::option: break;
         case PipeVarIndex::string:
-            pipe_thread(std::get<std::string>(input), output, true);
-            return true;
+            return pipe_thread(std::get<std::string>(input), output, true);
         case PipeVarIndex::istream:
-            pipe_thread(std::get<std::istream*>(input), output, true);
-            return true;
+            return pipe_thread(std::get<std::istream*>(input), output, true);
         case PipeVarIndex::ostream:
             throw std::domain_error("reading from std::ostream doesn't make sense");
         case PipeVarIndex::file:
-            pipe_thread(std::get<FILE*>(input), output, true);
-            return true;
+            return pipe_thread(std::get<FILE*>(input), output, true);
         }
 
-        return true;
+        return {};
     }
     Popen::Popen(CommandLine command, const RunOptions& optionsIn) {
         // we have to make a copy because of const
@@ -241,12 +238,16 @@ namespace subprocess {
 
         *this = builder.run_command(command);
 
-        if (setup_redirect_stream(options.cin, cin)) {
-            // ownership taken
+        cin_thread = setup_redirect_stream(options.cin, cin);
+        cout_thread = setup_redirect_stream(cout, options.cout);
+        cerr_thread = setup_redirect_stream(cerr, options.cerr);
+        // the background thread will take ownership and auto close the pipe
+        if (cin_thread.joinable()) {
             cin = kBadPipeValue;
-        }
-        setup_redirect_stream(cout, options.cout);
-        setup_redirect_stream(cerr, options.cerr);
+        if (cout_thread.joinable())
+            cout = kBadPipeValue;
+        if (cerr_thread.joinable())
+            cerr = kBadPipeValue;
     }
 
     Popen::Popen(Popen&& other) {
@@ -280,6 +281,12 @@ namespace subprocess {
         close();
     }
     void Popen::close() {
+        if (cin_thread.joinable())
+            cin_thread.join();
+        if (cout_thread.joinable())
+            cout_thread.join();
+        if (cerr_thread.joinable())
+            cerr_thread.join();
         if (cin != kBadPipeValue)
             pipe_close(cin);
         if (cout != kBadPipeValue)

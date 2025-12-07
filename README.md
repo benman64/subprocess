@@ -188,6 +188,7 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
   - pointing out WC_ERR_INVALID_CHARS macro exists and std::string nullptr fix
   - mingw compatibility fix
   - github CI pipelines
+- fixed: wait for background threads before destroying Popen.
 
 # 0.4.0
 

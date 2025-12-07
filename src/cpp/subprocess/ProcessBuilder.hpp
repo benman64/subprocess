@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <vector>
 #include <string>
+#include <thread>
 
 #include "pipe.hpp"
 #include "PipeVar.hpp"
@@ -25,19 +26,38 @@ namespace subprocess {
         /** Option for cin, data to pipe to cin.  or created handle to use.
 
             if a pipe handle is used it will be made inheritable automatically
-            when process is created and closed on the parents end.
+            when process is created and closed on the parents end. This means
+            ownership is taken. Becareful not to provide your processes stdin
+            handle. Use PipeOption::inherit for that special case.
+
+            If std::istream* then you must make sure the life time of the stream
+            is longer than Popen.
         */
         PipeVar     cin     = PipeOption::inherit;
         /** Option for cout, or handle to use.
 
             if a pipe handle is used it will be made inheritable automatically
-            when process is created and closed on the parents end.
+            when process is created and closed on the parents end. This means
+            ownership is taken.
+
+            Do not provid the stdout or stderr handles as they will get closed.
+            Use PipeOption::cerr for that special case.
+
+            if std::ostream* or FILE* is provided you are responsible for ensuring
+            its lifetime outlasts the Popen.
         */
         PipeVar     cout    = PipeOption::inherit;
         /** Option for cout, or handle to use.
 
             if a pipe handle is used it will be made inheritable automatically
-            when process is created and closed on the parents end.
+            when process is created and closed on the parents end. This means
+            ownership is taken.
+
+            Do not provid the stdout or stderr handles as they will get closed.
+            Use PipeOption::cout for that special case.
+
+            if std::ostream* or FILE* is provided you are responsible for ensuring
+            its lifetime outlasts the Popen.
         */
         PipeVar     cerr    = PipeOption::inherit;
 
@@ -162,7 +182,13 @@ namespace subprocess {
         friend ProcessBuilder;
     private:
         void init(CommandLine& command, RunOptions& options);
-
+        /*  In order to avoid deadlock across processes, a thread is used. A
+            reference to the thread is needed to wait for it to properly close
+            down and release the resources.
+        */
+        std::thread cin_thread;
+        std::thread cout_thread;
+        std::thread cerr_thread;
 #ifdef _WIN32
         PROCESS_INFORMATION process_info;
 #endif
