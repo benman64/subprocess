@@ -49,7 +49,8 @@ namespace subprocess {
 
         /** Timeout in seconds. Raise TimeoutExpired.
 
-            Only available if you use subprocess_run
+            Only available if you use subprocess_run. If timeout is reached
+            process is killed() SIGKILL style, TimeoutExpired is thrown.
         */
         double timeout  = -1;
         /** Set to true for subprocess::run() to throw exception. Ignored when

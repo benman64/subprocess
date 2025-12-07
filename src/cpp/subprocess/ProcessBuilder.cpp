@@ -27,6 +27,14 @@ using std::nullptr_t;
 
 // TODO: throw exceptions on various os errors.
 
+#if defined(__MINGW32__) || \
+    (defined(__MINGW64__) && !defined(_MT) && !defined(__MINGW_USE_VC2005_THUNK))
+    // MinGW-w64 with winpthreads (the default) → use polling version
+    #define USE_POLLING_WAIT 1
+#else
+    #define USE_POLLING_WAIT 0
+#endif
+
 namespace subprocess {
     namespace details {
         void throw_os_error(const char* function, int errno_code) {
@@ -311,28 +319,88 @@ namespace subprocess {
         LocalFree(lpMsgBuf);
         return message;
     }
+
+    /** Wait's for the process given by handle and returns error code.
+
+        MingW posix compliant threading implementation doesn't work properly with
+        WaitForSingleObject under wine. The safe thing to do is poll.
+
+        Polls every 10ms on mingw.
+
+        @param handle
+            The process to wait on
+        @param exit_code
+            Pointer to where to store the exit code
+        @param millis
+            milliseconds for timeout, 0 for quick poll, INFINITE for no timeout
+
+        @throws OSError if WaitForSingleObject or GetExitCodeProcess fails
+
+        @returns
+            WAIT_OBJECT_0 if it's done and exit_code set to exit of process.
+            If time out expires returns WAIT_TIMEOUT. Throws on errors.
+    */
+    DWORD wait_for_process(
+        HANDLE handle,
+        DWORD* exit_code,
+        DWORD millis,
+        double poll_ms=100
+    ) {
+        // makes it easier to maintain the 2 code paths
+        if (!USE_POLLING_WAIT || millis == INFINITE) {
+            DWORD result = WaitForSingleObject(handle, millis);
+            if (result == WAIT_TIMEOUT) {
+                return result;
+            } else if (result == WAIT_ABANDONED) {
+                DWORD error = GetLastError();
+                throw OSError("WAIT_ABANDONED error:" + std::to_string(error));
+            } else if (result == WAIT_FAILED) {
+                DWORD error = GetLastError();
+                throw OSError("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
+            } else if (result != WAIT_OBJECT_0) {
+                throw OSError("WaitForSingleObject failed: " + std::to_string(result));
+            }
+
+            bool ok = !!GetExitCodeProcess(handle, exit_code);
+            if (!ok) {
+                DWORD error = GetLastError();
+                throw OSError(
+                    "GetExitCodeProcess failed: " +
+                    std::to_string(error) + ":" + lastErrorString()
+                );
+            }
+            return WAIT_OBJECT_0;
+        } else {
+            auto start = monotonic_seconds();
+            int64_t remaining_ms = millis*1000;
+            while (true) {
+                bool ok = !!GetExitCodeProcess(handle, exit_code);
+                if (!ok) {
+                    DWORD error = GetLastError();
+                    throw OSError(
+                        "GetExitCodeProcess failed: " +
+                        std::to_string(error) + ":" + lastErrorString()
+                    );
+                } else if (*exit_code != STILL_ACTIVE)
+                    return WAIT_OBJECT_0;
+                remaining_ms = millis - (monotonic_seconds() - start)*1000;
+                if (remaining_ms <= 0)
+                    break;
+                sleep_seconds(poll_ms/1000.0);
+            }
+            return WAIT_TIMEOUT;
+        }
+    }
+
     bool Popen::poll() {
         if (returncode != kBadReturnCode)
             return true;
-        DWORD ms = 0;
-        DWORD result = WaitForSingleObject(process_info.hProcess, ms);
+        DWORD exit_code = 0;
+        DWORD result = wait_for_process(process_info.hProcess, &exit_code, 0);
         if (result == WAIT_TIMEOUT) {
             return false;
-        } else if (result == WAIT_ABANDONED) {
-            DWORD error = GetLastError();
-            throw OSError("WAIT_ABANDONED error:" + std::to_string(error));
-        } else if (result == WAIT_FAILED) {
-            DWORD error = GetLastError();
-            throw OSError("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
-        }
-        if (result != WAIT_OBJECT_0) {
-            throw OSError("WaitForSingleObject failed: " + std::to_string(result));
-        }
-        DWORD exit_code;
-        int ret = GetExitCodeProcess(process_info.hProcess, &exit_code);
-        if (ret == 0) {
-            DWORD error = GetLastError();
-            throw OSError("GetExitCodeProcess failed: " + std::to_string(error) + ":" + lastErrorString());
+        } else if (result != WAIT_OBJECT_0) {
+            throw OSError("unkown error wait_for_process failed");
         }
         returncode = exit_code;
         return true;
@@ -342,25 +410,14 @@ namespace subprocess {
         if (returncode != kBadReturnCode)
             return returncode;
         DWORD ms = timeout < 0 ? INFINITE : (DWORD)(timeout*1000.0);
-        DWORD result = WaitForSingleObject(process_info.hProcess, ms);
+        DWORD exit_code = 0;
+        DWORD result = wait_for_process(process_info.hProcess, &exit_code, ms);
         if (result == WAIT_TIMEOUT) {
             throw TimeoutExpired("timeout of " + std::to_string(ms) + " expired");
-        } else if (result == WAIT_ABANDONED) {
-            DWORD error = GetLastError();
-            throw OSError("WAIT_ABANDONED error:" + std::to_string(error));
-        } else if (result == WAIT_FAILED) {
-            DWORD error = GetLastError();
-            throw OSError("WAIT_FAILED error:" + std::to_string(error) + ":" + lastErrorString());
+        } else if (result != WAIT_OBJECT_0) {
+            throw OSError("unkown error wait_for_process failed");
         }
-        if (result != WAIT_OBJECT_0) {
-            throw OSError("WaitForSingleObject failed: " + std::to_string(result));
-        }
-        DWORD exit_code;
-        int ret = GetExitCodeProcess(process_info.hProcess, &exit_code);
-        if (ret == 0) {
-            DWORD error = GetLastError();
-            throw OSError("GetExitCodeProcess failed: " + std::to_string(error) + ":" + lastErrorString());
-        }
+
         returncode = exit_code;
         return returncode;
     }
@@ -560,8 +617,15 @@ namespace subprocess {
             popen.wait(options.timeout);
         } catch (subprocess::TimeoutExpired& expired) {
             popen.send_signal(subprocess::SigNum::PSIGTERM);
+            /*  python source code sends SIGKILL, we'll be a bit more nice.
+                give it a bit of time to terminate. This is more practical.
+            */
+            try {
+                popen.wait(1.0/20.0);
+            } catch (subprocess::TimeoutExpired& expired) {
+                popen.kill();
+            }
             popen.wait();
-
             subprocess::TimeoutExpired timeout("subprocess::run timeout reached");
             timeout.cmd = command;
             timeout.timeout = options.timeout;

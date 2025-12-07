@@ -69,10 +69,23 @@ namespace subprocess {
                     more data.
     */
     ssize_t pipe_write(PipeHandle, const void* buffer, size_t size);
+
+    /** Sets the blocking bit.
+
+        The handle state is first queried as to only change the blocking bit.
+
+        @param should_block
+            If false then pipe_read/write will exit early if there is no blocking.
+
+        @returns true on success
+    */
+    bool pipe_set_blocking(PipeHandle, bool should_block);
+
     /** Spawns a thread to read from the pipe. When no more data available
         pipe will be closed.
     */
     void pipe_ignore_and_close(PipeHandle handle);
+
     /** Read contents of handle until no more data is available.
 
         If the pipe is non-blocking this will end prematurely.

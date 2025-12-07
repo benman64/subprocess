@@ -169,6 +169,7 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 
 # 0.5.0 TBA
 
+- New pipe_set_blocking(), allows to change blocking mode.
 - fixed #16 is_drive had a typo and so lowercase drives weren't properly
   interpretted. Thanks [DarkCat5501](https://github.com/DarkCat5501)
 - fixed #2 subprocess.run() respects timeout passed in. Thanks [wgshwn](https://github.com/wgshwn).

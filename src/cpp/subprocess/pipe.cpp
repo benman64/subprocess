@@ -64,6 +64,9 @@ namespace subprocess {
     ssize_t pipe_read(PipeHandle handle, void* buffer, std::size_t size) {
         DWORD bread = 0;
         bool result = ReadFile(handle, buffer, (DWORD)size, &bread, nullptr);
+        DWORD error = GetLastError();
+        if (!result && error == ERROR_NO_DATA)
+            return 0;
         if (result)
             return bread;
         return -1;
@@ -77,6 +80,31 @@ namespace subprocess {
         return -1;
     }
 
+    bool pipe_set_blocking(PipeHandle handle, bool should_block) {
+        DWORD state = 0;
+        bool success = true;
+        success = !!GetNamedPipeHandleStateA(
+            handle,
+            &state,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr, 0
+        );
+        if (!success)
+            return false;
+        if (should_block) {
+            state &= ~PIPE_NOWAIT;
+        } else {
+            state |= PIPE_NOWAIT;
+        }
+        success = !!SetNamedPipeHandleState(
+            handle,
+            &state,
+            nullptr, nullptr
+        );
+        return success;
+    }
 #else
     void pipe_set_inheritable(PipeHandle handle, bool inherits) {
         if (handle == kBadPipeValue)
@@ -113,11 +141,33 @@ namespace subprocess {
     }
 
     ssize_t pipe_read(PipeHandle handle, void* buffer, size_t size) {
-        return ::read(handle, buffer, size);
+        ssize_t transferred = ::read(handle, buffer, size);
+        if (transferred < 0) {
+            // this is fine, not really an error, client should try again
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+                return 0;
+        }
+        return transferred;
     }
 
     ssize_t pipe_write(PipeHandle handle, const void* buffer, size_t size) {
-        return ::write(handle, buffer, size);
+        ssize_t transferred = ::write(handle, buffer, size);
+        if (transferred < 0) {
+            // this is fine, not really an error, client should try again
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+                return 0;
+        }
+        return transferred;
+    }
+
+    bool pipe_set_blocking(PipeHandle handle, bool should_block) {
+        int state = fcntl(handle, F_GETFL);
+        if (should_block) {
+            state &= ~O_NONBLOCK;
+        } else {
+            state |= O_NONBLOCK;
+        }
+        return fcntl(handle, F_SETFL, state) == 0;
     }
 #endif
 

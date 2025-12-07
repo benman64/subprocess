@@ -367,6 +367,11 @@ public:
     }
 
     void testSIGINT() {
+        #ifdef __MINGW64__
+        // this test is unsupported on MINGW
+        TS_SKIP("PSIGINT not supported on platform");
+        return;
+        #endif
         subprocess::EnvGuard guard;
         prepend_this_to_path();
 
@@ -377,13 +382,52 @@ public:
             popen.send_signal(subprocess::SigNum::PSIGINT);
         });
 
-        thread.detach();
-
         popen.close();
+        if (thread.joinable())
+            thread.join();
 
         double timeout = timer.seconds();
         TS_ASSERT_DELTA(timeout, 3, 0.5);
 
+    }
+
+    void testNonBlock() {
+        using subprocess::pipe_read;
+        using subprocess::pipe_write;
+        auto pipe = subprocess::pipe_create(true);
+        auto cat = subprocess::Popen(subprocess::CommandLine{"cat"}, {
+            .cin = pipe.input,
+            .cout = PipeOption::pipe,
+        });
+
+        subprocess::pipe_set_blocking(cat.cout, false);
+        std::string str = "hello world";
+        std::thread thread([&] {
+            subprocess::sleep_seconds(0.1);
+            pipe_write(pipe.output, str.data(), str.size());
+        });
+        std::vector<char> buffer;
+        buffer.resize(1024);
+        double start = subprocess::monotonic_seconds();
+        int iterations = 0;
+        do {
+            ++iterations;
+            auto transferred = pipe_read(cat.cout, &buffer[0], buffer.size());
+            if (transferred < 0) {
+                TS_ASSERT_LESS_THAN(0, transferred);
+                break;
+            }
+            if (transferred == 0)
+                continue;
+            TS_ASSERT_EQUALS(transferred, str.size());
+            break;
+        } while (true);
+        TS_ASSERT_LESS_THAN(2, iterations);
+        TS_ASSERT_EQUALS(strcmp(&buffer[0], str.data()), 0);
+        pipe.close();
+        cat.kill();
+        if (thread.joinable())
+            thread.join();
     }
 
 

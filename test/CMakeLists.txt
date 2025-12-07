@@ -14,7 +14,10 @@ function (basic_setup name)
     target_link_libraries(${name} PUBLIC subprocess)
 
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        target_link_libraries(${name} PUBLIC pthread dl stdc++fs)
+        if (NOT WIN32)
+            target_link_libraries(${name} PUBLIC pthread dl)
+        endif()
+        target_link_libraries(${name} PUBLIC pthread stdc++fs)
     endif()
 
 endfunction()
@@ -37,10 +40,17 @@ function(cxx_test source)
     add_executable(${target} ${CPP_FULL_NAME})
     basic_setup(${target})
 
+    if(NOT RUNTIME_OUTPUT_DIRECTORY)
+        set(RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    endif()
     message(STATUS "runtime = ${RUNTIME_OUTPUT_DIRECTORY}")
     # this is only a gcc option
     #set_target_properties(${target} PROPERTIES COMPILE_FLAGS "-Wno-effc++")
-    add_test(NAME ${target} COMMAND ${RUNTIME_OUTPUT_DIRECTORY}/${target})
+    if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" AND MINGW)
+        add_test(NAME ${target} COMMAND wine ${RUNTIME_OUTPUT_DIRECTORY}/${target}.exe)
+    else()
+        add_test(NAME ${target} COMMAND ${RUNTIME_OUTPUT_DIRECTORY}/${target})
+    endif()
     #add_custom_command(TARGET test_all
     #    COMMAND $<TARGET_FILE:${target}>
     #)
@@ -56,3 +66,21 @@ add_executable(sleep ./sleep_main.cpp)
 add_executable(printenv ./printenv_main.cpp)
 
 add_executable(examples ./examples.cpp)
+
+
+if(MINGW)
+    set(MINGW_DLLS
+        libgcc_s_seh-1.dll
+        libstdc++-6.dll
+    )
+
+    file(COPY "/usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll"
+        DESTINATION ./
+    )
+
+    foreach(dll ${MINGW_DLLS})
+        file(COPY "/usr/lib/gcc/x86_64-w64-mingw32/13-win32/${dll}"
+            DESTINATION ./
+        )
+    endforeach()
+endif()
