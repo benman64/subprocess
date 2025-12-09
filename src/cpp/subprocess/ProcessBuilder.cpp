@@ -90,7 +90,7 @@ namespace subprocess {
         PipeHandle mHandle;
     };
     std::thread pipe_thread(PipeHandle input, std::ostream* output) {
-        std::thread thread([=]() {
+        return std::thread([=]() {
             AutoClosePipe autoclose(input);
             std::vector<char> buffer(2048);
             while (true) {
@@ -100,11 +100,10 @@ namespace subprocess {
                 output->write(&buffer[0], transfered);
             }
         });
-        return thread;
     }
 
     std::thread pipe_thread(PipeHandle input, FILE* output) {
-        std::thread thread([=]() {
+        return std::thread([=]() {
             AutoClosePipe autoclose(input);
             std::vector<char> buffer(2048);
             while (true) {
@@ -114,10 +113,9 @@ namespace subprocess {
                 fwrite(&buffer[0], 1, transfered, output);
             }
         });
-        return thread;
     }
     std::thread pipe_thread(FILE* input, PipeHandle output) {
-        std::thread thread([=]() {
+        return std::thread([=]() {
             AutoClosePipe autoclose(output);
             std::vector<char> buffer(2048);
             while (true) {
@@ -127,10 +125,9 @@ namespace subprocess {
                 pipe_write(output, &buffer[0], transfered);
             }
         });
-        return thread;
     }
     std::thread pipe_thread(std::string& input, PipeHandle output) {
-        std::thread thread([input(move(input)), output]() {
+        return std::thread([input(move(input)), output]() {
             AutoClosePipe autoclose(output);
 
             std::size_t pos = 0;
@@ -141,10 +138,9 @@ namespace subprocess {
                 pos += transfered;
             }
         });
-        return thread;
     }
     std::thread pipe_thread(std::istream* input, PipeHandle output) {
-        std::thread thread([=]() {
+        return std::thread([=]() {
             AutoClosePipe autoclose(output);
             std::vector<char> buffer(2048);
             while (true) {
@@ -160,7 +156,6 @@ namespace subprocess {
                 pipe_write(output, &buffer[0], transfered);
             }
         });
-        return thread;
     }
     std::thread setup_redirect_stream(PipeHandle input, PipeVar& output) {
         PipeVarIndex index = static_cast<PipeVarIndex>(output.index());
@@ -274,6 +269,10 @@ namespace subprocess {
         other.cerr = kBadPipeValue;
         other.pid = 0;
         other.returncode = -1000;
+
+        cin_thread = std::move(other.cin_thread);
+        cout_thread = std::move(other.cout_thread);
+        cerr_thread = std::move(other.cerr_thread);
         return *this;
     }
 
@@ -298,7 +297,6 @@ namespace subprocess {
         // do this to not have zombie processes.
         if (pid) {
             wait();
-
 #ifdef _WIN32
             CloseHandle(process_info.hProcess);
             CloseHandle(process_info.hThread);

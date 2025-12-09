@@ -62,8 +62,22 @@ namespace subprocess {
         @throw OSError if system call fails.
 
         @return pipe pair. If failure returned pipes will have values of kBadPipeValue
+
+        @since 0.5.0
+            inheritable default is changed from true to false. The underlaying OS API's
+            make inheritable true by default and so making it not inheritble
+            is extra work which is why true was default here too. But practically
+            this is annoying because you only want to inherit 1 end of the pipe.
+            If this is not false the child will inherit the other end and will
+            never get EOF if you close your end. The subprocess API's will
+            automatically enforce the correct end of the pipe to be inheritable.
+            Most of the time you never have to think about this, and likely this
+            breaking change will fix bug for you. If you have an explicit reason
+            to make both ends to be inheritble at creation then you likely have
+            a bug.
     */
-    PipePair pipe_create(bool inheritable = true);
+    PipePair pipe_create(bool inheritable = false);
+
     /** Set the pipe to be inheritable or not for subprocess.
 
         @throw OSError if system call fails.
@@ -126,4 +140,56 @@ namespace subprocess {
 
     /** Will read up to size and not block until buffer is filled. */
     ssize_t pipe_read_some(PipeHandle, void* buffer, size_t size);
+
+    /** Opens a file and returns the handle.
+
+        You must call pipe_close() on the returned handle. When using as a
+        parameter to Popen or run(), pipe_close should not be called as ownership
+        will be taken.
+
+        @param filename
+            The file path
+        @param mode
+            The mode as from fopen. Always binary mode.
+            r - read only, will fail if file doesn't exist
+            w - write only and will create or truncate the file
+            + - allow read/write
+
+        @returns the handle to the opened file, or kBadPipeValue on error
+    */
+    PipeHandle pipe_file(const char* filename, const char* mode);
+
+    #if 0
+    /*  Obviously this is possible. The problem is the API around it, I really
+        want to stop calling pipe_close. To be fair in python's subprocess
+        library you also have to close things either manually or use `with`.
+        Maybe it's just not possible.
+    */
+    class UniquePipeHandle {
+    public:
+        UniquePipeHandle(){}
+        ~UniquePipeHandle(){
+            pipe_close(handle);
+            handle = kBadPipeValue;
+        }
+        explicit UniquePipeHandle(PipeHandle handle): handle(handle){}
+        UniquePipeHandle(UniquePipeHandle&& other) {
+            pipe_close(handle);
+            handle = other.handle;
+            other.handle = kBadPipeValue;
+        }
+        UniquePipeHandle& operator=(UniquePipeHandle&& other) {
+            pipe_close(handle);
+            handle = other.handle;
+            other.handle = kBadPipeValue;
+            return *this;
+        }
+        UniquePipeHandle(const UniquePipeHandle&)=delete;
+        UniquePipeHandle operator=(const UniquePipeHandle&)=delete;
+
+        PipeHandle get() { return handle; }
+    private:
+        PipeHandle handle = kBadPipeValue;
+    };
+    #endif
 }

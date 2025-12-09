@@ -19,7 +19,7 @@ function(enable_cxx_compiler_flag_if_supported flag)
     endif()
 endfunction()
 
-project(subprocess VERSION 0.4.0 LANGUAGES CXX C)
+project(subprocess VERSION 0.5.0 LANGUAGES CXX C)
 if (UNICODE)
     add_compile_definitions(UNICODE)
 endif()

@@ -169,6 +169,16 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 
 # 0.5.0 TBA
 
+**Breaking Changes**
+
+- pipe_create inheritable default is change to true. The subprocess API will
+  automatically set inheritable as needed. In most cases it will fix bugs on
+  your end at no additional effort. If you have an explicit reason
+  to create inheritable pipes then you should evaluate your code as this change
+  may introduce bugs into your code.
+
+**non-breaking Changes**
+
 - New pipe_set_blocking(), allows to change blocking mode.
 - fixed #16 is_drive had a typo and so lowercase drives weren't properly
   interpretted. Thanks [DarkCat5501](https://github.com/DarkCat5501)

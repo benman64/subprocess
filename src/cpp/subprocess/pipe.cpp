@@ -1,6 +1,7 @@
 #include "pipe.hpp"
 
 #include <thread>
+#include <cstring>
 
 #ifndef _WIN32
 #include <fcntl.h>
@@ -8,6 +9,8 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #endif
+
+#include "utf8_to_utf16.hpp"
 
 using namespace subprocess::details;
 
@@ -86,6 +89,8 @@ namespace subprocess {
         }
     }
     bool pipe_close(PipeHandle handle) {
+        if (handle == kBadPipeValue)
+            return false;
         return !!CloseHandle(handle);
     }
     PipePair pipe_create(bool inheritable) {
@@ -162,7 +167,6 @@ namespace subprocess {
         TmpBlock tmp_block(pipe);
         int iterations = 0;
         do {
-            printf("wait iter %d\n", iterations);
             ++iterations;
             double start = monotonic_seconds();
             DWORD dw_timeout = (seconds < 0) ? INFINITE : seconds*1000.0;
@@ -313,5 +317,49 @@ namespace subprocess {
         if (second < 0)
             return second;
         return second + 1;
+    }
+
+    PipeHandle pipe_file(const char* filename, const char* mode) {
+        using std::strchr;
+#ifdef _WIN32
+        static_assert(sizeof(wchar_t) == 2, "wchar_t must be of size 2");
+        static_assert(sizeof(wchar_t) == sizeof(char16_t), "wchar_t must be of size 2");
+        DWORD dwDesiredAccess = 0;
+        DWORD disposition = 0;
+        if (strchr(mode, 'r')) {
+            dwDesiredAccess |= GENERIC_READ;
+            disposition = OPEN_EXISTING;
+        }
+        if (strchr(mode, 'w')) {
+            dwDesiredAccess |= GENERIC_WRITE;
+            disposition = CREATE_ALWAYS;
+        }
+        if (strchr(mode, '+')) dwDesiredAccess |= GENERIC_READ|GENERIC_WRITE;
+
+        std::u16string str = utf8_to_utf16(filename);
+        HANDLE hFile = CreateFileW(
+            reinterpret_cast<LPCWSTR>(str.c_str()),
+            dwDesiredAccess,
+            0, NULL, // share, security attributes
+            disposition,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL
+        );
+        if (hFile == INVALID_HANDLE_VALUE) {
+            // Handle error if needed
+            return kBadPipeValue;
+        }
+        return hFile;
+#else
+        int flags = 0;
+        if (strchr(mode, 'r')) flags = O_RDONLY;
+        if (strchr(mode, 'w')) flags |= O_WRONLY | O_CREAT | O_TRUNC;
+        if (strchr(mode, '+')) flags |= O_RDWR;
+
+        auto fd = open(filename, flags, 0666);
+        if (fd  == -1)
+            return kBadPipeValue;
+        return fd;
+#endif
     }
 }

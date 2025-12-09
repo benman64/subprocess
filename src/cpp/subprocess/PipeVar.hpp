@@ -6,7 +6,7 @@
 #include <cstdio>
 
 #include "basic_types.hpp"
-
+#include "pipe.hpp"
 
 namespace subprocess {
     enum class PipeVarIndex {
@@ -28,7 +28,6 @@ namespace subprocess {
         switch(index) {
         case PipeVarIndex::option:  return std::get<PipeOption>(option);
         case PipeVarIndex::handle:  return PipeOption::specific;
-
         default:                    return PipeOption::pipe;
         }
     }

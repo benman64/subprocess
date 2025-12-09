@@ -26,9 +26,7 @@ namespace subprocess {
         /** Option for cin, data to pipe to cin.  or created handle to use.
 
             if a pipe handle is used it will be made inheritable automatically
-            when process is created and closed on the parents end. This means
-            ownership is taken. Becareful not to provide your processes stdin
-            handle. Use PipeOption::inherit for that special case.
+            before process is created. You must call pipe_close on your end.
 
             If std::istream* then you must make sure the life time of the stream
             is longer than Popen.
@@ -37,11 +35,7 @@ namespace subprocess {
         /** Option for cout, or handle to use.
 
             if a pipe handle is used it will be made inheritable automatically
-            when process is created and closed on the parents end. This means
-            ownership is taken.
-
-            Do not provid the stdout or stderr handles as they will get closed.
-            Use PipeOption::cerr for that special case.
+            before process is created. You must call pipe_close on your end.
 
             if std::ostream* or FILE* is provided you are responsible for ensuring
             its lifetime outlasts the Popen.
@@ -50,11 +44,7 @@ namespace subprocess {
         /** Option for cout, or handle to use.
 
             if a pipe handle is used it will be made inheritable automatically
-            when process is created and closed on the parents end. This means
-            ownership is taken.
-
-            Do not provid the stdout or stderr handles as they will get closed.
-            Use PipeOption::cout for that special case.
+            before process is created. You must call pipe_close on your end.
 
             if std::ostream* or FILE* is provided you are responsible for ensuring
             its lifetime outlasts the Popen.

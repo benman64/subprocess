@@ -108,22 +108,24 @@ namespace subprocess {
             actions.adddup2(this->cin_pipe, kStdInValue);
             actions.addclose(this->cin_pipe);
         } else if (cin_option == PipeOption::pipe) {
-            cin_pair = pipe_create();
+            cin_pair = pipe_create(true);
             actions.addclose(cin_pair.output);
             actions.adddup2(cin_pair.input, kStdInValue);
             actions.addclose(cin_pair.input);
             process.cin = cin_pair.output;
+            pipe_set_inheritable(process.cin, false);
         }
 
 
         if (cout_option == PipeOption::close)
             actions.addclose(kStdOutValue);
         else if (cout_option == PipeOption::pipe) {
-            cout_pair = pipe_create();
+            cout_pair = pipe_create(true);
             actions.addclose(cout_pair.input);
             actions.adddup2(cout_pair.output, kStdOutValue);
             actions.addclose(cout_pair.output);
             process.cout = cout_pair.input;
+            pipe_set_inheritable(process.cout, false);
         } else if (cout_option == PipeOption::cerr) {
             // we have to wait until stderr is setup first
         } else if (cout_option == PipeOption::specific) {
@@ -135,14 +137,15 @@ namespace subprocess {
             actions.addclose(this->cout_pipe);
         }
 
-        if (cerr_option == PipeOption::close)
+        if (cerr_option == PipeOption::close) {
             actions.addclose(kStdErrValue);
-        else if (cerr_option == PipeOption::pipe) {
-            cerr_pair = pipe_create();
+        } else if (cerr_option == PipeOption::pipe) {
+            cerr_pair = pipe_create(true);
             actions.addclose(cerr_pair.input);
             actions.adddup2(cerr_pair.output, kStdErrValue);
             actions.addclose(cerr_pair.output);
             process.cerr = cerr_pair.input;
+            pipe_set_inheritable(process.cerr, false);
         } else if (cerr_option == PipeOption::cout) {
             actions.adddup2(kStdOutValue, kStdErrValue);
         } else if (cerr_option == PipeOption::specific) {
@@ -229,6 +232,8 @@ namespace subprocess {
             cout_pair.close_output();
         if (cerr_pair)
             cerr_pair.close_output();
+
+
         cin_pair.disown();
         cout_pair.disown();
         cerr_pair.disown();

@@ -423,13 +423,17 @@ public:
     }
 
     void testNonBlock() {
+        subprocess::EnvGuard guard;
+        prepend_this_to_path();
         using subprocess::pipe_read;
         using subprocess::pipe_write;
-        auto pipe = subprocess::pipe_create(true);
+        auto pipe = subprocess::pipe_create(false);
+
         auto cat = subprocess::Popen(subprocess::CommandLine{"cat"}, {
             .cin = pipe.input,
             .cout = PipeOption::pipe,
         });
+        pipe.disown_input();
 
         subprocess::pipe_set_blocking(cat.cout, false);
         std::string str = "hello world";
@@ -441,6 +445,7 @@ public:
         buffer.resize(1024);
         double start = subprocess::monotonic_seconds();
         int iterations = 0;
+
         do {
             ++iterations;
             auto transferred = pipe_read(cat.cout, &buffer[0], buffer.size());
@@ -456,9 +461,11 @@ public:
         TS_ASSERT_LESS_THAN(2, iterations);
         TS_ASSERT_EQUALS(strcmp(&buffer[0], str.data()), 0);
         pipe.close();
-        cat.kill();
-        if (thread.joinable())
+        //cat.kill();
+
+        if (thread.joinable()) {
             thread.join();
+        }
     }
 
     void testHighFrequency() {
@@ -480,6 +487,25 @@ public:
             if (completed.returncode != 0)
                 break;
         }
+    }
+
+    void testFile() {
+        subprocess::EnvGuard guard;
+        subprocess::cenv["BINARY"] = "1";
+        subprocess::PipeHandle handle = subprocess::pipe_file("test.txt", "w");
+        std::string str = "hello world\n";
+        subprocess::run(subprocess::CommandLine{"echo", "hello", "world"}, {
+            .cout = handle
+        });
+        subprocess::pipe_close(handle);
+        handle = subprocess::pipe_file("test.txt", "r");
+        TS_ASSERT_DIFFERS(handle, subprocess::kBadPipeValue);
+        std::vector<char> data;
+        data.resize(1024);
+        ssize_t transferred = subprocess::pipe_read(handle, data.data(), data.size());
+        TS_ASSERT_EQUALS(transferred, str.size());
+        std::string str2 = data.data();
+        TS_ASSERT_EQUALS(str, str2);
     }
 
 

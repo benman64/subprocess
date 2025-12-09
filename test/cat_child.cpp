@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     try {
         while (true) {
             auto transfered = read(0, &buffer[0], buffer.size());
-            if (transfered == 0)
+            if (transfered <= 0)
                 break;
             if (output_err) {
                 std::cerr.write(&buffer[0], transfered);
