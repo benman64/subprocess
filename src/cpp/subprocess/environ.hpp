@@ -36,11 +36,14 @@ namespace subprocess {
 
     /** Creates a copy of current environment variables and returns the map */
     EnvMap current_env_copy();
+
+#ifdef _WIN32
     /** Gives an environment block used in Windows APIs. Each item is null
         terminated, end of list is double null-terminated and conforms to
         expectations of various windows API.
     */
     std::u16string create_env_block(const EnvMap& map);
+#endif
 
     /** Use this to put a guard for changing current working directory. On
         destruction the current working directory will be reset to as it was

@@ -48,11 +48,9 @@ namespace subprocess {
         saAttr.bInheritHandle       = TRUE;
         saAttr.lpSecurityDescriptor = NULL;
 
-#ifdef UNICODE
+
         STARTUPINFOW siStartInfo         = {0};
-#else
-        STARTUPINFOA siStartInfo         = {0};
-#endif
+
         BOOL bSuccess = FALSE;
 
         siStartInfo.cb          = sizeof(siStartInfo);
@@ -134,7 +132,6 @@ namespace subprocess {
 
         process.cwd = this->cwd;
         // Create the child process.
-#ifdef UNICODE // CreateProcessW
         std::u16string cmd_args{ utf8_to_utf16(args) };
         bSuccess = CreateProcessW(
           (LPCWSTR)utf8_to_utf16(program).c_str(),
@@ -147,20 +144,7 @@ namespace subprocess {
           (LPCWSTR)(this->cwd.empty() ? nullptr : utf8_to_utf16(this->cwd).c_str()),    // use parent's current directory
           &siStartInfo,                                                                 // STARTUPINFO pointer
           &process.process_info);                                                       // receives PROCESS_INFORMATION
-#else // CreateProcessA
-        std::string cmd_args{ args };
-        bSuccess = CreateProcess(
-          (LPCSTR)program.c_str(),
-          (LPSTR)cmd_args.data(),                                                       // command line
-          NULL,                                                                         // process security attributes
-          NULL,                                                                         // primary thread security attributes
-          TRUE,                                                                         // handles are inherited
-          process_flags,                                                                // creation flags
-          env,                                                                          // environment
-          (LPCSTR)(this->cwd.empty() ? nullptr : this->cwd.c_str()),                    // use parent's current directory
-          &siStartInfo,                                                                 // STARTUPINFO pointer
-          &process.process_info);                                                       // receives PROCESS_INFORMATION
-#endif
+
         process.pid = process.process_info.dwProcessId;
         if (cin_pair)
             cin_pair.close_input();

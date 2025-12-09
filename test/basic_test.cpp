@@ -64,10 +64,14 @@ public:
     }
 
     void test_utf() {
+        #ifdef _WIN32
         auto utf16 = subprocess::utf8_to_utf16("hello world");
         TS_ASSERT_EQUALS(utf16.size(), 11);
         auto utf8 = subprocess::utf16_to_utf8(utf16);
         TS_ASSERT_EQUALS(utf8, "hello world");
+        #else
+        TS_SKIP("utf16 conversions not required on this platform");
+        #endif
     }
 
     void testEnvGuard() {

@@ -118,6 +118,7 @@ namespace subprocess {
         return env;
     }
 
+#ifdef _WIN32
     std::u16string create_env_block(const EnvMap& map) {
         size_t size = 0;
         for (auto& pair : map) {
@@ -135,4 +136,5 @@ namespace subprocess {
         result += (char16_t)'\0';
         return result;
     }
+#endif
 }
