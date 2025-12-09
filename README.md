@@ -167,7 +167,7 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 
 # Changelog
 
-# 0.5.0 TBA
+# 0.5.0 2025-12-09
 
 **Breaking Changes**
 
