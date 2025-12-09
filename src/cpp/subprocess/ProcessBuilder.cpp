@@ -188,13 +188,13 @@ namespace subprocess {
         case PipeVarIndex::handle:
         case PipeVarIndex::option: break;
         case PipeVarIndex::string:
-            return pipe_thread(std::get<std::string>(input), output, true);
+            return pipe_thread(std::get<std::string>(input), output);
         case PipeVarIndex::istream:
-            return pipe_thread(std::get<std::istream*>(input), output, true);
+            return pipe_thread(std::get<std::istream*>(input), output);
         case PipeVarIndex::ostream:
             throw std::domain_error("reading from std::ostream doesn't make sense");
         case PipeVarIndex::file:
-            return pipe_thread(std::get<FILE*>(input), output, true);
+            return pipe_thread(std::get<FILE*>(input), output);
         }
 
         return {};
@@ -242,7 +242,7 @@ namespace subprocess {
         cout_thread = setup_redirect_stream(cout, options.cout);
         cerr_thread = setup_redirect_stream(cerr, options.cerr);
         // the background thread will take ownership and auto close the pipe
-        if (cin_thread.joinable()) {
+        if (cin_thread.joinable())
             cin = kBadPipeValue;
         if (cout_thread.joinable())
             cout = kBadPipeValue;

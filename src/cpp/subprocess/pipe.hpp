@@ -25,10 +25,19 @@ namespace subprocess {
         const PipeHandle input    = kBadPipeValue;
         const PipeHandle output   = kBadPipeValue;
 
-        /** Stop owning the pipes */
+        /** Disowns the input & output end */
         void disown() {
             const_cast<PipeHandle&>(input) = const_cast<PipeHandle&>(output) = kBadPipeValue;
         }
+        /// Disowns the input end
+        void disown_input() {
+            const_cast<PipeHandle&>(input) = kBadPipeValue;
+        }
+        /// Disowns the output end
+        void disown_output() {
+            const_cast<PipeHandle&>(output) = kBadPipeValue;
+        }
+
         void close();
         void close_input();
         void close_output();
@@ -37,11 +46,15 @@ namespace subprocess {
         }
     };
 
+    /** Peak into how many bytes available in pipe to read. */
+    ssize_t pipe_peak_bytes(PipeHandle pipe);
+
     /** Closes a pipe handle.
         @param handle   The handle to close.
         @returns true on success
     */
     bool pipe_close(PipeHandle handle);
+
     /** Creates a pair of pipes for input/output
 
         @param inheritable  if true subprocesses will inherit the pipe.
@@ -94,4 +107,23 @@ namespace subprocess {
                 with binary data.
     */
     std::string pipe_read_all(PipeHandle handle);
+
+    /** Waits for the pipes to be change state.
+
+        @param pipes
+            pointer to first pipe in an array
+        @param did_change
+            pointer to an output of the first pipe that changed state
+        @param count
+            number of pipes
+        @param seconds
+            The timeout in seconds to wait for. -1 for indefinate
+    */
+    int pipe_wait_for_read(
+        PipeHandle pipe,
+        double seconds
+    );
+
+    /** Will read up to size and not block until buffer is filled. */
+    ssize_t pipe_read_some(PipeHandle, void* buffer, size_t size);
 }

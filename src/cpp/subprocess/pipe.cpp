@@ -5,11 +5,14 @@
 #ifndef _WIN32
 #include <fcntl.h>
 #include <cerrno>
+#include <poll.h>
+#include <sys/ioctl.h>
 #endif
 
 using namespace subprocess::details;
 
 namespace subprocess {
+    double monotonic_seconds();
     PipePair& PipePair::operator=(PipePair&& other) {
         close();
         const_cast<PipeHandle&>(input)   = other.input;
@@ -35,6 +38,42 @@ namespace subprocess {
             pipe_close(output);
             const_cast<PipeHandle&>(output) = kBadPipeValue;
         }
+    }
+
+    bool pipe_is_blocking(PipeHandle handle) {
+        #ifdef _WIN32
+        DWORD state = 0;
+        bool success = true;
+        success = !!GetNamedPipeHandleStateA(
+            handle,
+            &state,
+            nullptr,
+            nullptr,
+            nullptr,
+            nullptr, 0
+        );
+        if (!success)
+            return false;
+        return (state & PIPE_NOWAIT) != PIPE_NOWAIT;
+        #endif
+        return false;
+    }
+
+    ssize_t pipe_peak_bytes(PipeHandle pipe) {
+        #ifdef _WIN32
+        DWORD available = 0;
+        if(!PeekNamedPipe(pipe, nullptr, 0, nullptr, &available, nullptr)) {
+            return -1;
+        }
+        return available;
+        #else
+        int bytes_available = 0;
+        if (ioctl(pipe, FIONREAD, &bytes_available) == -1) {
+            perror("ioctl");
+            return -1;
+        }
+        return bytes_available;
+        #endif
     }
 #ifdef _WIN32
     void pipe_set_inheritable(subprocess::PipeHandle handle, bool inheritable) {
@@ -105,6 +144,50 @@ namespace subprocess {
         );
         return success;
     }
+
+    int pipe_wait_for_read(PipeHandle pipe, double seconds) {
+        struct TmpBlock {
+            TmpBlock(PipeHandle pipe) : pipe(pipe) {
+                blocking = pipe_is_blocking(pipe);
+                //if (!blocking)
+                    pipe_set_blocking(pipe, true);
+            }
+            ~TmpBlock() {
+                //if (!blocking)
+                    pipe_set_blocking(pipe, blocking);
+            }
+            PipeHandle pipe;
+            bool blocking = true;
+        };
+        TmpBlock tmp_block(pipe);
+        int iterations = 0;
+        do {
+            printf("wait iter %d\n", iterations);
+            ++iterations;
+            double start = monotonic_seconds();
+            DWORD dw_timeout = (seconds < 0) ? INFINITE : seconds*1000.0;
+            DWORD result = WaitForSingleObject(pipe, dw_timeout);
+            if (result == WAIT_OBJECT_0) {
+                // needs double checking
+                DWORD available = 0;
+                if(!PeekNamedPipe(pipe, nullptr, 0, nullptr, &available, nullptr))
+                    return -1;
+                if (available > 0)
+                    return 1;
+                if (seconds < 0)
+                    continue;
+                double waited = monotonic_seconds() - start;
+                seconds -= waited;
+                if (seconds <= 0)
+                    return 0;
+            } else if (result == WAIT_TIMEOUT) {
+                return 0;
+            } else {
+                break;
+            }
+        } while (true);
+        return -1;
+    }
 #else
     void pipe_set_inheritable(PipeHandle handle, bool inherits) {
         if (handle == kBadPipeValue)
@@ -169,6 +252,23 @@ namespace subprocess {
         }
         return fcntl(handle, F_SETFL, state) == 0;
     }
+
+    int pipe_wait_for_read(PipeHandle pipe, double seconds) {
+        pollfd pfd = {};
+        pfd.fd = pipe;
+        pfd.events = POLLIN;
+
+        int ms = (seconds < 0) ? -1 : seconds*1000.0;
+        int ret = poll(&pfd, 1, ms);
+        if (ret > 0) {
+            // pipe closed or error
+            if (pfd.revents & (POLLHUP | POLLERR | POLLNVAL))
+                return -1;
+            return 1;
+        }
+        if (ret == 0) return 0;
+        return -1;
+    }
 #endif
 
     std::string pipe_read_all(PipeHandle handle) {
@@ -200,5 +300,18 @@ namespace subprocess {
         thread.detach();
     }
 
-
+    ssize_t pipe_read_some(PipeHandle pipe, void* buffer, size_t size) {
+        // wait for data by reading 1 byte
+        ssize_t transferred = pipe_read(pipe, buffer, 1);
+        if (transferred <= 0)
+            return transferred;
+        int available = pipe_peak_bytes(pipe);
+        --size;
+        buffer = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(buffer) + 1);
+        size = std::min<ssize_t>(size, available);
+        ssize_t second = pipe_read(pipe, buffer, size);
+        if (second < 0)
+            return second;
+        return second + 1;
+    }
 }

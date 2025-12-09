@@ -58,6 +58,17 @@ namespace subprocess {
 
             if std::ostream* or FILE* is provided you are responsible for ensuring
             its lifetime outlasts the Popen.
+
+            If you would like to create the closest thing to a realtime filter
+            do as follows:
+
+            1. cerr = PipeOption::pipe
+            2. pipe_read_some(popen.cerr, true)
+
+            pipe_read_some will return as soon as any data is available. Sometimes
+            with 0. If you wish to do a proper wait for some data to be avialable,
+            poll() is available on all platforms even windows. Popen.cerr is the
+            raw handle you can use as the fd parameter to poll().
         */
         PipeVar     cerr    = PipeOption::inherit;
 
@@ -106,14 +117,28 @@ namespace subprocess {
 
         /** Write to this stream to send data to the process. This class holds
             the ownership and will call pipe_close().
+
+            This is the raw Pipe handle on the platform, feel free to use
+            platform specific API's. pipe_read is made for convenience to have
+            a consistent reading API.
         */
         PipeHandle  cin       = kBadPipeValue;
+
         /** Read from this stream to get output of process. This class holds
             the ownership and will call pipe_close().
+
+            This is the raw Pipe handle on the platform. Feel free to use other
+            API's on the platform. pipe_write is made for convenience to have
+            a consistent write function.
         */
         PipeHandle  cout      = kBadPipeValue;
+
         /** Read from this stream to get cerr output of process. This class holds
             the ownership and will call pipe_close().
+
+            This is the raw Pipe handle on the platform. Feel free to use other
+            API's on the platform. pipe_write is made for convenience to have
+            a consistent write function.
         */
         PipeHandle  cerr      = kBadPipeValue;
 

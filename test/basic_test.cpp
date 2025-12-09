@@ -95,6 +95,33 @@ public:
         std::string path = subprocess::find_program("echo");
         TS_ASSERT(!path.empty());
     }
+
+    void testPipeBinary() {
+        // confirms pipes are binary
+        auto pipe = subprocess::pipe_create();
+        std::string str = "hello world\n";
+        // use thread to prevent blocking in case the OS desides to wait on read
+        std::thread thread([&] {
+            subprocess::sleep_seconds(1);
+            subprocess::pipe_write(pipe.output, str.data(), str.size());
+        });
+        std::vector<char> text;
+        text.resize(32);
+        double start = subprocess::monotonic_seconds();
+
+        ssize_t transferred = subprocess::pipe_read_some(
+            pipe.input, text.data(), text.size()
+        );
+
+        TS_ASSERT_EQUALS(transferred, str.size());
+
+        double time_diff = subprocess::monotonic_seconds() - start;
+        std::string str2 = text.data();
+        thread.join();
+        TS_ASSERT_EQUALS(str, str2);
+        TS_ASSERT_DELTA(time_diff, 1.0, 0.1);
+    }
+
     void testHelloWorld() {
         CompletedProcess completed = subprocess::run({"echo", "hello", "world"},
             RunBuilder().cout(PipeOption::pipe));
@@ -431,6 +458,8 @@ public:
     }
 
     void testHighFrequency() {
+        subprocess::EnvGuard guard;
+        subprocess::cenv["BINARY"] = "1";
         // Lesson: if you got threads, just make a simple frequency test.
         for (int i = 0; i < 100; ++i) {
             std::stringstream stream;
