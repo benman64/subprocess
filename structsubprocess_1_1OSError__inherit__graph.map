@@ -1,6 +1,9 @@
 <map id="subprocess::OSError" name="subprocess::OSError">
-<area shape="rect" id="node1" title=" " alt="" coords="31,155,175,181"/>
-<area shape="rect" id="node4" href="$structsubprocess_1_1SpawnError.html" title=" " alt="" coords="20,229,185,256"/>
-<area shape="rect" id="node2" href="$structsubprocess_1_1SubprocessError.html" title=" " alt="" coords="5,80,200,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="41,5,165,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="33,152,185,177"/>
+<area shape="rect" id="Node000004" href="$structsubprocess_1_1SpawnError.html" title=" " alt="" coords="21,225,198,251"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="112,191,112,225,107,225,107,191"/>
+<area shape="rect" id="Node000002" href="$structsubprocess_1_1SubprocessError.html" title=" " alt="" coords="5,79,213,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,118,112,152,107,152,107,118"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="40,5,179,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="112,44,112,79,107,79,107,44"/>
 </map>

@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['abspath_0',['abspath',['../namespacesubprocess.html#aa542fa14f8b4e0a2a22880ac30a2ee62',1,'subprocess']]],
-  ['args_1',['args',['../structsubprocess_1_1CompletedProcess.html#a5574de40f5ccbeaf17ff200b07e2ee59',1,'subprocess::CompletedProcess::args()'],['../structsubprocess_1_1Popen.html#a064cf22204d9f77dbd04124c18635cb0',1,'subprocess::Popen::args()']]]
+  ['0_202_200_0',['0.2.0',['../index.html#autotoc_md15',1,'']]],
+  ['0_203_200_1',['0.3.0',['../index.html#autotoc_md14',1,'']]],
+  ['0_204_200_2',['0.4.0',['../index.html#autotoc_md13',1,'']]],
+  ['0_205_200_202025_2012_2009_3',['0.5.0 2025-12-09',['../index.html#autotoc_md12',1,'']]],
+  ['09_4',['0.5.0 2025-12-09',['../index.html#autotoc_md12',1,'']]]
 ];

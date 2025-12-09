@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['utf8_5fto_5futf16_2ehpp_149',['utf8_to_utf16.hpp',['../utf8__to__utf16_8hpp.html',1,'']]]
+  ['new_5fprocess_5fgroup_0',['new_process_group',['../structsubprocess_1_1RunOptions.html#a402b1d90725b4ed50f2c7efd32164de6',1,'subprocess::RunOptions::new_process_group'],['../classsubprocess_1_1ProcessBuilder.html#aefe63b2e7755ac05e8c2d302580645a6',1,'subprocess::ProcessBuilder::new_process_group'],['../structsubprocess_1_1RunBuilder.html#a4710fad7fc515e5080e29c92956abd56',1,'subprocess::RunBuilder::new_process_group()']]]
 ];

@@ -1,6 +1,15 @@
 var searchData=
 [
-  ['wait_150',['wait',['../structsubprocess_1_1Popen.html#a41f7e47cf5715d430e91b97bc857f06c',1,'subprocess::Popen']]],
-  ['windows_5fargs_151',['windows_args',['../classsubprocess_1_1ProcessBuilder.html#abe928d9fdfb7b15d82bd322e9fd384f2',1,'subprocess::ProcessBuilder::windows_args()'],['../classsubprocess_1_1ProcessBuilder.html#a2f3e14c104dc1ce53c8f109d29ccc996',1,'subprocess::ProcessBuilder::windows_args(const CommandLine &amp;command)']]],
-  ['windows_5fcommand_152',['windows_command',['../classsubprocess_1_1ProcessBuilder.html#a53913f61954311eb5fcdc8989f08b599',1,'subprocess::ProcessBuilder']]]
+  ['operator_20bool_0',['operator bool',['../structsubprocess_1_1CompletedProcess.html#a4929426c4de72f898d39ce69d4ef6899',1,'subprocess::CompletedProcess::operator bool()'],['../classsubprocess_1_1EnvironSetter.html#a75a163dda79b6f0137fbca876a895c5b',1,'subprocess::EnvironSetter::operator bool()'],['../structsubprocess_1_1PipePair.html#a47cbdbc1a37e194df81fe53d3dccccf1',1,'subprocess::PipePair::operator bool()']]],
+  ['operator_20runoptions_1',['operator RunOptions',['../structsubprocess_1_1RunBuilder.html#ad6ff1dd3acba0332153ad77c968996ff',1,'subprocess::RunBuilder']]],
+  ['operator_20std_3a_3astring_2',['string',['../classsubprocess_1_1EnvironSetter.html#a2c4fb295c66a03266e62652a2a4780de',1,'subprocess::EnvironSetter']]],
+  ['operator_3d_3',['operator=',['../classsubprocess_1_1EnvironSetter.html#ad622d04391643c7a5366e194d2a6f56f',1,'subprocess::EnvironSetter::operator=()'],['../structsubprocess_1_1Popen.html#aa43e1e5144dfa599696859c8c14068ef',1,'subprocess::Popen::operator=(Popen &amp;&amp;)'],['../structsubprocess_1_1Popen.html#a2af2225add6060c94d4f674a7fd75797',1,'subprocess::Popen::operator=(const Popen &amp;)=delete'],['../structsubprocess_1_1PipePair.html#af69f4e36b348e5fac51151515236f5d7',1,'subprocess::PipePair::operator=(PipePair &amp;&amp;other)'],['../structsubprocess_1_1PipePair.html#a9bd1994b91fba9f45412d049612e23da',1,'subprocess::PipePair::operator=(const PipePair &amp;)=delete'],['../classsubprocess_1_1EnvironSetter.html#ae70d013e92ba2e6d399d72856df8f9cb',1,'subprocess::EnvironSetter::operator=(bool value)'],['../classsubprocess_1_1EnvironSetter.html#a92d7b7cbfeccc95069fd1ca8ef391017',1,'subprocess::EnvironSetter::operator=(int value)'],['../classsubprocess_1_1EnvironSetter.html#acb6a365bdd9f3b5baf1259b8e4e4fe44',1,'subprocess::EnvironSetter::operator=(std::nullptr_t)'],['../classsubprocess_1_1EnvironSetter.html#aba88622cbc3b8a73cb26de0db03b8458',1,'subprocess::EnvironSetter::operator=(const char *str)'],['../classsubprocess_1_1EnvironSetter.html#ac50cb3b5ded0ef408df792458631a597',1,'subprocess::EnvironSetter::operator=(const std::string &amp;str)']]],
+  ['operator_5b_5d_4',['operator[]',['../classsubprocess_1_1Environ.html#af3287b06903fadeac33bcba6b0be107b',1,'subprocess::Environ']]],
+  ['option_5',['option',['../namespacesubprocess.html#aa573822f190b62487cffe4f280a7dea5aef3e30e070f70244fd6578d88a6b77ac',1,'subprocess']]],
+  ['options_6',['options',['../structsubprocess_1_1RunBuilder.html#aa87708a380fff12914f60442d2ea2030',1,'subprocess::RunBuilder']]],
+  ['org_20benman_20teaport_20teaport_20a_7',['&lt;a href=&quot;https://bitbucket.org/benman/teaport&quot; &gt;Teaport&lt;/a&gt;',['../index.html#autotoc_md6',1,'']]],
+  ['oserror_8',['OSError',['../structsubprocess_1_1OSError.html',1,'subprocess']]],
+  ['ostream_9',['ostream',['../namespacesubprocess.html#aa573822f190b62487cffe4f280a7dea5a28ddb00d829f83a7197c5c48a97a9e0d',1,'subprocess']]],
+  ['others_10',['Todo add to cocoapods and perhaps others.',['../index.html#autotoc_md7',1,'']]],
+  ['output_11',['output',['../structsubprocess_1_1PipePair.html#a0cd283d2ffeb93f58f36212312dd2ca0',1,'subprocess::PipePair']]]
 ];

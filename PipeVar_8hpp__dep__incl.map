@@ -1,5 +1,7 @@
 <map id="src/cpp/subprocess/PipeVar.hpp" name="src/cpp/subprocess/PipeVar.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="18,5,154,47"/>
-<area shape="rect" id="node2" href="$ProcessBuilder_8hpp.html" title=" " alt="" coords="17,95,155,136"/>
-<area shape="rect" id="node3" href="$subprocess_8hpp.html" title=" " alt="" coords="5,184,167,211"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="19,5,165,45"/>
+<area shape="rect" id="Node000002" href="$ProcessBuilder_8hpp.html" title=" " alt="" coords="17,93,167,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,59,95,93,89,93,89,59"/>
+<area shape="rect" id="Node000003" href="$subprocess_8hpp.html" title=" " alt="" coords="5,181,179,207"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="95,147,95,181,89,181,89,147"/>
 </map>

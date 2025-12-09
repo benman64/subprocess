@@ -1,9 +1,15 @@
 <map id="src/cpp/subprocess/basic_types.hpp" name="src/cpp/subprocess/basic_types.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="185,5,321,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,73,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="97,95,144,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="168,95,247,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="271,95,325,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="350,95,409,121"/>
-<area shape="rect" id="node7" title=" " alt="" coords="433,95,496,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="198,5,343,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,80,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="217,48,90,91,88,86,215,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="104,93,155,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="238,48,164,89,161,84,236,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="179,93,266,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="261,47,239,83,235,80,257,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="291,93,349,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="285,44,308,80,303,83,280,47"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="374,93,437,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="304,43,375,84,372,89,302,48"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="461,93,529,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="325,43,450,86,448,91,323,48"/>
 </map>

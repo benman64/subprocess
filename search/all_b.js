@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['new_5fprocess_5fgroup_60',['new_process_group',['../structsubprocess_1_1RunOptions.html#a402b1d90725b4ed50f2c7efd32164de6',1,'subprocess::RunOptions::new_process_group()'],['../classsubprocess_1_1ProcessBuilder.html#aefe63b2e7755ac05e8c2d302580645a6',1,'subprocess::ProcessBuilder::new_process_group()'],['../structsubprocess_1_1RunBuilder.html#aa1e07aadddf17fd541da7f2772fae29f',1,'subprocess::RunBuilder::new_process_group()']]]
+  ['file_0',['file',['../namespacesubprocess.html#aa573822f190b62487cffe4f280a7dea5a8c7dd922ad47494fc02c388e12c00eac',1,'subprocess']]],
+  ['find_5fprogram_1',['find_program',['../namespacesubprocess.html#a18c67f4224e95a59b91f28be1f19ec47',1,'subprocess']]],
+  ['find_5fprogram_5fclear_5fcache_2',['find_program_clear_cache',['../namespacesubprocess.html#afa817954de69d20299b9c5c2d8fef091',1,'subprocess']]]
 ];

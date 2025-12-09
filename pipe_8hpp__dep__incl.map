@@ -1,5 +1,11 @@
 <map id="src/cpp/subprocess/pipe.hpp" name="src/cpp/subprocess/pipe.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="60,5,196,47"/>
-<area shape="rect" id="node2" href="$ProcessBuilder_8hpp.html" title=" " alt="" coords="5,95,144,136"/>
-<area shape="rect" id="node3" href="$subprocess_8hpp.html" title=" " alt="" coords="47,184,209,211"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="74,5,219,45"/>
+<area shape="rect" id="Node000002" href="$subprocess_8hpp.html" title=" " alt="" coords="5,269,179,295"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,55,79,73,64,95,52,128,50,156,64,221,74,246,86,268,82,270,69,249,59,222,44,156,46,127,59,92,75,69,96,51"/>
+<area shape="rect" id="Node000003" href="$PipeVar_8hpp.html" title=" " alt="" coords="74,93,219,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="149,59,149,93,144,93,144,59"/>
+<area shape="rect" id="Node000004" href="$ProcessBuilder_8hpp.html" title=" " alt="" coords="73,181,223,221"/>
+<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="197,51,218,69,234,92,240,113,234,135,213,163,186,183,183,179,209,159,230,132,235,113,230,94,214,73,193,55"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="150,147,150,181,145,181,145,147"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="129,234,103,271,98,267,124,231"/>
 </map>

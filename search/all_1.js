@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['basic_5ftypes_2ehpp_2',['basic_types.hpp',['../basic__types_8hpp.html',1,'']]]
+  ['12_2009_0',['0.5.0 2025-12-09',['../index.html#autotoc_md12',1,'']]]
 ];

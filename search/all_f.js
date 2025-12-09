@@ -1,19 +1,11 @@
 var searchData=
 [
-  ['details_128',['details',['../namespacesubprocess_1_1details.html',1,'subprocess']]],
-  ['subprocess_129',['subprocess',['../index.html',1,'']]],
-  ['seconds_130',['seconds',['../classsubprocess_1_1StopWatch.html#a026152e8dde285831446394ccf829a9f',1,'subprocess::StopWatch']]],
-  ['send_5fsignal_131',['send_signal',['../structsubprocess_1_1Popen.html#a744bb5141eb9e037761e9cfd94d16f85',1,'subprocess::Popen']]],
-  ['setcwd_132',['setcwd',['../namespacesubprocess.html#a2d29b3109bc9a487bd87bcc38e738b71',1,'subprocess']]],
-  ['shell_5futils_2ehpp_133',['shell_utils.hpp',['../shell__utils_8hpp.html',1,'']]],
-  ['signum_134',['SigNum',['../namespacesubprocess.html#acf957435c587dd44dc06bdb404ec4e81',1,'subprocess']]],
-  ['sleep_5fseconds_135',['sleep_seconds',['../namespacesubprocess.html#aa997fc79d7ae9f6d7c3bda6ae3dd733f',1,'subprocess']]],
-  ['spawnerror_136',['SpawnError',['../structsubprocess_1_1SpawnError.html',1,'subprocess']]],
-  ['specific_137',['specific',['../namespacesubprocess.html#a6956dd39174d68489539fb03c131c98ba2067d966684a2ac6af99feb1da26dc25',1,'subprocess']]],
-  ['start_138',['start',['../classsubprocess_1_1StopWatch.html#ae0a5fa81f20e00600b62ee7b4ac67702',1,'subprocess::StopWatch']]],
-  ['stopwatch_139',['StopWatch',['../classsubprocess_1_1StopWatch.html',1,'subprocess::StopWatch'],['../classsubprocess_1_1StopWatch.html#afbd9231566106c1ac0d785e55e657206',1,'subprocess::StopWatch::StopWatch()']]],
-  ['string_140',['string',['../namespacesubprocess.html#aa573822f190b62487cffe4f280a7dea5ab45cffe084dd3d20d928bee85e7b0f21',1,'subprocess']]],
-  ['subprocess_141',['subprocess',['../namespacesubprocess.html',1,'']]],
-  ['subprocess_2ehpp_142',['subprocess.hpp',['../subprocess_8hpp.html',1,'']]],
-  ['subprocesserror_143',['SubprocessError',['../structsubprocess_1_1SubprocessError.html',1,'subprocess']]]
+  ['kbadpipevalue_0',['kBadPipeValue',['../namespacesubprocess.html#a8405b7d35896e58aa3570d5f345a65a1',1,'subprocess']]],
+  ['kbadreturncode_1',['kBadReturnCode',['../namespacesubprocess.html#ae79f4f8087096a190fa19d884dc67463',1,'subprocess']]],
+  ['kill_2',['kill',['../structsubprocess_1_1Popen.html#ada4d5736453b1098908c758510dac012',1,'subprocess::Popen']]],
+  ['kiswin32_3',['kIsWin32',['../namespacesubprocess.html#a7e40a8eeddaabd8a0ddaa0480c10c8d2',1,'subprocess']]],
+  ['kpathdelimiter_4',['kPathDelimiter',['../namespacesubprocess.html#a7f9a3c2166d9bec76ce74dc8df672667',1,'subprocess']]],
+  ['kstderrvalue_5',['kStdErrValue',['../namespacesubprocess.html#ab695173e8ec6199842208a2cbd1a435c',1,'subprocess']]],
+  ['kstdinvalue_6',['kStdInValue',['../namespacesubprocess.html#abf929e42c0d51f6c31c6cb112fc15e1f',1,'subprocess']]],
+  ['kstdoutvalue_7',['kStdOutValue',['../namespacesubprocess.html#acbf0a910de2a5b56e1a2bb5b9984d4fb',1,'subprocess']]]
 ];
