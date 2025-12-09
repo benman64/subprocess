@@ -171,7 +171,7 @@ All tests pass on linux & mac. Most pass under mingw & MSVC.
 
 **Breaking Changes**
 
-- pipe_create inheritable default is change to true. The subprocess API will
+- pipe_create inheritable default is change to false. The subprocess API will
   automatically set inheritable as needed. In most cases it will fix bugs on
   your end at no additional effort. If you have an explicit reason
   to create inheritable pipes then you should evaluate your code as this change
