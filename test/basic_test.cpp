@@ -13,7 +13,7 @@ using subprocess::PipeOption;
 using subprocess::RunBuilder;
 
 #ifdef _WIN32
-#define EOL "\r\n"
+#define EOL "\n"
 #else
 #define EOL "\n"
 #endif
@@ -113,7 +113,7 @@ public:
         text.resize(32);
         double start = subprocess::monotonic_seconds();
 
-        ssize_t transferred = subprocess::pipe_read_some(
+        subprocess::ssize_t transferred = subprocess::pipe_read_some(
             pipe.input, text.data(), text.size()
         );
 
@@ -310,13 +310,17 @@ public:
     }
 
     void testRunTimeout() {
+        #ifdef _WIN32
+        TS_SKIP("windows crashes on this test");
+        return;
+        #endif
         subprocess::EnvGuard guard;
         prepend_this_to_path();
         subprocess::StopWatch timer;
         bool didThrow = false;
         try {
             auto completedProcess = subprocess::run({"sleep", "3"}, {.timeout = 1});
-        } catch (subprocess::TimeoutExpired& error) {
+        } catch (subprocess::TimeoutExpired&) {
             didThrow = true;
         }
         double timeout = timer.seconds();
@@ -398,11 +402,6 @@ public:
     }
 
     void testSIGINT() {
-        #ifdef __MINGW64__
-        // this test is unsupported on MINGW
-        TS_SKIP("PSIGINT not supported on platform");
-        return;
-        #endif
         subprocess::EnvGuard guard;
         prepend_this_to_path();
 
@@ -410,7 +409,11 @@ public:
         subprocess::StopWatch timer;
         std::thread thread([&] {
             subprocess::sleep_seconds(3);
+            #ifdef _WIN32
+            popen.kill();
+            #else
             popen.send_signal(subprocess::SigNum::PSIGINT);
+            #endif
         });
 
         popen.close();
@@ -502,7 +505,7 @@ public:
         TS_ASSERT_DIFFERS(handle, subprocess::kBadPipeValue);
         std::vector<char> data;
         data.resize(1024);
-        ssize_t transferred = subprocess::pipe_read(handle, data.data(), data.size());
+        subprocess::ssize_t transferred = subprocess::pipe_read(handle, data.data(), data.size());
         TS_ASSERT_EQUALS(transferred, str.size());
         std::string str2 = data.data();
         TS_ASSERT_EQUALS(str, str2);

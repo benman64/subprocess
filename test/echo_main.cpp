@@ -3,8 +3,8 @@
 #include <subprocess.hpp>
 
 #ifdef _WIN32
-  #include <io.h>
-  #include <fcntl.h>
+    #include <io.h>
+    #include <fcntl.h>
 #endif
 
 // no echo on windows, so we make this to help test the library
@@ -15,7 +15,10 @@ int main(int argc, char** argv) {
     if (binary.size() > 0 && binary != "0" && binary != "false") {
         setmode(fileno(stdout), O_BINARY);
     }
+    setmode(fileno(stdout), O_BINARY);
+    setmode(fileno(stderr), O_BINARY);
     #endif
+
     std::string use_cerr_str = subprocess::cenv["USE_CERR"];
     bool use_cerr = use_cerr_str == "1";
     auto output_file = use_cerr? stderr : stdout;

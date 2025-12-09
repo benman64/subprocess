@@ -3,7 +3,7 @@
 #include <string>
 #ifdef _WIN32
 #include <io.h>
-//const auto& read = _read;
+#include <fcntl.h>
 #else
 #include <unistd.h>
 #endif
@@ -25,6 +25,10 @@ enum ExitCode {
 };
 int main(int argc, char** argv) {
     std::vector<std::string> args;
+    #ifdef _WIN32
+    setmode(fileno(stdout), O_BINARY);
+    setmode(fileno(stderr), O_BINARY);
+    #endif
     for (int i = 1; i < argc; ++i)
         args.push_back(argv[i]);
 

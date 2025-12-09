@@ -47,9 +47,9 @@ function(cxx_test source)
     # this is only a gcc option
     #set_target_properties(${target} PROPERTIES COMPILE_FLAGS "-Wno-effc++")
     if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" AND MINGW)
-        add_test(NAME ${target} COMMAND wine ${RUNTIME_OUTPUT_DIRECTORY}/${target}.exe)
+        add_test(NAME ${target} COMMAND wine ${RUNTIME_OUTPUT_DIRECTORY}/${target}.exe -v)
     else()
-        add_test(NAME ${target} COMMAND ${RUNTIME_OUTPUT_DIRECTORY}/${target})
+        add_test(NAME ${target} COMMAND ${RUNTIME_OUTPUT_DIRECTORY}/${target} -v)
     endif()
     #add_custom_command(TARGET test_all
     #    COMMAND $<TARGET_FILE:${target}>
